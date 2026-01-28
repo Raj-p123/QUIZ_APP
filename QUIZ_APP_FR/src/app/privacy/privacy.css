@@ -1,0 +1,64 @@
+.page-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 35px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Header */
+.privacy-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.privacy-header h2 {
+  font-size: 32px;
+  color: #1f2937;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+/* Sections */
+.privacy-section {
+  margin-bottom: 28px;
+}
+
+.privacy-section h3 {
+  color: #2563eb;
+  margin-bottom: 10px;
+}
+
+/* Text */
+p {
+  color: #374151;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+/* Lists */
+ul {
+  padding-left: 22px;
+}
+
+li {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-container {
+    margin: 20px;
+    padding: 22px;
+  }
+
+  .privacy-header h2 {
+    font-size: 26px;
+  }
+}

@@ -1,0 +1,113 @@
+<link rel="stylesheet" href="teacher-dashboard.css">
+<div class="dashboard-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="assets/logo.png" />
+      <span>QuizApp</span>
+    </div>
+
+    <ul class="menu">
+      <li class="active">
+        <span class="icon">📊</span>
+        <span>Dashboard</span>
+      </li>
+      <li>
+        <span class="icon">➕</span>
+        <span>Create Quiz</span>
+      </li>
+      <li>
+        <span class="icon">📚</span>
+        <span>My Quizzes</span>
+      </li>
+      <li>
+        <span class="icon">📈</span>
+        <span>Student Results</span>
+      </li>
+      <li>
+        <span class="icon">👤</span>
+        <span>Profile</span>
+      </li>
+      <li class="logout" (click)="logout()">
+        <span class="icon">🚪</span>
+        <span>Logout</span>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Header -->
+    <div class="top-header">
+      <div class="header-text">
+        <h2>Welcome, {{ teacherName }} 👨‍🏫</h2>
+        <p>Manage quizzes and monitor student performance</p>
+      </div>
+
+      <div class="profile">
+        <img src="assets/user.png" />
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat blue">
+        <h4>Total Quizzes</h4>
+        <h1>8</h1>
+      </div>
+
+      <div class="stat green">
+        <h4>Active Students</h4>
+        <h1>120</h1>
+      </div>
+
+      <div class="stat purple">
+        <h4>Average Score</h4>
+        <h1>82%</h1>
+      </div>
+
+      <div class="stat orange">
+        <h4>Pending Reviews</h4>
+        <h1>5</h1>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Recent Quizzes -->
+      <div class="card">
+        <h3>📌 My Recent Quizzes</h3>
+
+        <div class="quiz">
+          <span>Java Fundamentals</span>
+          <span class="badge success">Published</span>
+        </div>
+
+        <div class="quiz">
+          <span>Data Structures</span>
+          <span class="badge warning">Draft</span>
+        </div>
+
+        <div class="quiz">
+          <span>Operating Systems</span>
+          <span class="badge success">Published</span>
+        </div>
+      </div>
+
+      <!-- Performance -->
+      <div class="card gradient">
+        <h3>📊 Class Performance</h3>
+        <ul>
+          <li>✔ Highest Score: <b>98%</b></li>
+          <li>✔ Average Score: <b>82%</b></li>
+          <li>✔ Passed Students: <b>95</b></li>
+          <li>✔ Failed Students: <b>25</b></li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+</div>

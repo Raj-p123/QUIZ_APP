@@ -1,0 +1,57 @@
+<div class="dashboard-page">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <input type="text" placeholder="Search for quizzes..." />
+    <div class="profile">
+      <div class="avatar">A</div>
+      <span>{{ studentName }}</span>
+    </div>
+  </div>
+
+  <!-- Summary Statistics -->
+  <h3 class="section-title">Summary Statistics</h3>
+  <div class="stats">
+    <div class="stat-card">
+      <p>Total Quizzes Attended</p>
+      <h2>{{ totalQuizzes }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <p>Correct Answers</p>
+      <h2>{{ completed }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <p>Wrong Answers</p>
+      <h2>{{ totalQuizzes - completed }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <p>Total Attempts</p>
+      <h2>{{ quizzes.length }}</h2>
+    </div>
+  </div>
+
+  <!-- Quiz Discovery -->
+  <h3 class="section-title">Quiz Discovery</h3>
+  <div class="quiz-grid">
+    <div class="quiz-card" *ngFor="let q of quizzes">
+      <h4>{{ q.title }}</h4>
+      <p>{{ q.details }}</p>
+      <button>Start Quiz</button>
+    </div>
+  </div>
+
+  <!-- Last Quiz Result -->
+  <h3 class="section-title">Last Quiz Result</h3>
+  <div class="result-card">
+    <div>
+      <h4>{{ quizzes[0]?.title || 'No Quiz Yet' }}</h4>
+      <p>Score: <strong>{{ averageScore }}%</strong></p>
+      <p>Correct: {{ completed }} | Attempts: {{ quizzes.length }}</p>
+    </div>
+    <button class="history-btn">View Full History</button>
+  </div>
+
+</div>

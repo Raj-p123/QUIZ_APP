@@ -1,0 +1,166 @@
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <div class="flex h-screen">
+        <aside class="w-64 bg-[#1A1D23] text-white flex flex-col">
+            <div class="p-6 text-2xl font-bold flex items-center gap-3">
+                <div class="bg-blue-600 p-2 rounded-lg"><i class="fas fa-book-open text-sm"></i></div>
+                <span>Quizly</span>
+            </div>
+            
+            <nav class="flex-1 px-4 space-y-2 mt-4">
+                <a href="#" class="flex items-center gap-4 py-3 px-4 bg-blue-600 rounded-xl transition">
+                    <i class="fas fa-th-large w-5"></i> Dashboard
+                </a>
+                <a href="#" class="flex items-center gap-4 py-3 px-4 hover:bg-gray-800 rounded-xl transition text-gray-400 hover:text-white">
+                    <i class="fas fa-compass w-5"></i> Quiz Discovery
+                </a>
+                <a href="#" class="flex items-center gap-4 py-3 px-4 hover:bg-gray-800 rounded-xl transition text-gray-400 hover:text-white">
+                    <i class="fas fa-chart-bar w-5"></i> Results
+                </a>
+                <a href="#" class="flex items-center gap-4 py-3 px-4 hover:bg-gray-800 rounded-xl transition text-gray-400 hover:text-white">
+                    <i class="fas fa-history w-5"></i> History
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-gray-700">
+                <a href="#" class="flex items-center gap-4 py-3 px-4 text-red-400 hover:bg-red-500/10 rounded-xl transition">
+                    <i class="fas fa-sign-out-alt w-5"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto">
+            <header class="bg-white py-4 px-8 flex justify-between items-center sticky top-0 z-10 shadow-sm">
+                <div class="relative w-96">
+                    <i class="fas fa-search absolute left-4 top-3 text-gray-400"></i>
+                    <input type="text" placeholder="Search for quizzes..." class="w-full pl-12 pr-4 py-2 bg-gray-100 rounded-full border-none focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-gray-800">Alex Chen</p>
+                        <p class="text-xs text-gray-500">Premium Student</p>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Alex+Chen&background=0062FF&color=fff" class="w-10 h-10 rounded-full border-2 border-blue-100">
+                </div>
+            </header>
+
+            <div class="p-8 space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                        <p class="text-gray-500 text-sm mb-1">Total Quizzes</p>
+                        <h3 class="text-2xl font-bold text-gray-800">125</h3>
+                        <div class="mt-2 w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-blue-600 h-full w-[75%]"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                        <p class="text-gray-500 text-sm mb-1">Correct Answers</p>
+                        <h3 class="text-2xl font-bold text-green-600">88%</h3>
+                        <div class="mt-2 w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-green-500 h-full w-[88%]"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                        <p class="text-gray-500 text-sm mb-1">Wrong Answers</p>
+                        <h3 class="text-2xl font-bold text-red-500">12</h3>
+                        <div class="mt-2 w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-red-500 h-full w-[12%]"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                        <p class="text-gray-500 text-sm mb-1">Daily Streak</p>
+                        <h3 class="text-2xl font-bold text-orange-500">15 🔥</h3>
+                        <div class="mt-2 w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-orange-500 h-full w-[60%]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-gray-800">Weekly Study Goals</h2>
+                                <button class="text-blue-600 text-sm font-semibold hover:underline">Edit Goals</button>
+                            </div>
+                            <div class="space-y-4">
+                                <label class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl cursor-pointer hover:bg-blue-50 transition border border-transparent hover:border-blue-100">
+                                    <input type="checkbox" checked class="w-5 h-5 rounded text-blue-600">
+                                    <span class="flex-1 text-gray-700">Complete 3 Mathematics Quizzes</span>
+                                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg">Done</span>
+                                </label>
+                                <label class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl cursor-pointer hover:bg-blue-50 transition border border-transparent hover:border-blue-100">
+                                    <input type="checkbox" class="w-5 h-5 rounded text-blue-600">
+                                    <span class="flex-1 text-gray-700">Review 2 Study Sets from History</span>
+                                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-lg">In Progress</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                                <div>
+                                    <div class="bg-blue-100 text-blue-600 w-10 h-10 rounded-xl flex items-center justify-center mb-4"><i class="fas fa-calculator"></i></div>
+                                    <h4 class="font-bold text-lg mb-1">Calculus I - Midterm Prep</h4>
+                                    <p class="text-sm text-gray-500 mb-4">15 Questions • 30 Minutes</p>
+                                </div>
+                                <button class="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold hover:bg-blue-700 transition">Start Quiz</button>
+                            </div>
+                            <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                                <div>
+                                    <div class="bg-purple-100 text-purple-600 w-10 h-10 rounded-xl flex items-center justify-center mb-4"><i class="fas fa-microscope"></i></div>
+                                    <h4 class="font-bold text-lg mb-1">Biology - Cell Structure</h4>
+                                    <p class="text-sm text-gray-500 mb-4">20 Questions • 25 Minutes</p>
+                                </div>
+                                <button class="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold hover:bg-blue-700 transition">Start Quiz</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Friends Leaderboard</h2>
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-4">
+                                <span class="font-bold text-blue-600 w-4">1</span>
+                                <img src="https://i.pravatar.cc/150?u=1" class="w-10 h-10 rounded-full">
+                                <div class="flex-1">
+                                    <p class="text-sm font-bold">Mike Johnson</p>
+                                    <p class="text-xs text-gray-500">2,450 Points</p>
+                                </div>
+                                <i class="fas fa-medal text-yellow-500"></i>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="font-bold text-gray-400 w-4">2</span>
+                                <img src="https://i.pravatar.cc/150?u=2" class="w-10 h-10 rounded-full">
+                                <div class="flex-1">
+                                    <p class="text-sm font-bold">Sarah Lee</p>
+                                    <p class="text-xs text-gray-500">2,320 Points</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-3 bg-blue-50 rounded-2xl border border-blue-100">
+                                <span class="font-bold text-blue-600 w-4">3</span>
+                                <img src="https://ui-avatars.com/api/?name=Alex+Chen&background=0062FF&color=fff" class="w-10 h-10 rounded-full">
+                                <div class="flex-1">
+                                    <p class="text-sm font-bold text-blue-700">You (Alex)</p>
+                                    <p class="text-xs text-blue-500">2,100 Points</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="w-full mt-8 text-blue-600 font-bold text-sm">View Full Ranking</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html> -->

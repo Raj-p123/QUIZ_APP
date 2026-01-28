@@ -1,0 +1,83 @@
+.auth-container {
+  min-height: 100vh;
+  background: #f4f7ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-card {
+  width: 360px;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  text-align: center;
+}
+
+/* Headings */
+h2 {
+  margin-bottom: 6px;
+  color: #1f2937;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 11px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+/* Role Colors */
+.btn.student {
+  background: #2563eb;
+}
+
+.btn.teacher {
+  background: #16a34a;
+}
+
+.btn.admin {
+  background: #dc2626;
+}
+
+/* Links */
+.forgot {
+  text-align: right;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.switch {
+  font-size: 13px;
+  margin-top: 16px;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+}

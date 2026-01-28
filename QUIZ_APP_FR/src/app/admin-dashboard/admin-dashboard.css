@@ -1,0 +1,155 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #eaf6f0;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background: #ffffff;
+  padding: 20px;
+  border-right: 1px solid #eee;
+}
+
+.logo strong {
+  font-size: 22px;
+}
+
+.logo span {
+  display: block;
+  font-size: 12px;
+  color: #666;
+}
+
+.school {
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+}
+
+.menu li {
+  padding: 10px;
+  border-radius: 6px;
+  color: #555;
+  cursor: pointer;
+}
+
+.menu li.active {
+  background: #e8f5ee;
+  font-weight: bold;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 30px;
+  background: #f9fafb;
+}
+
+/* TOP BAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-actions button {
+  margin-right: 10px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: #ccc;
+  border-radius: 50%;
+}
+
+/* TABS */
+.tabs {
+  margin: 20px 0;
+}
+
+.tabs span {
+  margin-right: 20px;
+  color: #666;
+}
+
+.tabs .active {
+  font-weight: bold;
+  border-bottom: 2px solid #000;
+}
+
+/* STATS */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.stat-card h2 {
+  margin: 10px 0 0;
+}
+
+.bar {
+  height: 6px;
+  margin-top: 6px;
+  border-radius: 4px;
+}
+
+.bar.green { background: #3bb273; }
+.bar.pink { background: #e879f9; }
+.bar.blue { background: #60a5fa; }
+
+.circle {
+  text-align: center;
+}
+
+/* TABLE */
+.table-section {
+  margin-top: 40px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+th {
+  color: #666;
+}

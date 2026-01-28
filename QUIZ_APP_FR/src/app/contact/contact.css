@@ -1,0 +1,88 @@
+.page-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 35px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Header */
+.contact-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.contact-header h2 {
+  font-size: 32px;
+  color: #1f2937;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+/* Content */
+.contact-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+/* Info Section */
+.contact-info h3,
+.contact-message h3 {
+  color: #2563eb;
+  margin-bottom: 12px;
+}
+
+.contact-info ul {
+  list-style: none;
+  padding: 0;
+}
+
+.contact-info li {
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #374151;
+}
+
+/* Message Section */
+.contact-message p {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Button */
+.btn {
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  border: none;
+}
+
+.btn:hover {
+  opacity: 0.95;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contact-content {
+    grid-template-columns: 1fr;
+  }
+
+  .page-container {
+    margin: 20px;
+    padding: 25px;
+  }
+}

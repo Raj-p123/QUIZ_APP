@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="admin-dashboard.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <strong>Flat</strong>
+      <span>for education</span>
+    </div>
+
+    <div class="school">East Side Middle School</div>
+
+    <ul class="menu">
+      <li>Classes</li>
+      <li>Resource Library</li>
+      <li>Score Library</li>
+      <li>People</li>
+      <li>Billing</li>
+      <li class="active">Admin Dashboard</li>
+      <li>School Settings</li>
+      <li>Integrations</li>
+      <li>Account Settings</li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <h1>Admin Dashboard</h1>
+
+      <div class="top-actions">
+        <button>New score</button>
+        <button>Help</button>
+        <div class="avatar"></div>
+      </div>
+    </header>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <span class="active">This quarter</span>
+      <span>This year</span>
+      <span>Last year</span>
+    </div>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat-card">
+        <p>Active users</p>
+        <h2>34</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Scores created</p>
+        <h2>73</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>18 New assignments</p>
+        <small>Last 7 days</small>
+        <div class="bar green"></div>
+        <div class="bar pink"></div>
+        <div class="bar blue"></div>
+      </div>
+
+      <div class="stat-card circle">
+        <h2>90%</h2>
+        <p>Positive grades</p>
+      </div>
+    </section>
+
+    <!-- TABLE -->
+    <section class="table-section">
+      <div class="table-header">
+        <h3>Licenses breakdown</h3>
+        <input type="text" placeholder="Search teacher or class" />
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Teacher</th>
+            <th>Last activity</th>
+            <th>Classes</th>
+            <th>Students</th>
+            <th>Seats taken</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Beyona Miles</td>
+            <td>Today</td>
+            <td>2</td>
+            <td>40</td>
+            <td>40</td>
+          </tr>
+          <tr>
+            <td>Bessie Cooper</td>
+            <td>Today</td>
+            <td>3</td>
+            <td>60</td>
+            <td>60</td>
+          </tr>
+          <tr>
+            <td>Darrell Steward</td>
+            <td>Today</td>
+            <td>2</td>
+            <td>40</td>
+            <td>40</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>

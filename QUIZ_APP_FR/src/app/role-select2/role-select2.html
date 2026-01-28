@@ -1,0 +1,26 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Who Are You? 🤔</h2>
+    <p class="subtitle">Choose your role to continue</p>
+
+    <div class="role-options">
+      <div class="role-card student" (click)="goToSignup('student')">
+        <div class="icon">🎓</div>
+        <h3>Student</h3>
+        <p>Attempt quizzes and track progress</p>
+      </div>
+
+      <div class="role-card teacher" (click)="goToSignup('teacher')">
+        <div class="icon">👨‍🏫</div>
+        <h3>Teacher</h3>
+        <p>Create quizzes and manage students</p>
+      </div>
+
+      <div class="role-card admin" (click)="goToSignup('admin')">
+        <div class="icon">🛠</div>
+        <h3>Admin</h3>
+        <p>Control users and system settings</p>
+      </div>
+    </div>
+  </div>
+</div>

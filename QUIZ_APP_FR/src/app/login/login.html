@@ -1,0 +1,68 @@
+<div class="auth-container">
+  <div class="auth-card">
+
+    <!-- STUDENT -->
+    <ng-container *ngIf="role === 'student'">
+      <h2>🎓 Student Login</h2>
+
+      <input
+        type="email"
+        placeholder="Student Email"
+        [(ngModel)]="email"
+        name="email" />
+
+      <input
+        type="password"
+        placeholder="Password"
+        [(ngModel)]="password"
+        name="password" />
+
+      <button class="btn student" (click)="login()">Login</button>
+    </ng-container>
+
+    <!-- TEACHER -->
+    <ng-container *ngIf="role === 'teacher'">
+      <h2>👨‍🏫 Teacher Login</h2>
+
+      <input
+        type="email"
+        placeholder="Teacher Email"
+        [(ngModel)]="email"
+        name="email" />
+
+      <input
+        type="password"
+        placeholder="Password"
+        [(ngModel)]="password"
+        name="password" />
+
+      <button class="btn teacher" (click)="login()">Login</button>
+    </ng-container>
+
+    <!-- ADMIN -->
+    <ng-container *ngIf="role === 'admin'">
+      <h2>🛠 Admin Login</h2>
+
+      <input
+        type="email"
+        placeholder="Admin Email"
+        [(ngModel)]="email"
+        name="email" />
+
+      <input
+        type="password"
+        placeholder="Password"
+        [(ngModel)]="password"
+        name="password" />
+
+      <input
+        type="password"
+        placeholder="Admin Secret Code"
+        [(ngModel)]="enteredAdminCode"
+        name="enteredAdminCode" />
+
+      <button class="btn admin" (click)="login()">Login</button>
+    </ng-container>
+
+  </div>
+</div>
