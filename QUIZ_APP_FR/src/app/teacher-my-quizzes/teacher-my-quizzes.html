@@ -1,0 +1,105 @@
+<div class="my-quizzes-container">
+
+  <!-- SUCCESS MESSAGE -->
+  <div class="success-msg" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <h1>My Quizzes</h1>
+
+    <button class="back-btn" routerLink="/teacher-dashboard">
+      ← Back to Dashboard
+    </button>
+  </div>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stat-card">
+      <h3>{{ totalQuizzes }}</h3>
+      <p>Total Quizzes</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>{{ draftQuizzes }}</h3>
+      <p>Draft Quizzes</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>{{ publishedQuizzes }}</h3>
+      <p>Published Quizzes</p>
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Search quiz by name..."
+      [(ngModel)]="searchText"
+      (input)="loadQuizzes()"
+    />
+  </div>
+
+  <!-- QUIZ LIST -->
+  <section class="quiz-list">
+
+    <ng-container *ngIf="quizzes$ | async as quizzes; else loading">
+
+      <div *ngFor="let quiz of quizzes" class="quiz-card">
+
+        <div>
+          <h3>{{ quiz.title }}</h3>
+
+          <span
+            class="status"
+            [class.published]="quiz.published"
+            [class.draft]="!quiz.published">
+            {{ quiz.published ? 'Published' : 'Draft' }}
+          </span>
+        </div>
+
+        <div class="actions">
+
+          <!-- EDIT (ONLY DRAFT) -->
+          <button
+            *ngIf="!quiz.published"
+            class="edit-btn"
+            [routerLink]="['/teacher/quizzes', quiz.id, 'edit']">
+            ✏️ Edit
+          </button>
+
+          <!-- DELETE (ONLY DRAFT) -->
+          <button
+            *ngIf="!quiz.published"
+            class="delete-btn"
+            (click)="deleteQuiz(quiz.id)">
+            🗑 Delete
+          </button>
+
+          <!-- VIEW (ONLY PUBLISHED) -->
+          <button
+            *ngIf="quiz.published"
+            class="view-btn"
+            [routerLink]="['/teacher/quizzes', quiz.id, 'view']">
+            👁 View
+          </button>
+
+        </div>
+
+      </div>
+
+      <p *ngIf="quizzes.length === 0">
+        No quizzes found.
+      </p>
+
+    </ng-container>
+
+    <ng-template #loading>
+      <p>Loading quizzes...</p>
+    </ng-template>
+
+  </section>
+
+</div>

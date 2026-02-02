@@ -1,0 +1,77 @@
+<div class="create-container">
+  <div class="card">
+
+    <h2>Create New Quiz</h2>
+
+    <form (ngSubmit)="submit()">
+
+      <!-- TITLE -->
+      <label>Quiz Title</label>
+      <input
+        type="text"
+        [(ngModel)]="quiz.title"
+        name="title"
+        placeholder="Enter quiz title"
+        required />
+
+      <!-- DESCRIPTION -->
+      <label>Description</label>
+      <textarea
+        [(ngModel)]="quiz.description"
+        name="description"
+        placeholder="Optional description">
+      </textarea>
+
+      <!-- CATEGORY -->
+      <label>Category</label>
+
+      <input
+        type="text"
+        placeholder="Search or select category..."
+        [(ngModel)]="categorySearch"
+        name="categorySearch"
+        (focus)="showCategoryList = true"
+        (input)="filterCategories()"
+        class="search-input" />
+
+      <div class="category-box" *ngIf="showCategoryList">
+        <div
+          class="category-item"
+          *ngFor="let cat of filteredCategories"
+          [class.selected]="quiz.categoryId === cat.id"
+          (click)="selectCategory(cat)">
+          {{ cat.name }}
+        </div>
+      </div>
+
+      <!-- DURATION -->
+      <label>Duration (Minutes)</label>
+      <input
+        type="number"
+        [(ngModel)]="quiz.durationMinutes"
+        name="duration"
+        min="5"
+        required />
+
+      <!-- ACTIONS -->
+      <div class="actions">
+        <button
+          type="submit"
+          class="primary-btn"
+          [disabled]="loading">
+          {{ loading ? 'Creating...' : 'Create Quiz' }}
+        </button>
+
+        <button
+  type="button"
+  class="secondary-btn"
+  (click)="cancel()">
+  Cancel
+</button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>

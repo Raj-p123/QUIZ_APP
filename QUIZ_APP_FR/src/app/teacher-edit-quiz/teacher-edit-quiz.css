@@ -1,0 +1,206 @@
+/* ================= PAGE ================= */
+.edit-quiz-container {
+  padding: 32px;
+}
+
+.loading {
+  padding: 40px;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* ================= HEADER ================= */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-btn {
+  background: #e5e7eb;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ================= QUIZ INFO ================= */
+.quiz-info {
+  margin: 24px 0;
+  padding: 24px;
+  background: #f8fafc;
+  border-radius: 14px;
+}
+
+.quiz-info-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.question-count {
+  background: #0ea5a4;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ================= ACTIONS ================= */
+.actions {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.add-btn {
+  background: #0ea5a4;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+}
+
+.delete-btn:disabled {
+  background: #fca5a5;
+  cursor: not-allowed;
+}
+
+/* ================= QUESTIONS ================= */
+.questions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.question-card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ================= MODAL ================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: white;
+  width: 480px;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.modal-box h2 {
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.modal-box textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.cancel-btn {
+  background: #e5e7eb;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.confirm-btn {
+  background: #0ea5a4;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ================= OPTIONS ================= */
+.add-btn.small {
+  margin-top: 12px;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.option-row input[type="text"] {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.add-btn.secondary {
+  background: #e5e7eb;
+  color: #111;
+}
+
+.add-btn.disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+.publish-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.publish-btn:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
