@@ -1,57 +1,146 @@
-<div class="dashboard-page">
-
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <input type="text" placeholder="Search for quizzes..." />
-    <div class="profile">
-      <div class="avatar">A</div>
-      <span>{{ studentName }}</span>
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <div class="logo-brand" (click)="goHome()">
+      <div class="logo-icon">Q</div>
+      <span class="logo-text">Quiz<span>App</span></span>
     </div>
-  </div>
+    
+    <nav class="side-nav">
+      <a class="nav-item active">
+        <i class="icon-dashboard">📊</i> Dashboard
+      </a>
+      <a class="nav-item" (click)="viewAllQuizzes()">
+        <i class="icon-quizzes">🎯</i> Quizzes
+      </a>
+      <a class="nav-item" (click)="openProfile()">
+        <i class="icon-profile">👤</i> Profile
+      </a>
+      <div class="nav-divider"></div>
+      <a class="nav-item logout">
+        <i class="icon-logout">🚪</i> Logout
+      </a>
+    </nav>
 
-  <!-- Summary Statistics -->
-  <h3 class="section-title">Summary Statistics</h3>
-  <div class="stats">
-    <div class="stat-card">
-      <p>Total Quizzes Attended</p>
-      <h2>{{ totalQuizzes }}</h2>
+    <div class="sidebar-promo">
+      <div class="promo-card">
+        <p>Master new skills today!</p>
+        <button class="promo-btn">View Goals</button>
+      </div>
     </div>
+  </aside>
 
-    <div class="stat-card">
-      <p>Correct Answers</p>
-      <h2>{{ completed }}</h2>
-    </div>
+  <main class="main-content">
+    <header class="top-header">
+      <div class="header-left">
+        <h1>Welcome back, {{ studentName }}! <span class="wave">👋</span></h1>
+        <p class="header-subtitle">You're in the top 10% of learners this week.</p>
+      </div>
+      
+      <div class="header-right">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search for quizzes...">
+        </div>
+        <div class="user-profile-pill" (click)="openProfile()">
+          <img [src]="'https://ui-avatars.com/api/?name=' + studentName + '&background=6366f1&color=fff&size=42'" alt="Profile" />
+          <div class="user-info">
+            <span class="u-name">{{ studentName }}</span>
+            <span class="u-role">Student</span>
+          </div>
+        </div>
+      </div>
+    </header>
 
-    <div class="stat-card">
-      <p>Wrong Answers</p>
-      <h2>{{ totalQuizzes - completed }}</h2>
-    </div>
+    <ng-container *ngIf="dashboardData$ | async as data">
+      <section class="stats-row">
+        <div class="stat-card-modern available">
+          <div class="stat-icon-box">📚</div>
+          <div class="stat-content">
+            <span class="stat-label">Available</span>
+            <span class="stat-value">{{ data.totalAvailable }}</span>
+          </div>
+        </div>
+        <div class="stat-card-modern attempted">
+          <div class="stat-icon-box">🎯</div>
+          <div class="stat-content">
+            <span class="stat-label">Attempted</span>
+            <span class="stat-value">{{ attemptedQuizzes }}</span>
+          </div>
+        </div>
+        <div class="stat-card-modern avg">
+          <div class="stat-icon-box">📈</div>
+          <div class="stat-content">
+            <span class="stat-label">Avg. Score</span>
+            <span class="stat-value">{{ averageScore }}%</span>
+          </div>
+        </div>
+        <div class="stat-card-modern highest">
+          <div class="stat-icon-box">🏆</div>
+          <div class="stat-content">
+            <span class="stat-label">Highest</span>
+            <span class="stat-value">{{ highestScore }}%</span>
+          </div>
+        </div>
+      </section>
 
-    <div class="stat-card">
-      <p>Total Attempts</p>
-      <h2>{{ quizzes.length }}</h2>
-    </div>
-  </div>
+      <div class="grid-layout">
+        <div class="content-primary">
+          <div class="section-title-bar">
+            <h3>Featured Quizzes</h3>
+            <button class="view-all-link" (click)="viewAllQuizzes()">
+              View All → 
+            </button>
+          </div>
 
-  <!-- Quiz Discovery -->
-  <h3 class="section-title">Quiz Discovery</h3>
-  <div class="quiz-grid">
-    <div class="quiz-card" *ngFor="let q of quizzes">
-      <h4>{{ q.title }}</h4>
-      <p>{{ q.details }}</p>
-      <button>Start Quiz</button>
-    </div>
-  </div>
+          <div class="quiz-modern-grid">
+            <div class="quiz-item-card" *ngFor="let q of data.visibleQuizzes">
+              <div class="card-thumb">
+                <img [src]="q.coverImageUrl || 'assets/default-quiz.jpg'" [alt]="q.title" />
+                <div class="card-tag">New</div>
+              </div>
+              <div class="card-details">
+                <h4>{{ q.title }}</h4>
+                <p class="quiz-meta">{{ q.details }}</p>
+                <button class="action-btn-primary" (click)="startQuiz(q.id)">
+                  Start Quiz
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  <!-- Last Quiz Result -->
-  <h3 class="section-title">Last Quiz Result</h3>
-  <div class="result-card">
-    <div>
-      <h4>{{ quizzes[0]?.title || 'No Quiz Yet' }}</h4>
-      <p>Score: <strong>{{ averageScore }}%</strong></p>
-      <p>Correct: {{ completed }} | Attempts: {{ quizzes.length }}</p>
-    </div>
-    <button class="history-btn">View Full History</button>
-  </div>
+        <aside class="content-secondary">
+          <div class="widget-card">
+            <div class="widget-header">
+              <h3>Leaderboard</h3>
+              <button class="icon-btn">⋮</button>
+            </div>
+            <div class="leader-rows">
+              <div class="leader-row" *ngFor="let l of leaderboard; let i = index">
+                <span class="l-rank" [attr.data-rank]="i + 1">{{ i + 1 }}</span>
+                <span class="l-name">{{ l.name }}</span>
+                <span class="l-score">{{ l.score }}%</span>
+              </div>
+            </div>
+          </div>
 
+          <div class="widget-card">
+            <h3>Recommended</h3>
+            <div class="rec-list">
+              <div class="rec-card" *ngFor="let r of recommended">
+                <div class="rec-thumb">
+                  <img [src]="r.coverImageUrl || 'assets/default-quiz.jpg'" [alt]="r.title" />
+                </div>
+                <div class="rec-text">
+                  <p class="rec-title">{{ r.title }}</p>
+                  <p class="rec-time">⏱ {{ r.time }}</p>
+                </div>
+                <button class="rec-play">▶</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </ng-container>
+  </main>
 </div>
