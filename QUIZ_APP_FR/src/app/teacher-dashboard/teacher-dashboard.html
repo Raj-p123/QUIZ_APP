@@ -1,38 +1,78 @@
-<div class="dashboard-container">
-
-  <!-- SIDEBAR -->
+<div class="dashboard-container" [class.collapsed]="isSidebarCollapsed">
+  
   <aside class="sidebar">
-    <h2 class="logo">QuizApp</h2>
+    <div class="sidebar-header">
+      <div class="logo-group" (click)="goToDashboard()" *ngIf="!isSidebarCollapsed">
+        <img src="assets/logoo.png" class="logo-img">
+        <span class="logo-text">QuizApp</span>
+      </div>
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        {{ isSidebarCollapsed ? '→' : '←' }}
+      </button>
+    </div>
 
-    <nav>
-      <a class="active">Dashboard</a>
-      <a routerLink="/teacher-quizzes">My Quizzes</a>
-      <a routerLink="/create-quiz">Create Quiz</a>
-      <a routerLink="/results">Results</a>
+    <nav class="sidebar-nav">
+      <a routerLink="/teacher-dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [title]="'Dashboard'">
+        <i class="icon">📊</i> <span class="nav-label">Dashboard</span>
+      </a>
+      <a routerLink="/teacher-quizzes" routerLinkActive="active" [title]="'My Quizzes'">
+        <i class="icon">📝</i> <span class="nav-label">My Quizzes</span>
+      </a>
+      <a routerLink="/create-quiz" routerLinkActive="active" [title]="'Create Quiz'">
+        <i class="icon">➕</i> <span class="nav-label">Create Quiz</span>
+      </a>
+      <a routerLink="/results" routerLinkActive="active" [title]="'Results'">
+        <i class="icon">🏆</i> <span class="nav-label">Results</span>
+      </a>
     </nav>
 
-    <button class="logout-btn" (click)="logout()">Logout</button>
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <i class="icon">🚪</i>
+        <span class="nav-label">Logout</span>
+      </button>
+    </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main-content">
-
-    <header class="topbar">
-      <h1>Welcome back, {{ teacherName }}!</h1>
-
-      <button class="primary-btn" routerLink="/create-quiz">
-        Create New Quiz
-      </button>
+    <header class="top-header">
+      <div class="welcome-text">
+        <h1>Welcome back, {{ teacherName }} 👋</h1>
+        <p>Here's what's happening with your assessments today.</p>
+      </div>
+      <div class="header-actions">
+        <button class="primary-btn" routerLink="/create-quiz">
+          + Create New Quiz
+        </button>
+      </div>
     </header>
 
-    <!-- DASHBOARD CONTENT -->
-    <section class="dashboard-info">
-      <h2>Teacher Dashboard</h2>
-      <p>
-        Use the left menu to manage quizzes, create new quizzes,
-        and view results.
-      </p>
+    <section class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Total Quizzes</span>
+        <span class="stat-value">12</span>
+        <span class="stat-trend positive">↑ 2 this week</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Students</span>
+        <span class="stat-value">458</span>
+        <span class="stat-trend positive">↑ 12%</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Avg. Score</span>
+        <span class="stat-value">78%</span>
+        <span class="stat-trend">Steady</span>
+      </div>
     </section>
 
+    <section class="content-card">
+      <div class="card-header">
+        <h2>Recent Overview</h2>
+        <button class="text-btn">View All</button>
+      </div>
+      <div class="empty-state">
+        <p>Your recent quiz analytics will appear here. Start by creating a quiz!</p>
+      </div>
+    </section>
   </main>
 </div>

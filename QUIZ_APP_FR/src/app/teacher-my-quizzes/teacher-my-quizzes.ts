@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
-import { Observable, map } from 'rxjs';
+import { Observable, BehaviorSubject, switchMap, map, tap } from 'rxjs';
 
 @Component({
   selector: 'app-teacher-my-quizzes',
@@ -16,10 +16,12 @@ import { Observable, map } from 'rxjs';
   templateUrl: './teacher-my-quizzes.html',
   styleUrl: './teacher-my-quizzes.css'
 })
-export class TeacherMyQuizzes {
+export class TeacherMyQuizzes implements OnInit {
 
-  teacherId = 1;
-
+  teacherId!: number;
+  
+  // Use a BehaviorSubject to trigger refreshes
+  private refreshSignal$ = new BehaviorSubject<void>(undefined);
   quizzes$!: Observable<any[]>;
 
   totalQuizzes = 0;
@@ -27,45 +29,72 @@ export class TeacherMyQuizzes {
   publishedQuizzes = 0;
 
   searchText = '';
-  successMessage = '';
 
+  constructor(
+    private api: ApiService,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
-  constructor(private api: ApiService) {
-    this.loadQuizzes();
-  }
+  ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
-  loadQuizzes() {
-    this.quizzes$ = this.api.getTeacherQuizzes(this.teacherId).pipe(
+    const userData = localStorage.getItem('user');
+    if (!userData) {
+      alert('Session expired. Please login again.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const user = JSON.parse(userData);
+    if (!user || !user.id) {
+      alert('Invalid user session.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.teacherId = user.id;
+
+    // Set up the reactive pipeline
+    this.quizzes$ = this.refreshSignal$.pipe(
+      switchMap(() => this.api.getTeacherQuizzes(this.teacherId)),
       map(quizzes => {
-        const filtered = quizzes.filter(q =>
+        // Filter based on search text
+        const filtered = quizzes.filter((q: any) =>
           q.title.toLowerCase().includes(this.searchText.toLowerCase())
         );
 
+        // Update stats
         this.totalQuizzes = filtered.length;
-        this.draftQuizzes = filtered.filter(q => !q.published).length;
-        this.publishedQuizzes = filtered.filter(q => q.published).length;
+        this.draftQuizzes = filtered.filter((q: any) => !q.published).length;
+        this.publishedQuizzes = filtered.filter((q: any) => q.published).length;
 
         return filtered;
       })
     );
   }
 
-  deleteQuiz(quizId: number): void {
-  if (!confirm('Are you sure you want to delete this quiz?')) {
-    return;
+  // Instead of re-assigning the observable, we just tell the subject to "next"
+  loadQuizzes(): void {
+    this.refreshSignal$.next();
   }
 
-  this.api.deleteQuiz(quizId).subscribe({
-    next: () => {
-      alert('Quiz deleted successfully ✅');
-      this.loadQuizzes();
-    },
-    error: (err) => {
-      console.error(err);
-      alert('Failed to delete quiz ❌');
+  deleteQuiz(quizId: number): void {
+    if (!confirm('Are you sure you want to delete this quiz? This action cannot be undone.')) {
+      return;
     }
-  });
-}
 
-
+    this.api.deleteQuiz(quizId).subscribe({
+      next: () => {
+        alert('Quiz deleted successfully ✅');
+        this.loadQuizzes(); // This now correctly triggers the refreshSignal$
+      },
+      error: (err) => {
+        console.error('Delete error:', err);
+        alert('Failed to delete quiz ❌');
+      }
+    });
+  }
 }

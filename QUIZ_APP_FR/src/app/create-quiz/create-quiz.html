@@ -1,77 +1,117 @@
-<div class="create-container">
-  <div class="card">
+<div class="create-page-wrapper">
+  <div class="create-card">
+    
+    <div class="card-header">
+      <button class="back-btn" (click)="cancel()">←</button>
+      <div class="header-text">
+        <h2>Create New Quiz</h2>
+        <p>Fill in the details to build your assessment</p>
+      </div>
+    </div>
 
-    <h2>Create New Quiz</h2>
+    <form (ngSubmit)="submit()" #quizForm="ngForm">
+      
+      <div class="form-grid">
+        <div class="form-main">
+          <div class="input-group">
+            <label>Quiz Title</label>
+            <input
+              type="text"
+              [(ngModel)]="quiz.title"
+              name="title"
+              placeholder="e.g. Advanced JavaScript Patterns"
+              required />
+          </div>
 
-    <form (ngSubmit)="submit()">
+          <div class="input-group">
+            <label>Description</label>
+            <textarea
+              [(ngModel)]="quiz.description"
+              name="description"
+              placeholder="What should students know before starting?">
+            </textarea>
+          </div>
 
-      <!-- TITLE -->
-      <label>Quiz Title</label>
-      <input
-        type="text"
-        [(ngModel)]="quiz.title"
-        name="title"
-        placeholder="Enter quiz title"
-        required />
+          <div class="row">
+            <div class="input-group half">
+              <label>Category</label>
+              <div class="category-wrapper">
+                <input
+                  type="text"
+                  placeholder="Search category..."
+                  [(ngModel)]="categorySearch"
+                  name="categorySearch"
+                  (focus)="showCategoryList = true"
+                  (input)="filterCategories()"
+                  class="search-input" />
+                
+                <div class="category-dropdown" *ngIf="showCategoryList">
+                  <div
+                    class="category-item"
+                    *ngFor="let cat of filteredCategories"
+                    [class.selected]="quiz.categoryId === cat.id"
+                    (click)="selectCategory(cat)">
+                    {{ cat.name }}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-      <!-- DESCRIPTION -->
-      <label>Description</label>
-      <textarea
-        [(ngModel)]="quiz.description"
-        name="description"
-        placeholder="Optional description">
-      </textarea>
+            <div class="input-group half">
+              <label>Time Limit (Sec/Q)</label>
+              <input
+                type="number"
+                [(ngModel)]="quiz.timePerQuestionSeconds"
+                name="timePerQuestionSeconds"
+                min="5"
+                max="120"
+                required />
+            </div>
+          </div>
+        </div>
 
-      <!-- CATEGORY -->
-      <label>Category</label>
-
-      <input
-        type="text"
-        placeholder="Search or select category..."
-        [(ngModel)]="categorySearch"
-        name="categorySearch"
-        (focus)="showCategoryList = true"
-        (input)="filterCategories()"
-        class="search-input" />
-
-      <div class="category-box" *ngIf="showCategoryList">
-        <div
-          class="category-item"
-          *ngFor="let cat of filteredCategories"
-          [class.selected]="quiz.categoryId === cat.id"
-          (click)="selectCategory(cat)">
-          {{ cat.name }}
+        <div class="form-aside">
+          <label>Cover Image</label>
+          <div class="upload-zone" [class.has-image]="imagePreview" (click)="fileInput.click()">
+            <input
+              #fileInput
+              type="file"
+              hidden
+              accept="image/*"
+              (change)="onFileSelected($event)" />
+            
+            <ng-container *ngIf="!imagePreview; else previewTpl">
+              <div class="upload-placeholder">
+                <span class="upload-icon">🖼️</span>
+                <span>Click to upload cover</span>
+                <small>Recommended: 16:9 Aspect Ratio</small>
+              </div>
+            </ng-container>
+            
+            <ng-template #previewTpl>
+              <img [src]="imagePreview" class="preview-img" />
+              <div class="change-overlay">Change Image</div>
+            </ng-template>
+          </div>
         </div>
       </div>
 
-      <!-- DURATION -->
-      <label>Duration (Minutes)</label>
-      <input
-        type="number"
-        [(ngModel)]="quiz.durationMinutes"
-        name="duration"
-        min="5"
-        required />
-
-      <!-- ACTIONS -->
-      <div class="actions">
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="cancel()">
+          Cancel
+        </button>
         <button
           type="submit"
-          class="primary-btn"
-          [disabled]="loading">
-          {{ loading ? 'Creating...' : 'Create Quiz' }}
+          class="btn-submit"
+          [disabled]="loading || !quiz.title || !quiz.categoryId">
+          <span *ngIf="!loading">🚀 Create Quiz</span>
+          <span *ngIf="loading">Creating...</span>
         </button>
-
-        <button
-  type="button"
-  class="secondary-btn"
-  (click)="cancel()">
-  Cancel
-</button>
-
       </div>
 
     </form>
-
   </div>
 </div>

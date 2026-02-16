@@ -131,12 +131,14 @@ public class StudentService {
                 attemptAnswer.setAttempt(attempt);
                 attemptAnswer.setQuestion(question);
                 attemptAnswer.setSelectedOption(selected);
+                attemptAnswer.setCorrect(selected.isCorrect());   // ✅ REQUIRED
                 attemptAnswerRepository.save(attemptAnswer);
 
                 if (selected.isCorrect()) {
                     score++;
                 }
             }
+
 
             // Build review options for the frontend
             List<SubmitQuizResponse.OptionReview> optionReviews = question.getOptions().stream()
