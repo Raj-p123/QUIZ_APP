@@ -1,105 +1,112 @@
-<div class="my-quizzes-container">
+<div class="my-quizzes-wrapper">
+  <header class="page-header">
+    <div class="header-content">
+      <div class="title-area">
+        <h1>My Quizzes</h1>
+        <p>Manage and track the performance of your assessments</p>
+      </div>
+      <button class="back-dashboard-btn" routerLink="/teacher-dashboard">
+        <span class="icon">←</span> Back to Dashboard
+      </button>
+    </div>
+  </header>
 
-  <!-- SUCCESS MESSAGE -->
-  <div class="success-msg" *ngIf="successMessage">
-    {{ successMessage }}
-  </div>
-
-  <!-- TOP BAR -->
-  <div class="top-bar">
-    <h1>My Quizzes</h1>
-
-    <button class="back-btn" routerLink="/teacher-dashboard">
-      ← Back to Dashboard
-    </button>
-  </div>
-
-  <!-- STATS -->
-  <section class="stats">
-    <div class="stat-card">
-      <h3>{{ totalQuizzes }}</h3>
-      <p>Total Quizzes</p>
+  <section class="stats-grid">
+    <div class="stat-card total">
+      <div class="stat-info">
+        <span class="label">Total Quizzes</span>
+        <h3 class="value">{{ totalQuizzes }}</h3>
+      </div>
+      <div class="stat-icon">📚</div>
     </div>
 
-    <div class="stat-card">
-      <h3>{{ draftQuizzes }}</h3>
-      <p>Draft Quizzes</p>
+    <div class="stat-card draft">
+      <div class="stat-info">
+        <span class="label">Drafts</span>
+        <h3 class="value">{{ draftQuizzes }}</h3>
+      </div>
+      <div class="stat-icon">✍️</div>
     </div>
 
-    <div class="stat-card">
-      <h3>{{ publishedQuizzes }}</h3>
-      <p>Published Quizzes</p>
+    <div class="stat-card published">
+      <div class="stat-info">
+        <span class="label">Published</span>
+        <h3 class="value">{{ publishedQuizzes }}</h3>
+      </div>
+      <div class="stat-icon">🚀</div>
     </div>
   </section>
 
-  <!-- SEARCH -->
-  <div class="search-bar">
-    <input
-      type="text"
-      placeholder="Search quiz by name..."
-      [(ngModel)]="searchText"
-      (input)="loadQuizzes()"
-    />
+  <div class="action-bar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search quiz by name..."
+        [(ngModel)]="searchText"
+        (input)="loadQuizzes()"
+      />
+    </div>
   </div>
 
-  <!-- QUIZ LIST -->
-  <section class="quiz-list">
-
+  <section class="quiz-container">
     <ng-container *ngIf="quizzes$ | async as quizzes; else loading">
-
-      <div *ngFor="let quiz of quizzes" class="quiz-card">
-
-        <div>
-          <h3>{{ quiz.title }}</h3>
-
-          <span
-            class="status"
-            [class.published]="quiz.published"
-            [class.draft]="!quiz.published">
-            {{ quiz.published ? 'Published' : 'Draft' }}
-          </span>
+      
+      <div class="quiz-item" *ngFor="let quiz of quizzes">
+        <div class="quiz-main-info">
+          <div class="quiz-details">
+            <h3 class="quiz-title">{{ quiz.title }}</h3>
+            <div class="quiz-meta">
+              <span class="status-badge" [class.is-published]="quiz.published">
+                {{ quiz.published ? 'Published' : 'Draft' }}
+              </span>
+              <span class="dot"></span>
+              <span class="meta-text">Modified 2 days ago</span>
+            </div>
+          </div>
         </div>
 
-        <div class="actions">
-
-          <!-- EDIT (ONLY DRAFT) -->
-          <button
-            *ngIf="!quiz.published"
-            class="edit-btn"
-            [routerLink]="['/teacher/quizzes', quiz.id, 'edit']">
-            ✏️ Edit
-          </button>
-
-          <!-- DELETE (ONLY DRAFT) -->
-          <button
-            *ngIf="!quiz.published"
-            class="delete-btn"
-            (click)="deleteQuiz(quiz.id)">
-            🗑 Delete
-          </button>
-
-          <!-- VIEW (ONLY PUBLISHED) -->
+        <div class="quiz-actions">
           <button
             *ngIf="quiz.published"
-            class="view-btn"
-            [routerLink]="['/teacher/quizzes', quiz.id, 'view']">
-            👁 View
+            class="action-btn view"
+            [routerLink]="['/teacher/quizzes', quiz.id, 'view']"
+            title="View Results">
+            <span class="btn-icon">👁️</span> View
           </button>
 
-        </div>
+          <button
+            *ngIf="!quiz.published"
+            class="action-btn edit"
+            [routerLink]="['/teacher/quizzes', quiz.id, 'edit']"
+            title="Edit Quiz">
+            <span class="btn-icon">✏️</span> Edit
+          </button>
 
+          <button
+            *ngIf="!quiz.published"
+            class="action-btn delete"
+            (click)="deleteQuiz(quiz.id)"
+            title="Delete Quiz">
+            <span class="btn-icon">🗑️</span>
+          </button>
+        </div>
       </div>
 
-      <p *ngIf="quizzes.length === 0">
-        No quizzes found.
-      </p>
+      <div class="empty-state" *ngIf="quizzes.length === 0">
+        <div class="empty-icon">📂</div>
+        <h3>No quizzes found</h3>
+        <p>Try adjusting your search or create a new quiz to get started.</p>
+        <button class="create-btn" routerLink="/create-quiz">+ Create Quiz</button>
+      </div>
 
     </ng-container>
 
     <ng-template #loading>
-      <p>Loading quizzes...</p>
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Fetching your quizzes...</p>
+      </div>
     </ng-template>
-
   </section>
-
 </div>

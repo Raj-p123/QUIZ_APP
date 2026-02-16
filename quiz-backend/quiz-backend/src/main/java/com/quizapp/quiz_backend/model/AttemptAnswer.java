@@ -22,10 +22,13 @@ public class AttemptAnswer {
     private Question question;
 
     // 🔹 Selected Option
-    // 🔥 UPDATED: nullable = true allows the database to save even if a question is skipped
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "selected_option_id", nullable = true)
     private Option selectedOption;
+
+    // ✅ IMPORTANT: store correctness at submission time
+    @Column(name = "correct", nullable = false)
+    private boolean correct;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -63,6 +66,14 @@ public class AttemptAnswer {
 
     public void setSelectedOption(Option selectedOption) {
         this.selectedOption = selectedOption;
+    }
+
+    public boolean isCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(boolean correct) {
+        this.correct = correct;
     }
 
     public LocalDateTime getCreatedAt() {

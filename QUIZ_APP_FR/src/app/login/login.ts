@@ -1,18 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
 
- role: 'student' | 'teacher' | 'admin' | null = null;
+  role: 'student' | 'teacher' | 'admin' | null = null;
 
   email: string = '';
   password: string = '';
@@ -23,10 +24,16 @@ export class Login {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
+
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('user');
+    }
+
     const roleParam = this.route.snapshot.queryParamMap.get('role');
 
     if (
@@ -43,7 +50,6 @@ export class Login {
 
   login(): void {
 
-    // ✅ BASIC VALIDATION
     if (!this.email || !this.password) {
       alert('❌ Email and password required');
       return;
@@ -57,16 +63,14 @@ export class Login {
     this.authService.login(payload).subscribe({
       next: (res: any) => {
 
-        const selectedRole = this.role?.toUpperCase(); // STUDENT / TEACHER / ADMIN
-        const dbRole = res.role;                        // role from backend
+        const selectedRole = this.role?.toUpperCase();
+        const dbRole = res.role;
 
-        // 🔴 ROLE MISMATCH BLOCK
         if (selectedRole !== dbRole) {
           alert(`❌ This account is not a ${this.role}`);
           return;
         }
 
-        // 🔐 EXTRA ADMIN SECURITY
         if (dbRole === 'ADMIN') {
           if (this.enteredAdminCode !== this.ADMIN_SECRET) {
             alert('❌ Invalid Admin Secret Code');
@@ -74,10 +78,12 @@ export class Login {
           }
         }
 
-        // ✅ SAVE SESSION
-        localStorage.setItem('user', JSON.stringify(res));
+        // ✅ Save logged in user
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('user', JSON.stringify(res));
+        }
 
-        // ✅ ROLE-BASED REDIRECT
+        // ✅ Role based redirect
         if (dbRole === 'STUDENT') {
           this.router.navigate(['/student-dashboard']);
         }
