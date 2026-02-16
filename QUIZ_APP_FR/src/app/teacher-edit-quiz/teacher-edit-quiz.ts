@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // 1. Added ChangeDetectorRef
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-teacher-edit-quiz',
@@ -12,21 +14,16 @@ import { ApiService } from '../services/api.service';
   styleUrl: './teacher-edit-quiz.css'
 })
 export class TeacherEditQuiz implements OnInit {
-
   quizId!: number;
   quiz: any;
   questions: any[] = [];
-
   loading = true;
   viewOnly = false;
-
   showModal = false;
   modalMode: 'question' | 'option' = 'question';
   isEditMode = false;
-
   newQuestionText = '';
   selectedQuestion: any;
-
   successMessage = '';
 
   options = [
@@ -36,9 +33,11 @@ export class TeacherEditQuiz implements OnInit {
     { text: '', correct: false }
   ];
 
+  // 2. Inject ChangeDetectorRef in the constructor
   constructor(
-    private route: ActivatedRoute,
-    private api: ApiService
+    private route: ActivatedRoute, 
+    private api: ApiService,
+    private cdr: ChangeDetectorRef 
   ) {}
 
   ngOnInit(): void {
@@ -51,16 +50,29 @@ export class TeacherEditQuiz implements OnInit {
 
   loadAll() {
     this.loading = true;
-    this.api.getQuizById(this.quizId).subscribe(q => {
+    this.api.getQuizById(this.quizId).pipe(
+      catchError(() => {
+        alert("Failed to load quiz");
+        return of(null);
+      })
+    ).subscribe(q => {
+      if (!q) { this.loading = false; return; }
       this.quiz = q;
-      this.api.getQuestionsByQuiz(this.quizId).subscribe(res => {
-        this.questions = res.map((q: any) => ({ ...q, selected: false }));
-        this.loading = false;
-      });
+      this.refreshQuestions();
     });
   }
 
-  /* ================= QUESTIONS ================= */
+  refreshQuestions() {
+    this.api.getQuestionsByQuiz(this.quizId).pipe(
+      finalize(() => {
+        this.loading = false;
+        this.cdr.detectChanges(); // Ensure the list updates on screen
+      }),
+      catchError(() => of([]))
+    ).subscribe(res => {
+      this.questions = res.map((q: any) => ({ ...q, selected: false }));
+    });
+  }
 
   openAddQuestionModal() {
     if (this.viewOnly || this.quiz.published) return;
@@ -72,118 +84,96 @@ export class TeacherEditQuiz implements OnInit {
   submitQuestion() {
     const text = this.newQuestionText.trim();
     if (!text) return;
-
-    this.closeModal();
-    this.newQuestionText = '';
-
+    
     this.api.addQuestion({
       quizId: this.quizId,
-      questionText: text
-    }).subscribe(savedQuestion => {
-      this.questions.unshift({
-        ...savedQuestion,
-        options: [],
-        selected: false
-      });
+      questionText: text,
+      timeLimitSeconds: this.quiz.timePerQuestionSeconds || 30
+    }).subscribe({
+      next: () => {
+        this.showModal = false; // Close modal immediately
+        this.newQuestionText = ''; // Clear text
+        this.showSuccess('Question added! 🎉');
+        
+        // 3. Force the UI to realize showModal is now false
+        this.cdr.detectChanges(); 
+        
+        this.refreshQuestions();
+      },
+      error: () => alert('Failed to add question')
     });
-  }
-
-  deleteSelectedQuestions() {
-    const ids = this.questions.filter(q => q.selected).map(q => q.id);
-    ids.forEach(id => this.api.deleteQuestion(id).subscribe());
-    this.questions = this.questions.filter(q => !q.selected);
-  }
-
-  toggleSelection(q: any) {
-    q.selected = !q.selected;
-  }
-
-  hasSelectedQuestions() {
-    return this.questions.some(q => q.selected);
-  }
-
-  /* ================= OPTIONS ================= */
-
-  hasOptions(q: any) {
-    return q.options && q.options.length > 0;
-  }
-
-  openAddOptionModal(q: any) {
-    if (this.viewOnly || this.quiz.published) return;
-    this.modalMode = 'option';
-    this.isEditMode = false;
-    this.selectedQuestion = q;
-    this.resetOptions();
-    this.showModal = true;
   }
 
   openEditOptionModal(q: any) {
     if (this.viewOnly || this.quiz.published) return;
     this.modalMode = 'option';
-    this.isEditMode = true;
     this.selectedQuestion = q;
-    this.options = q.options.map((o: any) => ({
-      text: o.optionText,
-      correct: o.correct
-    }));
+    this.isEditMode = (q.options && q.options.length > 0);
+    this.options = [
+      { text: '', correct: false }, { text: '', correct: false },
+      { text: '', correct: false }, { text: '', correct: false }
+    ];
     this.showModal = true;
-  }
-
-  selectCorrect(index: number) {
-    this.options.forEach((o, i) => o.correct = i === index);
   }
 
   submitOptions() {
     const validOptions = this.options.filter(o => o.text.trim());
-    if (validOptions.length === 0) return;
+    if (validOptions.length < 2) return alert("Min 2 options required");
+    if (!this.options.some(o => o.correct)) return alert("Select one correct answer");
 
-    this.closeModal();
-
-    this.selectedQuestion.options = validOptions.map(o => ({
-      optionText: o.text,
-      correct: o.correct
+    const addTasks = validOptions.map(opt => this.api.addOption({
+      questionId: this.selectedQuestion.id,
+      optionText: opt.text,
+      correct: opt.correct
     }));
 
-    const requests = validOptions.map(opt =>
-      this.api.addOption({
-        questionId: this.selectedQuestion.id,
-        optionText: opt.text,
-        correct: opt.correct
-      })
-    );
-
-    Promise.all(requests.map(r => r.toPromise()))
-      .catch(err => console.error(err));
+    forkJoin(addTasks).subscribe({
+      next: () => {
+        this.showModal = false;
+        this.cdr.detectChanges(); // Force modal close
+        this.showSuccess('Options added! ✅');
+        this.refreshQuestions();
+      },
+      error: (err) => alert(err.error || 'Failed to add options')
+    });
   }
 
-  resetOptions() {
-    this.options = [
-      { text: '', correct: false },
-      { text: '', correct: false },
-      { text: '', correct: false },
-      { text: '', correct: false }
-    ];
+  deleteSelectedQuestions() {
+    const selectedIds = this.questions.filter(q => q.selected).map(q => q.id);
+    if (!confirm('Delete selected questions?')) return;
+    
+    forkJoin(selectedIds.map(id => this.api.deleteQuestion(id))).subscribe(() => {
+      this.showSuccess('Deleted successfully');
+      this.refreshQuestions();
+    });
   }
 
-  /* ================= PUBLISH ================= */
+  selectCorrect(index: number) { 
+    this.options.forEach((o, i) => o.correct = i === index); 
+  }
 
+  closeModal() { 
+    this.showModal = false; 
+    this.cdr.detectChanges(); // Ensure modal disappears
+  }
+
+  toggleSelection(q: any) { q.selected = !q.selected; }
+  hasSelectedQuestions() { return this.questions.some(q => q.selected); }
+  hasOptions(q: any) { return q.options && q.options.length > 0; }
+  
   publishQuiz() {
-    if (this.quiz.published) return;
-
     this.api.publishQuiz(this.quizId).subscribe(() => {
       this.quiz.published = true;
-      this.showSuccess('Quiz published successfully 🚀');
+      this.showSuccess('Quiz published! 🚀');
     });
   }
 
   showSuccess(msg: string) {
     this.successMessage = msg;
-    setTimeout(() => this.successMessage = '', 3000);
-  }
-
-  /* ================= MODAL ================= */
-
-  closeModal() {
-    this.showModal = false;
+    this.cdr.detectChanges(); // Show message immediately
+    setTimeout(() => {
+      this.successMessage = '';
+      this.cdr.detectChanges(); // Hide message after 3s
+    }, 3000);
   }
 }

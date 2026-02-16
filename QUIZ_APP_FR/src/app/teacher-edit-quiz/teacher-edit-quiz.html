@@ -1,134 +1,97 @@
-<div class="edit-quiz-container" *ngIf="!loading && quiz; else loadingState">
-
-  <!-- SUCCESS MESSAGE -->
-  <div class="success-msg" *ngIf="successMessage">
+<div class="edit-page-container" *ngIf="!loading && quiz; else loadingState">
+  
+  <div class="toast-success" *ngIf="successMessage">
     {{ successMessage }}
   </div>
 
-  <div class="header">
-    <h1>Edit Quiz</h1>
-    <button class="back-btn" routerLink="/teacher-quizzes">← Back</button>
-  </div>
+  <header class="edit-header">
+    <div class="nav-info">
+      <button class="icon-btn-back" routerLink="/teacher-quizzes">←</button>
+      <div>
+        <h1>{{ quiz.title }}</h1>
+        <p class="subtitle">{{ quiz.categoryName }} • {{ questions.length }} Questions</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" *ngIf="!quiz.published" (click)="publishQuiz()" [disabled]="questions.length === 0">
+        🚀 Publish
+      </button>
+      <span class="badge-published" *ngIf="quiz.published">✅ Published</span>
+    </div>
+  </header>
 
-  <div class="quiz-info quiz-info-flex">
-    <div>
-      <h2>{{ quiz.title }}</h2>
-      <p><strong>Category:</strong> {{ quiz.categoryName }}</p>
-      <p>{{ quiz.description }}</p>
+  <main class="edit-content">
+    <section class="toolbar">
+      <button class="btn-primary" *ngIf="!quiz.published" (click)="openAddQuestionModal()">
+        + Add New Question
+      </button>
+      <button class="btn-danger" *ngIf="hasSelectedQuestions()" (click)="deleteSelectedQuestions()">
+        🗑 Delete Selected
+      </button>
+    </section>
+
+    <div class="questions-list">
+      <div class="q-card" *ngFor="let q of questions; let i = index">
+        <div class="q-card-header">
+          <div class="q-title-group">
+            <input type="checkbox" class="q-check" *ngIf="!quiz.published" [checked]="q.selected" (change)="toggleSelection(q)">
+            <span class="q-number">Q{{ i + 1 }}</span>
+            <h3 class="q-text">{{ q.questionText }}</h3>
+          </div>
+          <button class="btn-outline-small" *ngIf="!quiz.published" (click)="openEditOptionModal(q)">
+            {{ hasOptions(q) ? 'Edit Options' : '+ Add Options' }}
+          </button>
+        </div>
+
+        <div class="options-preview-grid" *ngIf="hasOptions(q)">
+          <div class="opt-preview-item" *ngFor="let opt of q.options" [class.is-correct]="opt.correct">
+            <span class="opt-indicator">{{ opt.correct ? '✓' : '' }}</span>
+            <span class="opt-label">{{ opt.optionText }}</span>
+          </div>
+        </div>
+
+        <div class="empty-options" *ngIf="!hasOptions(q)">
+          <p>⚠️ No options added. Click "Add Options" to set the answers.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ modalMode === 'question' ? 'New Question' : 'Manage Options' }}</h2>
+      <button class="close-x" (click)="closeModal()">×</button>
     </div>
 
-    <div class="question-count">
-      {{ questions.length }} Questions
-    </div>
-  </div>
-
-  <div class="actions">
-
-    <button
-      class="add-btn"
-      *ngIf="!quiz.published"
-      (click)="openAddQuestionModal()">
-      + Add Question
-    </button>
-
-    <button
-      class="delete-btn"
-      *ngIf="!quiz.published"
-      [disabled]="!hasSelectedQuestions()"
-      (click)="deleteSelectedQuestions()">
-      🗑 Delete Question
-    </button>
-
-    <button
-      class="publish-btn"
-      *ngIf="!quiz.published"
-      [disabled]="questions.length === 0"
-      (click)="publishQuiz()">
-      🚀 Publish Quiz
-    </button>
-
-    <span *ngIf="quiz.published" class="question-count">
-      ✅ Published
-    </span>
-  </div>
-
-  <div class="questions">
-    <div class="question-card" *ngFor="let q of questions">
-
-      <div class="question-header">
-        <input
-          type="checkbox"
-          *ngIf="!quiz.published"
-          [checked]="q.selected"
-          (change)="toggleSelection(q)">
-        <h3>{{ q.questionText }}</h3>
+    <div class="modal-body">
+      <div *ngIf="modalMode === 'question'" class="form-group">
+        <label>Question Prompt</label>
+        <textarea [(ngModel)]="newQuestionText" placeholder="e.g. What is the capital of France?"></textarea>
       </div>
 
-      <ul>
-        <li *ngFor="let opt of q.options">
-          {{ opt.optionText }}
-          <span *ngIf="opt.correct">✔</span>
-        </li>
-      </ul>
+      <div *ngIf="modalMode === 'option'" class="options-form">
+        <p class="form-hint">Type options and click the radio button for the correct one.</p>
+        <div class="option-input-item" *ngFor="let opt of options; let i = index" [class.active-correct]="opt.correct">
+          <input type="radio" name="correctOpt" [checked]="opt.correct" (change)="selectCorrect(i)">
+          <input type="text" [(ngModel)]="opt.text" placeholder="Enter option {{i+1}}...">
+        </div>
+      </div>
+    </div>
 
-      <button
-        class="add-btn small"
-        *ngIf="!hasOptions(q) && !quiz.published"
-        (click)="openAddOptionModal(q)">
-        + Add Options
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="modalMode === 'question' ? submitQuestion() : submitOptions()">
+        {{ modalMode === 'question' ? 'Add Question' : 'Save Options' }}
       </button>
-
-      <button
-        class="add-btn small secondary"
-        *ngIf="hasOptions(q) && !quiz.published"
-        (click)="openEditOptionModal(q)">
-        ✏️ Edit Options
-      </button>
-
     </div>
   </div>
 </div>
 
 <ng-template #loadingState>
-  <p class="loading">Loading quiz details...</p>
-</ng-template>
-
-<!-- MODAL -->
-<div class="modal-backdrop" *ngIf="showModal">
-  <div class="modal-box">
-
-    <h2 *ngIf="modalMode === 'question'">Add Question</h2>
-    <h2 *ngIf="modalMode === 'option'">
-      {{ isEditMode ? 'Edit Options' : 'Add Options' }}
-    </h2>
-
-    <textarea
-      *ngIf="modalMode === 'question'"
-      [(ngModel)]="newQuestionText"
-      placeholder="Enter question text">
-    </textarea>
-
-    <div *ngIf="modalMode === 'option'">
-      <div class="option-row" *ngFor="let opt of options; let i = index">
-        <input
-          type="radio"
-          name="correct"
-          [checked]="opt.correct"
-          (change)="selectCorrect(i)">
-        <input
-          type="text"
-          [(ngModel)]="opt.text"
-          placeholder="Option {{ i + 1 }}">
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="cancel-btn" (click)="closeModal()">Cancel</button>
-      <button class="confirm-btn"
-        (click)="modalMode === 'question' ? submitQuestion() : submitOptions()">
-        {{ modalMode === 'question' ? 'Add' : (isEditMode ? 'Save' : 'Add') }}
-      </button>
-    </div>
-
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Fetching quiz data...</p>
   </div>
-</div>
+</ng-template>

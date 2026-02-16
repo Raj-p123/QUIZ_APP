@@ -1,0 +1,86 @@
+<div class="loading-container" *ngIf="loading">
+  <div class="loader-content">
+    <div class="spinner"></div>
+    <h3>Preparing your quiz...</h3>
+    <p>Good luck! Get ready to answer.</p>
+  </div>
+</div>
+
+<div class="play-page" *ngIf="!loading">
+
+  <div class="top-bar">
+    <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
+    <h2 class="title-text">Quiz Session</h2>
+  </div>
+
+  <div class="question-card" *ngIf="!quizFinished">
+    <div class="card-header">
+      <div class="progress-info">
+        Question <strong>{{ currentIndex + 1 }}</strong> of {{ questions.length }}
+      </div>
+
+      <div class="timer-container-mini">
+        <div class="timer-circle-small" 
+             [style.--timer-pct]="timerPercentage + '%'"
+             [style.--timer-color]="timerColor">
+          <span class="timer-value-small">{{ timeLeft$ | async }}s</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="question-text">{{ currentQuestion.questionText }}</h3>
+
+    <div class="options">
+      <div class="option" *ngFor="let opt of currentQuestion.options"
+        [class.selected]="selectedOptionId === opt.id"
+        (click)="selectOption(opt.id)">
+        {{ opt.optionText }}
+      </div>
+    </div>
+
+    <button class="next-btn" [disabled]="!selectedOptionId || isSubmitting" (click)="nextQuestion()">
+      <span *ngIf="!isSubmitting">
+        {{ currentIndex === questions.length - 1 ? 'Finish & Submit' : 'Next Question' }}
+      </span>
+      <span *ngIf="isSubmitting">Calculating Results...</span>
+    </button>
+  </div>
+
+  <div class="result-card" *ngIf="quizFinished">
+    <div class="result-top-section">
+      <div class="result-header-text">
+        <span class="confetti-icon">🎉</span>
+        <h2>Quiz Completed!</h2>
+        <p class="score-msg" *ngIf="score === totalQuestions">Perfect Score! 🏆</p>
+        <p class="score-msg" *ngIf="score < totalQuestions && score > 0">Good Job! 👍</p>
+      </div>
+      
+      <div class="score-rect-box-mini">
+        <div class="score-label">Score</div>
+        <div class="score-display">
+          <span class="score-achieved">{{ score }}</span>
+          <span class="score-divider">/</span>
+          <span class="score-max">{{ totalQuestions }}</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="review-title">Detailed Review</h3>
+    
+    <div class="review-section" *ngIf="review?.length">
+      <div class="review-card" *ngFor="let q of review">
+        <h3 class="review-question">{{ q.questionText }}</h3>
+        <div class="review-options">
+          <div class="review-option" *ngFor="let opt of q.options"
+            [ngClass]="{'correct': isCorrectOption(opt), 'wrong': isWrongSelected(opt, q.selectedOptionId)}">
+            {{ opt.optionText }}
+            <span class="status-icon" *ngIf="isCorrectOption(opt)">✓</span>
+            <span class="status-icon" *ngIf="isWrongSelected(opt, q.selectedOptionId)">✗</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="dashboard-btn" (click)="goBack()">Return to Dashboard</button>
+  </div>
+</div>

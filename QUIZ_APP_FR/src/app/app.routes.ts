@@ -17,7 +17,11 @@ import { Results } from './pages/results/results';
 import { History } from './pages/history/history';
 import { CreateQuiz } from './create-quiz/create-quiz';
 import { TeacherMyQuizzes } from './teacher-my-quizzes/teacher-my-quizzes';
-import { TeacherEditQuiz } from './teacher-edit-quiz/teacher-edit-quiz'; // 🔹 NEW
+import { TeacherEditQuiz } from './teacher-edit-quiz/teacher-edit-quiz';
+import { AvailableQuizzes } from './available-quizzes/available-quizzes';
+import { QuizOverview } from './quiz-overview/quiz-overview';
+import { PlayQuiz } from './play-quiz/play-quiz';
+import { Profile } from './profile/profile';   // ✅ NEW IMPORT
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -31,21 +35,30 @@ export const routes: Routes = [
   { path: 'contact', component: Contact },
   { path: 'forgot-password', component: ForgotPassword },
 
+  // ================= DASHBOARDS =================
   { path: 'student-dashboard', component: StudentDashboard },
   { path: 'teacher-dashboard', component: TeacherDashboard },
   { path: 'admin-dashboard', component: AdminDashboard },
 
+  // ================= PROFILE (NEW) =================
+  { path: 'profile', component: Profile },
+
+  // ================= GENERAL =================
   { path: 'create-quiz', component: CreateQuiz },
   { path: 'quiz', component: Quiz },
   { path: 'results', component: Results },
   { path: 'history', component: History },
 
+  // ================= TEACHER =================
   { path: 'teacher-quizzes', component: TeacherMyQuizzes },
-
-  // ✅ EDIT QUIZ ROUTE (IMPORTANT)
   { path: 'teacher/quizzes/:quizId/edit', component: TeacherEditQuiz },
   { path: 'teacher/quizzes/:quizId/view', component: TeacherEditQuiz },
 
+  // ================= STUDENT =================
+  { path: 'student/quizzes', component: AvailableQuizzes },
+  { path: 'student/quiz/:quizId/overview', component: QuizOverview },
+  { path: 'student/quiz/:quizId/play', component: PlayQuiz },
 
+  // ================= FALLBACK =================
   { path: '**', redirectTo: 'login' },
 ];

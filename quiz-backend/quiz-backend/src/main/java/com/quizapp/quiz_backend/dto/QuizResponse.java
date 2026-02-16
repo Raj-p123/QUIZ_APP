@@ -7,30 +7,78 @@ public class QuizResponse {
     private Long id;
     private String title;
     private String description;
-    private int durationMinutes;
+    private int timePerQuestionSeconds;
     private boolean published;
     private String categoryName;
     private LocalDateTime createdAt;
 
-    // getters & setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // 🖼️ NEW FIELD (REQUIRED)
+    private String coverImageUrl;
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    // ================= GETTERS & SETTERS =================
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public Long getId() {
+        return id;
+    }
 
-    public int getDurationMinutes() { return durationMinutes; }
-    public void setDurationMinutes(int durationMinutes) { this.durationMinutes = durationMinutes; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public boolean isPublished() { return published; }
-    public void setPublished(boolean published) { this.published = published; }
+    public String getTitle() {
+        return title;
+    }
 
-    public String getCategoryName() { return categoryName; }
-    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getTimePerQuestionSeconds() {
+        return timePerQuestionSeconds;
+    }
+
+    public void setTimePerQuestionSeconds(int timePerQuestionSeconds) {
+        this.timePerQuestionSeconds = timePerQuestionSeconds;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    // 🖼️ NEW
+    public String getCoverImageUrl() {
+        return coverImageUrl;
+    }
+
+    public void setCoverImageUrl(String coverImageUrl) {
+        this.coverImageUrl = coverImageUrl;
+    }
 }

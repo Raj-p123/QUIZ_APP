@@ -35,13 +35,12 @@ export class ApiService {
   }
 
   publishQuiz(quizId: number) {
-  return this.http.put(
-    `${this.baseUrl}/api/teacher/quizzes/${quizId}/publish`,
-    {},
-    { responseType: 'text' }   // 👈 VERY IMPORTANT
-  );
-}
-
+    return this.http.put(
+      `${this.baseUrl}/api/teacher/quizzes/${quizId}/publish`,
+      {},
+      { responseType: 'text' }
+    );
+  }
 
   deleteQuiz(quizId: number) {
     return this.http.delete(
@@ -63,9 +62,11 @@ export class ApiService {
     );
   }
 
+  // ✅ UPDATED: supports time per question
   addQuestion(payload: {
     quizId: number;
     questionText: string;
+    timeLimitSeconds: number;
   }) {
     return this.http.post(
       `${this.baseUrl}/api/teacher/quizzes/questions`,

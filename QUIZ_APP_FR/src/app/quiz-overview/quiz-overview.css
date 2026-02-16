@@ -1,0 +1,110 @@
+/* Page base */
+.overview-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+  padding-bottom: 40px;
+}
+
+/* Header */
+.overview-header {
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  padding: 32px;
+  color: #ffffff;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 18px;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.header-text h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.header-text p {
+  margin-top: 6px;
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 28px;
+}
+
+/* Stat cards */
+.stat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+.stat-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.stat-card h2 {
+  margin-top: 10px;
+  font-size: 26px;
+  color: #0f766e;
+}
+
+/* Action card */
+.action-card {
+  margin: 0 28px;
+  margin-top: 10px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+.action-info h4 {
+  margin: 0;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.hint {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* Start quiz button (same style as dashboard) */
+.start-btn {
+  background: linear-gradient(135deg, #14b8a6, #22d3ee);
+  color: #ffffff;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.start-btn:hover {
+  opacity: 0.9;
+}

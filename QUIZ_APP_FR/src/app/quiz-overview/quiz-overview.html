@@ -1,0 +1,68 @@
+<div class="overview-page">
+
+  <ng-container *ngIf="quizData$ | async as quiz; else loadingOrError">
+    
+    <div class="overview-header">
+      <button class="back-btn" (click)="goBack()">← Back</button>
+
+      <div class="header-text">
+        <h1>{{ quiz.title }}</h1>
+        <p>{{ quiz.description || 'Test your knowledge and track your progress' }}</p>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <p>Total Questions</p>
+        <h2>{{ quiz.totalQuestions }}</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Time per Question</p>
+        <h2>{{ quiz.timePerQuestionSeconds }} sec</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Last Score</p>
+        <h2>{{ quiz.lastScore !== null ? quiz.lastScore + '%' : '--' }}</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Attempts</p>
+        <h2>{{ quiz.attempts }}</h2>
+      </div>
+    </div>
+
+    <div class="action-card" *ngIf="!quiz.error">
+      <div class="action-info">
+        <h4 *ngIf="quiz.attempts === 0">
+          You haven’t attempted this quiz yet
+        </h4>
+
+        <h4 *ngIf="quiz.attempts > 0">
+          You have attempted this quiz before
+        </h4>
+
+        <p class="hint">
+          You can attempt this quiz multiple times to improve your score.
+        </p>
+      </div>
+
+      <button class="start-btn" (click)="startQuiz()">
+        Start Quiz
+      </button>
+    </div>
+
+    <div *ngIf="quiz.error" class="error-msg">
+       <p>Could not load quiz details. Please try again later.</p>
+    </div>
+
+  </ng-container>
+
+  <ng-template #loadingOrError>
+    <div class="loading-state" style="text-align: center; padding: 50px; color: white;">
+      <p>Fetching quiz details...</p>
+    </div>
+  </ng-template>
+
+</div>

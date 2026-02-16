@@ -31,7 +31,7 @@ public class TeacherQuizService {
         this.optionRepository = optionRepository;
     }
 
-    // ================= CREATE QUIZ =================
+    // ================= CREATE QUIZ (CLOUDINARY URL ONLY) =================
     public Quiz createQuiz(CreateQuizRequest request) {
 
         User teacher = userRepository.findById(request.getTeacherId())
@@ -47,9 +47,13 @@ public class TeacherQuizService {
         Quiz quiz = new Quiz();
         quiz.setTitle(request.getTitle());
         quiz.setDescription(request.getDescription());
-        quiz.setDurationMinutes(request.getDurationMinutes());
         quiz.setTeacherId(teacher.getId());
         quiz.setCategory(category);
+        quiz.setTimePerQuestionSeconds(request.getTimePerQuestionSeconds());
+
+        // ✅ Cloudinary image URL (already uploaded from frontend)
+        quiz.setCoverImageUrl(request.getCoverImageUrl());
+
         quiz.setPublished(false);
 
         return quizRepository.save(quiz);
@@ -72,10 +76,11 @@ public class TeacherQuizService {
                     dto.setId(quiz.getId());
                     dto.setTitle(quiz.getTitle());
                     dto.setDescription(quiz.getDescription());
-                    dto.setDurationMinutes(quiz.getDurationMinutes());
+                    dto.setTimePerQuestionSeconds(quiz.getTimePerQuestionSeconds());
                     dto.setPublished(quiz.isPublished());
                     dto.setCreatedAt(quiz.getCreatedAt());
                     dto.setCategoryName(quiz.getCategory().getName());
+                    dto.setCoverImageUrl(quiz.getCoverImageUrl());
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -93,6 +98,7 @@ public class TeacherQuizService {
 
         Question question = new Question();
         question.setQuestionText(request.getQuestionText());
+        question.setTimeLimitSeconds(request.getTimeLimitSeconds());
         question.setQuiz(quiz);
 
         Question saved = questionRepository.save(question);
@@ -159,13 +165,12 @@ public class TeacherQuizService {
                                 oDto.setCorrect(option.isCorrect());
                                 return oDto;
                             })
-                            .toList();
+                            .collect(Collectors.toList());
 
                     qDto.setOptions(options);
                     return qDto;
-
                 })
-                .toList();
+                .collect(Collectors.toList());
     }
 
     // ================= PUBLISH QUIZ =================
@@ -185,6 +190,10 @@ public class TeacherQuizService {
         }
 
         for (Question question : questions) {
+
+            if (question.getTimeLimitSeconds() <= 0) {
+                throw new RuntimeException("Each question must have a valid time limit");
+            }
 
             List<Option> options = optionRepository.findByQuestionId(question.getId());
 
@@ -207,7 +216,7 @@ public class TeacherQuizService {
         quizRepository.save(quiz);
     }
 
- // ================= DELETE QUIZ =================
+    // ================= DELETE QUIZ =================
     public void deleteQuiz(Long quizId) {
 
         Quiz quiz = quizRepository.findById(quizId)
@@ -217,7 +226,6 @@ public class TeacherQuizService {
             throw new RuntimeException("Cannot delete a published quiz");
         }
 
-        // 1️⃣ Delete options → questions → quiz (ORDER MATTERS)
         List<Question> questions = questionRepository.findByQuizId(quizId);
 
         for (Question question : questions) {
@@ -227,31 +235,27 @@ public class TeacherQuizService {
         }
 
         questionRepository.deleteAll(questions);
-
-        // 2️⃣ Now delete quiz
         quizRepository.delete(quiz);
     }
-    
- // ================= DELETE QUESTION =================
+
+    // ================= DELETE QUESTION =================
     public void deleteQuestion(Long questionId) {
 
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new RuntimeException("Question not found"));
 
-        Quiz quiz = question.getQuiz();
-
-        if (quiz.isPublished()) {
+        if (question.getQuiz().isPublished()) {
             throw new RuntimeException("Cannot delete question from published quiz");
         }
 
-        // 1️⃣ Delete options first
-        List<Option> options = optionRepository.findByQuestionId(questionId);
-        optionRepository.deleteAll(options);
+        optionRepository.deleteAll(
+                optionRepository.findByQuestionId(questionId)
+        );
 
-        // 2️⃣ Delete question
         questionRepository.delete(question);
     }
-    
+
+    // ================= GET QUIZ BY ID =================
     public QuizResponse getQuizById(Long quizId) {
 
         Quiz quiz = quizRepository.findById(quizId)
@@ -261,14 +265,12 @@ public class TeacherQuizService {
         dto.setId(quiz.getId());
         dto.setTitle(quiz.getTitle());
         dto.setDescription(quiz.getDescription());
-        dto.setDurationMinutes(quiz.getDurationMinutes());
+        dto.setTimePerQuestionSeconds(quiz.getTimePerQuestionSeconds());
         dto.setPublished(quiz.isPublished());
         dto.setCreatedAt(quiz.getCreatedAt());
         dto.setCategoryName(quiz.getCategory().getName());
+        dto.setCoverImageUrl(quiz.getCoverImageUrl());
 
         return dto;
     }
-
-
-
 }

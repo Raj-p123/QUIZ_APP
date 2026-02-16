@@ -12,14 +12,22 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ================= BASIC INFO =================
+
     @Column(nullable = false)
     private String title;
 
     @Column(length = 500)
     private String description;
 
-    @Column(name = "duration_minutes", nullable = false)
-    private int durationMinutes;
+    // 🖼️ QUIZ COVER IMAGE (NEW)
+    // This will store image URL / file path
+    @Column(name = "cover_image_url")
+    private String coverImageUrl;
+
+    // 🔥 Time per question (seconds)
+    @Column(name = "time_per_question_seconds", nullable = false)
+    private int timePerQuestionSeconds = 15;
 
     @Column(name = "teacher_id", nullable = false)
     private Long teacherId;
@@ -28,12 +36,14 @@ public class Quiz {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Column(nullable = false)
     private boolean published = false;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // ✅ NEW: cascade delete questions when quiz is deleted
+    // ================= RELATIONS =================
+
     @OneToMany(
         mappedBy = "quiz",
         cascade = CascadeType.ALL,
@@ -41,7 +51,7 @@ public class Quiz {
     )
     private List<Question> questions;
 
-    // ===== getters & setters =====
+    // ================= GETTERS & SETTERS =================
 
     public Long getId() {
         return id;
@@ -63,12 +73,21 @@ public class Quiz {
         this.description = description;
     }
 
-    public int getDurationMinutes() {
-        return durationMinutes;
+    // 🖼️ Cover Image
+    public String getCoverImageUrl() {
+        return coverImageUrl;
     }
 
-    public void setDurationMinutes(int durationMinutes) {
-        this.durationMinutes = durationMinutes;
+    public void setCoverImageUrl(String coverImageUrl) {
+        this.coverImageUrl = coverImageUrl;
+    }
+
+    public int getTimePerQuestionSeconds() {
+        return timePerQuestionSeconds;
+    }
+
+    public void setTimePerQuestionSeconds(int timePerQuestionSeconds) {
+        this.timePerQuestionSeconds = timePerQuestionSeconds;
     }
 
     public Long getTeacherId() {
@@ -97,5 +116,13 @@ public class Quiz {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 }

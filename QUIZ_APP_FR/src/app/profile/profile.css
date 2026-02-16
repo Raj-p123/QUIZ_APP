@@ -1,0 +1,59 @@
+.profile-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(180deg, #0f766e, #22d3ee);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.profile-card {
+  background: white;
+  padding: 30px;
+  width: 360px;
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.profile-header h2 {
+  margin-bottom: 20px;
+  color: #0f172a;
+}
+
+.avatar img {
+  border-radius: 50%;
+  margin-bottom: 18px;
+}
+
+.info p {
+  margin: 8px 0;
+  color: #334155;
+}
+
+.actions {
+  margin-top: 22px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.back-btn {
+  background: #e2e8f0;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.logout-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}

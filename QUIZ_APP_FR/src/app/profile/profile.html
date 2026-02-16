@@ -1,0 +1,32 @@
+<div class="profile-page">
+
+  <div class="profile-card">
+
+    <div class="profile-header">
+      <h2>My Profile</h2>
+    </div>
+
+    <div class="profile-body" *ngIf="user">
+
+      <div class="avatar">
+        <img 
+          [src]="'https://ui-avatars.com/api/?name=' + user.name + '&background=0ea5a4&color=fff&size=120'"
+        />
+      </div>
+
+      <div class="info">
+        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Role:</strong> {{ user.role }}</p>
+      </div>
+
+      <div class="actions">
+        <button class="back-btn" (click)="goBack()">Back</button>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
