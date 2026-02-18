@@ -45,4 +45,39 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
         WHERE qa.quiz.id = :quizId
     """)
     Integer findLowestScoreByQuizId(@Param("quizId") Long quizId);
+    
+    
+    
+    
+    List<QuizAttempt> findByStudentIdOrderByIdAsc(Long studentId);
+
+    // 🔥 ADD THIS
+    @Query("""
+        SELECT q.quiz.category.name, AVG(q.score)
+        FROM QuizAttempt q
+        WHERE q.student.id = :studentId
+        GROUP BY q.quiz.category.name
+    """)
+    List<Object[]> findAverageScoreByCategory(@Param("studentId") Long studentId);
+    
+    
+    
+    @Query("""
+    	    SELECT qa.student.name,
+    	           AVG(qa.score),
+    	           COUNT(qa.id),
+    	           MAX(qa.score)
+    	    FROM QuizAttempt qa
+    	    GROUP BY qa.student.id, qa.student.name
+    	    ORDER BY AVG(qa.score) DESC
+    	""")
+    	List<Object[]> getLeaderboardData();
+
+    	
+    	
+    	List<QuizAttempt> findByStudentId(Long studentId);
+
+
+    
+    
 }

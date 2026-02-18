@@ -5,6 +5,11 @@ import com.quizapp.quiz_backend.model.*;
 import com.quizapp.quiz_backend.repository.*;
 import org.springframework.stereotype.Service;
 
+
+import com.quizapp.quiz_backend.dto.RecommendedQuizDTO;
+
+
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
@@ -165,4 +170,142 @@ public class StudentService {
                 reviewList
         );
     }
+    
+    
+    
+    public List<RecommendedQuizDTO> getRecommendedQuizzes() {
+
+        return quizRepository.findTop5ByOrderByIdDesc()
+                .stream()
+                .map(q -> new RecommendedQuizDTO(
+                        q.getId(),
+                        q.getTitle(),
+                        q.getCoverImageUrl(),
+                        q.getQuestions().size()
+                ))
+                .collect(Collectors.toList());
+    }
+    
+    
+    
+    public StreakDTO getStreak(Long studentId) {
+
+        User user = userRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return new StreakDTO(
+                user.getCurrentStreak(),
+                user.getLongestStreak()
+        );
+    }
+
+    
+    
+    public PerformanceDTO getPerformance(Long studentId) {
+
+        List<QuizAttempt> attempts = quizAttemptRepository
+                .findByStudentIdOrderByIdAsc(studentId);
+
+        List<String> labels = new ArrayList<>();
+        List<Integer> scores = new ArrayList<>();
+
+        int count = 1;
+        for (QuizAttempt attempt : attempts) {
+            labels.add("Quiz " + count++);
+            scores.add(attempt.getScore());
+        }
+
+        return new PerformanceDTO(labels, scores);
+    }
+
+    
+    public List<SubjectAnalyticsDTO> getSubjectAnalytics(Long studentId) {
+
+        List<Object[]> results =
+                quizAttemptRepository.findAverageScoreByCategory(studentId);
+
+        return results.stream()
+                .map(obj -> new SubjectAnalyticsDTO(
+                        (String) obj[0],
+                        ((Double) obj[1]).intValue()
+                ))
+                .toList();
+    }
+
+    
+    public List<NotificationDTO> getNotifications(Long studentId) {
+
+        return List.of(
+                new NotificationDTO("New quiz added: Java Basics"),
+                new NotificationDTO("You reached top 10%"),
+                new NotificationDTO("Result published")
+        );
+    }
+
+    
+    
+    
+    public List<LeaderboardDTO> getLeaderboard() {
+
+        List<Object[]> results = quizAttemptRepository.getLeaderboardData();
+        List<LeaderboardDTO> leaderboard = new ArrayList<>();
+
+        int rank = 1;
+
+        for (Object[] row : results) {
+
+            String name = (String) row[0];
+            Double avgScore = (Double) row[1];
+            Long attempts = (Long) row[2];
+            Integer highest = (Integer) row[3];
+
+            leaderboard.add(
+                    new LeaderboardDTO(
+                            rank++,
+                            name,
+                            Math.round(avgScore * 100.0) / 100.0,
+                            attempts.intValue(),
+                            highest
+                    )
+            );
+        }
+
+        return leaderboard;
+    }
+
+    
+    
+    
+    public DashboardStatsDTO getDashboardStats(Long studentId) {
+
+        List<QuizAttempt> attempts =
+                quizAttemptRepository.findByStudentId(studentId);
+
+        if (attempts.isEmpty()) {
+            return new DashboardStatsDTO(0, 0, 0);
+        }
+
+        int attempted = attempts.size();
+
+        int highest = attempts.stream()
+                .mapToInt(QuizAttempt::getScore)
+                .max()
+                .orElse(0);
+
+        double average = attempts.stream()
+                .mapToInt(QuizAttempt::getScore)
+                .average()
+                .orElse(0);
+
+        return new DashboardStatsDTO(
+                attempted,
+                Math.round(average * 10.0) / 10.0,
+                highest
+        );
+    }
+
+
+    
+    
+
 }

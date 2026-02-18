@@ -315,3 +315,55 @@
   color: var(--brand-primary);
   cursor: pointer;
 }
+
+.leaderboard-card {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: white;
+}
+
+.leader-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: 0.3s;
+}
+
+.leader-row:hover {
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+}
+
+.rank-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.gold { background: gold; color: black; }
+.silver { background: silver; color: black; }
+.bronze { background: #cd7f32; color: white; }
+
+.leader-info {
+  flex: 1;
+}
+
+.leader-name {
+  font-weight: 700;
+}
+
+.leader-meta {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.leader-score {
+  font-weight: 700;
+  font-size: 18px;
+  color: #22c55e;
+}

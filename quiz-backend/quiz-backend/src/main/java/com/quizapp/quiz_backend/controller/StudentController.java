@@ -48,4 +48,48 @@ public class StudentController {
     }
 
 
+    
+    
+    @GetMapping("/recommended")
+    public List<RecommendedQuizDTO> getRecommended() {
+        return studentService.getRecommendedQuizzes();
+    }
+
+    
+    
+    @GetMapping("/streak/{studentId}")
+    public StreakDTO getStreak(@PathVariable Long studentId) {
+        return studentService.getStreak(studentId);
+    }
+
+    @GetMapping("/performance/{studentId}")
+    public PerformanceDTO getPerformance(@PathVariable Long studentId) {
+        return studentService.getPerformance(studentId);
+    }
+
+    @GetMapping("/subject-analytics/{studentId}")
+    public List<SubjectAnalyticsDTO> getSubjectAnalytics(@PathVariable Long studentId) {
+        return studentService.getSubjectAnalytics(studentId);
+    }
+
+    @GetMapping("/notifications/{studentId}")
+    public List<NotificationDTO> getNotifications(@PathVariable Long studentId) {
+        return studentService.getNotifications(studentId);
+    }
+
+
+    
+    @GetMapping("/leaderboard")
+    public List<LeaderboardDTO> getLeaderboard() {
+        return studentService.getLeaderboard();
+    }
+
+    
+    
+    @GetMapping("/dashboard-stats/{studentId}")
+    public DashboardStatsDTO getDashboardStats(@PathVariable Long studentId) {
+        return studentService.getDashboardStats(studentId);
+    }
+
+
 }

@@ -37,6 +37,12 @@ public class User {
     private String organization;
 
     private Boolean active;
+    
+    
+    private int currentStreak;
+    private int longestStreak;
+    
+    
 
     // ===== getters and setters =====
 
@@ -119,4 +125,20 @@ public class User {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+	public int getCurrentStreak() {
+		return currentStreak;
+	}
+
+	public void setCurrentStreak(int currentStreak) {
+		this.currentStreak = currentStreak;
+	}
+
+	public int getLongestStreak() {
+		return longestStreak;
+	}
+
+	public void setLongestStreak(int longestStreak) {
+		this.longestStreak = longestStreak;
+	}
 }

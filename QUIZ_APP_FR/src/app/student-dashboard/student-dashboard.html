@@ -110,36 +110,76 @@
         </div>
 
         <aside class="content-secondary">
-          <div class="widget-card">
-            <div class="widget-header">
-              <h3>Leaderboard</h3>
-              <button class="icon-btn">⋮</button>
-            </div>
-            <div class="leader-rows">
-              <div class="leader-row" *ngFor="let l of leaderboard; let i = index">
-                <span class="l-rank" [attr.data-rank]="i + 1">{{ i + 1 }}</span>
-                <span class="l-name">{{ l.name }}</span>
-                <span class="l-score">{{ l.score }}%</span>
-              </div>
-            </div>
-          </div>
 
-          <div class="widget-card">
-            <h3>Recommended</h3>
-            <div class="rec-list">
-              <div class="rec-card" *ngFor="let r of recommended">
-                <div class="rec-thumb">
-                  <img [src]="r.coverImageUrl || 'assets/default-quiz.jpg'" [alt]="r.title" />
-                </div>
-                <div class="rec-text">
-                  <p class="rec-title">{{ r.title }}</p>
-                  <p class="rec-time">⏱ {{ r.time }}</p>
-                </div>
-                <button class="rec-play">▶</button>
-              </div>
-            </div>
-          </div>
-        </aside>
+  <!-- 🔥 Streak -->
+  <app-streak-card [streak]="currentStreak"></app-streak-card>
+
+  <!-- 📊 Performance Chart -->
+  <app-performance-chart></app-performance-chart>
+
+  <!-- 📈 Subject Analytics -->
+  <app-subject-analytics></app-subject-analytics>
+
+  <!-- 🏅 Achievements -->
+  <app-achievements></app-achievements>
+
+  <!-- 🔔 Notifications -->
+  <app-notifications></app-notifications>
+
+  <!-- 🏆 Leaderboard -->
+  <div class="widget-card leaderboard-card">
+  <h3>🏆 Global Leaderboard</h3>
+
+  <div class="leader-rows">
+    <div class="leader-row"
+         *ngFor="let l of leaderboard">
+
+      <div class="rank-badge"
+           [ngClass]="{
+             'gold': l.rank === 1,
+             'silver': l.rank === 2,
+             'bronze': l.rank === 3
+           }">
+        {{ l.rank }}
+      </div>
+
+      <div class="leader-info">
+        <span class="leader-name">{{ l.name }}</span>
+        <span class="leader-meta">
+          Attempts: {{ l.totalAttempts }} |
+          Highest: {{ l.highestScore }}
+        </span>
+      </div>
+
+      <div class="leader-score">
+        {{ l.averageScore }}%
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- 🎯 Recommended -->
+  <div class="widget-card">
+    <h3>Recommended</h3>
+    <div class="rec-list">
+      <div class="rec-card" *ngFor="let r of recommended">
+        <div class="rec-thumb">
+          <img [src]="r.coverImageUrl || 'assets/default-quiz.jpg'" [alt]="r.title" />
+        </div>
+        <div class="rec-text">
+          <p class="rec-title">{{ r.title }}</p>
+          <p class="rec-time">⏱ {{ r.time }}</p>
+        </div>
+        <button class="rec-play" (click)="startQuiz(r.id)">▶</button>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
       </div>
     </ng-container>
   </main>

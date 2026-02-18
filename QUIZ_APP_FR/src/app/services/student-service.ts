@@ -58,4 +58,43 @@ submitQuiz(payload: any): Observable<any> {
 }
 
 
+
+
+
+getRecommendedQuizzes() {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/api/student/recommended`
+  );
+}
+
+
+
+getLeaderboard() {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/api/student/leaderboard`
+  );
+}
+
+
+getPerformance(studentId: any) {
+  return this.http.get<any>(
+    `${this.apiUrl}/api/student/performance/${studentId}`
+  );
+}
+
+getSubjectAnalytics(studentId: any) {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/api/student/subject-analytics/${studentId}`
+  );
+}
+
+
+
+getDashboardStats(studentId: any) {
+  return this.http.get<any>(
+    `${this.apiUrl}/api/student/dashboard-stats/${studentId}`
+  );
+}
+
+
 }
