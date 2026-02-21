@@ -10,6 +10,7 @@ import com.quizapp.quiz_backend.dto.RecommendedQuizDTO;
 
 
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
@@ -22,18 +23,22 @@ public class StudentService {
     private final QuizAttemptRepository quizAttemptRepository;
     private final AttemptAnswerRepository attemptAnswerRepository;
     private final UserRepository userRepository;
+    private final ClassRepository classRepository;
 
     public StudentService(
             QuizRepository quizRepository,
             QuizAttemptRepository quizAttemptRepository,
             AttemptAnswerRepository attemptAnswerRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            ClassRepository classRepository
     ) {
         this.quizRepository = quizRepository;
         this.quizAttemptRepository = quizAttemptRepository;
         this.attemptAnswerRepository = attemptAnswerRepository;
         this.userRepository = userRepository;
+        this.classRepository = classRepository;
     }
+
 
     // ================= AVAILABLE QUIZZES =================
     public List<StudentQuizResponse> getPublishedQuizzes() {
@@ -304,8 +309,95 @@ public class StudentService {
         );
     }
 
+    
+    
+    
+    
+    public List<ActivityDTO> getStudentActivity(Long studentId) {
+
+        List<QuizAttempt> attempts =
+                quizAttemptRepository.findByStudentIdOrderBySubmittedAtDesc(studentId);
+
+        return attempts.stream().map(a -> {
+
+            int total = a.getQuiz().getQuestions().size();
+
+            String result = (a.getScore() >= total * 0.5)
+                    ? "PASS"
+                    : "FAIL";
+
+            return new ActivityDTO(
+                    a.getQuiz().getTitle(),
+                    a.getSubmittedAt(),
+                    a.getScore(),
+                    total,
+                    result
+            );
+
+        }).toList();
+    }
+
+
+    
+    public List<ClassDTO> getStudentClasses(Long studentId) {
+
+        List<ClassRoom> classes =
+                classRepository.findByStudents_Id(studentId);
+
+        return classes.stream().map(c ->
+                new ClassDTO(
+                        c.getId(),
+                        c.getClassName(),
+                        c.getTeacher().getName(),
+                        c.getClassCode(),
+                        c.getQuizzes() != null
+                                ? c.getQuizzes().size()
+                                : 0
+                )
+        ).toList();
+    }
 
     
     
+    
+ // ================= ACHIEVEMENTS =================
+    public List<String> getAchievements(Long studentId) {
+
+        List<QuizAttempt> attempts =
+                quizAttemptRepository.findByStudentId(studentId);
+
+        List<String> achievements = new ArrayList<>();
+
+        if (attempts.isEmpty()) {
+            return achievements;
+        }
+
+        // 🎉 First Attempt Badge
+        achievements.add("First Quiz Completed 🎉");
+
+        // 🧠 Explorer Badge
+        if (attempts.size() >= 5) {
+            achievements.add("Quiz Explorer 🧠");
+        }
+
+        // 🏆 High Score Badge
+        for (QuizAttempt attempt : attempts) {
+            int total = attempt.getQuiz().getQuestions().size();
+            int percentage = (attempt.getScore() * 100) / total;
+
+            if (percentage >= 80) {
+                achievements.add("High Scorer 🏆");
+                break;
+            }
+        }
+
+        // 🔥 Consistency Badge (3 consecutive attempts)
+        if (attempts.size() >= 3) {
+            achievements.add("Consistent Learner 🔥");
+        }
+
+        return achievements;
+    }
 
 }
+

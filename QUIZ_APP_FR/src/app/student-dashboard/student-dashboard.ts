@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { StudentService } from '../services/student-service';
 
@@ -15,6 +15,7 @@ import { StreakCardComponent } from '../streak-card/streak-card';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     PerformanceChartComponent,
     AchievementsComponent,
     NotificationsComponent,
@@ -36,6 +37,13 @@ highestScore: number = 0;
   recommended: any[] = [];
 
  leaderboard: any[] = [];
+
+ showAchievements = false;
+showNotifications = false;
+
+achievements: string[] = [];
+notifications: any[] = [];
+
 
 
   private dashboardDataSubject = new BehaviorSubject<any>(null);
@@ -60,6 +68,16 @@ highestScore: number = 0;
   this.loadDashboardStats();
 
 });
+
+
+this.studentService.getNotifications(21).subscribe(data => {
+  this.notifications = data;
+});
+
+this.studentService.getAchievements(21).subscribe(data => {
+  this.achievements = data;
+});
+
 
 
   }
@@ -104,18 +122,21 @@ highestScore: number = 0;
 
   // ================= RECOMMENDED QUIZZES =================
   loadRecommendedQuizzes(): void {
-    this.studentService.getRecommendedQuizzes().subscribe({
-      next: (data) => {
-        this.recommended = data.map(q => ({
-          id: q.id,
-          title: q.title,
-          time: q.questionCount + ' Questions',
-          coverImageUrl: q.coverImageUrl
-        }));
-      },
-      error: (err) => console.error('Error loading recommended', err)
-    });
-  }
+  this.studentService.getRecommendedQuizzes().subscribe({
+    next: (data) => {
+      console.log("Recommended API Data:", data);  // 👈 ADD THIS
+
+      this.recommended = data.map((q: any) => ({
+        id: q.id,
+        title: q.title,
+        time: q.questionCount + ' Questions',
+        coverImageUrl: q.coverImageUrl
+      }));
+    },
+    error: (err) => console.error('Error loading recommended', err)
+  });
+}
+
 
   // ================= NAVIGATION =================
   startQuiz(id: number): void {
@@ -133,4 +154,38 @@ highestScore: number = 0;
   goHome(): void {
     this.router.navigate(['/student-dashboard'], { replaceUrl: true });
   }
+
+
+
+
+toggleAchievements() {
+  this.showAchievements = !this.showAchievements;
+  this.showNotifications = false;
+}
+
+toggleNotifications() {
+  this.showNotifications = !this.showNotifications;
+  this.showAchievements = false;
+}
+
+
+
+
+
+goActivity() {
+  this.router.navigate(['/activity']);
+}
+
+goClasses() {
+  this.router.navigate(['/classes']);
+}
+
+logout() {
+  localStorage.clear();
+  this.router.navigate(['/login']);
+}
+
+
+
+
 }

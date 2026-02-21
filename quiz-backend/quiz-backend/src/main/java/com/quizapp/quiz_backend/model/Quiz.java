@@ -50,10 +50,31 @@ public class Quiz {
         orphanRemoval = true
     )
     private List<Question> questions;
+    
+    
+    @ManyToOne
+    private ClassRoom classRoom;
+
 
     // ================= GETTERS & SETTERS =================
 
-    public Long getId() {
+    public ClassRoom getClassRoom() {
+		return classRoom;
+	}
+
+	public void setClassRoom(ClassRoom classRoom) {
+		this.classRoom = classRoom;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Long getId() {
         return id;
     }
 

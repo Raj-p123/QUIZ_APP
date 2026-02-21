@@ -97,4 +97,39 @@ getDashboardStats(studentId: any) {
 }
 
 
+
+// ================= NOTIFICATIONS =================
+getNotifications(studentId: number) {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/api/student/notifications/${studentId}`
+  );
+}
+
+// ================= ACHIEVEMENTS =================
+getAchievements(studentId: number) {
+  return this.http.get<string[]>(
+    `${this.apiUrl}/api/student/achievements/${studentId}`
+  );
+}
+
+
+
+
+getActivity(studentId: number) {
+  return this.http.get<any[]>(
+    `${environment.apiUrl}/api/student/activity/${studentId}`
+  );
+}
+
+
+
+getClasses(studentId: number) {
+  return this.http.get<any[]>(`${this.apiUrl}/api/student/classes/${studentId}`);
+}
+
+
+getStudentClasses(studentId: number) {
+  return this.http.get<any>(`/api/student/classes/${studentId}`);
+}
+
 }

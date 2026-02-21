@@ -91,5 +91,26 @@ public class StudentController {
         return studentService.getDashboardStats(studentId);
     }
 
+    
+    
+    
+    @GetMapping("/activity/{studentId}")
+    public List<ActivityDTO> getActivity(@PathVariable Long studentId) {
+        return studentService.getStudentActivity(studentId);
+    }
 
+    
+    
+    
+    @GetMapping("/classes/{studentId}")
+    public List<ClassDTO> getClasses(@PathVariable Long studentId) {
+        return studentService.getStudentClasses(studentId);
+    }
+
+
+    
+    @GetMapping("/achievements/{studentId}")
+    public List<String> getAchievements(@PathVariable Long studentId) {
+        return studentService.getAchievements(studentId);
+    }
 }

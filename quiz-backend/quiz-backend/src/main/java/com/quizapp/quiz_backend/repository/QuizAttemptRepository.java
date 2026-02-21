@@ -77,6 +77,9 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
     	
     	List<QuizAttempt> findByStudentId(Long studentId);
 
+    	
+    	List<QuizAttempt> findByStudentIdOrderBySubmittedAtDesc(Long studentId);
+
 
     
     
