@@ -1,23 +1,36 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==============================
+   GLOBAL DESIGN SYSTEM
+============================== */
 
-/* ===== GLOBAL THEME VARIABLES ===== */
 :root {
-  --bg: #ffffff;
-  --text: #1f2937;
-  --nav-bg: #ffffff;
+  --bg: #F1F5F9;
+  --text: #0F172A;
+  --nav-bg: #0F172A;
   --card-bg: #ffffff;
+
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --danger: #DC2626;
+
+  --text-muted: #64748B;
+  --border: #E2E8F0;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
 body.dark {
-  --bg: #0f172a;
-  --text: #e5e7eb;
+  --bg: #0F172A;
+  --text: #E2E8F0;
   --nav-bg: #020617;
-  --card-bg: #1e293b;
+  --card-bg: #1E293B;
+  --border: #334155;
 }
 
 body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
   background: var(--bg);
   color: var(--text);
-  transition: background 0.3s ease, color 0.3s ease;
 }
-

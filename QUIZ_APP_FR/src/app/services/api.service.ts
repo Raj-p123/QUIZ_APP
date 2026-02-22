@@ -98,4 +98,15 @@ export class ApiService {
       `${this.baseUrl}/api/categories`
     );
   }
+
+  // ==================================================
+  // ================= TEACHER RESULTS ================
+  // ==================================================
+
+  // Summary page: /results
+  getTeacherResults(teacherId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/api/teacher/results/${teacherId}`
+    );
+  }
 }

@@ -49,13 +49,22 @@ public class TeacherResultService {
             Integer high = quizAttemptRepository.findHighestScoreByQuizId(quiz.getId());
             Integer low = quizAttemptRepository.findLowestScoreByQuizId(quiz.getId());
 
+            int totalMarks = questionRepository.countByQuizId(quiz.getId()); // ✅ NEW
+
+            double averageScore = avg == null ? 0 : avg;
+            double averagePercentage = totalMarks == 0
+                    ? 0
+                    : Math.round(((averageScore * 100.0) / totalMarks) * 100.0) / 100.0; // ✅ NEW
+
             TeacherQuizResultSummary dto = new TeacherQuizResultSummary();
             dto.setQuizId(quiz.getId());
             dto.setTitle(quiz.getTitle());
             dto.setTotalAttempts((int) attempts);
-            dto.setAverageScore(avg == null ? 0 : avg);
+            dto.setAverageScore(averageScore);
             dto.setHighestScore(high == null ? 0 : high);
             dto.setLowestScore(low == null ? 0 : low);
+            dto.setTotalMarks(totalMarks); // ✅ NEW
+            dto.setAveragePercentage(averagePercentage); // ✅ NEW
             dto.setPublished(quiz.isPublished());
 
             results.add(dto);
@@ -63,6 +72,7 @@ public class TeacherResultService {
 
         return results;
     }
+
 
     // =========================================================
     // 2️⃣ QUIZ DETAILED RESULT

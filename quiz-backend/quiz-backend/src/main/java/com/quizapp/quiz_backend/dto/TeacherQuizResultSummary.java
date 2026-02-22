@@ -8,6 +8,8 @@ public class TeacherQuizResultSummary {
     private double averageScore;
     private int highestScore;
     private int lowestScore;
+    private int totalMarks;           // ✅ NEW
+    private double averagePercentage; // ✅ NEW
     private boolean published;
 
     public TeacherQuizResultSummary() {
@@ -59,6 +61,22 @@ public class TeacherQuizResultSummary {
 
     public void setLowestScore(int lowestScore) {
         this.lowestScore = lowestScore;
+    }
+
+    public int getTotalMarks() {
+        return totalMarks;
+    }
+
+    public void setTotalMarks(int totalMarks) {
+        this.totalMarks = totalMarks;
+    }
+
+    public double getAveragePercentage() {
+        return averagePercentage;
+    }
+
+    public void setAveragePercentage(double averagePercentage) {
+        this.averagePercentage = averagePercentage;
     }
 
     public boolean isPublished() {
