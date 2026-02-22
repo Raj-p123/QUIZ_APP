@@ -1,0 +1,118 @@
+<div class="results-wrapper">
+
+  <div *ngIf="loading" class="loading-state">
+    Loading analytics...
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- HEADER -->
+    <div class="results-header">
+      <h2>Quiz Results</h2>
+      <p class="subtitle">Performance analytics for your quizzes</p>
+    </div>
+
+    <!-- GLOBAL SUMMARY -->
+    <div class="summary-grid" *ngIf="quizzes && quizzes.length > 0">
+
+      <div class="summary-card">
+        <span class="summary-label">Total Attempts</span>
+        <h3 class="summary-value">
+          {{ totalAttemptsAll }}
+        </h3>
+      </div>
+
+      <div class="summary-card">
+        <span class="summary-label">Overall Avg %</span>
+        <h3 class="summary-value">
+          {{ overallAveragePercentage | number:'1.0-0' }}%
+        </h3>
+      </div>
+
+      <div class="summary-card">
+        <span class="summary-label">Total Quizzes</span>
+        <h3 class="summary-value">
+          {{ totalQuizzes }}
+        </h3>
+      </div>
+
+    </div>
+
+    <!-- EMPTY -->
+    <div *ngIf="!quizzes || quizzes.length === 0" class="empty-state">
+      No quizzes available.
+    </div>
+
+    <!-- RESULTS LIST -->
+    <div class="results-grid" *ngIf="quizzes && quizzes.length > 0">
+
+      <div class="result-card" *ngFor="let quiz of quizzes">
+
+        <div class="card-top">
+          <div>
+            <h3>{{ quiz?.title || 'Untitled Quiz' }}</h3>
+            <span class="status"
+                  [ngClass]="quiz?.published ? 'published' : 'draft'">
+              {{ quiz?.published ? 'Published' : 'Draft' }}
+            </span>
+          </div>
+
+          <button class="details-btn"
+                  (click)="viewDetails(quiz?.quizId)">
+            View Details →
+          </button>
+        </div>
+
+        <div class="metrics-grid">
+
+          <div class="metric">
+            <span class="metric-label">Attempts</span>
+            <span class="metric-value">{{ quiz?.totalAttempts || 0 }}</span>
+          </div>
+
+          <div class="metric">
+            <span class="metric-label">Average Score</span>
+            <span class="metric-value">
+              {{ quiz?.averageScore || 0 }} / {{ quiz?.totalMarks || 0 }}
+            </span>
+          </div>
+
+          <div class="metric">
+            <span class="metric-label">High / Low</span>
+            <span class="metric-value">
+              H: {{ quiz?.highestScore || 0 }} | L: {{ quiz?.lowestScore || 0 }}
+            </span>
+          </div>
+
+          <div class="metric performance">
+            <span class="metric-label">Performance</span>
+            <span class="metric-value"
+                  [ngClass]="
+                    (quiz?.averagePercentage || 0) >= 75 ? 'good' :
+                    (quiz?.averagePercentage || 0) >= 50 ? 'medium' :
+                    'poor'
+                  ">
+              {{ quiz?.averagePercentage || 0 }}%
+            </span>
+          </div>
+
+        </div>
+
+        <div class="progress-wrapper">
+          <div class="progress-bar">
+            <div class="progress-fill"
+                 [ngClass]="
+                    (quiz?.averagePercentage || 0) >= 75 ? 'good-bg' :
+                    (quiz?.averagePercentage || 0) >= 50 ? 'medium-bg' :
+                    'poor-bg'
+                 "
+                 [style.width.%]="quiz?.averagePercentage || 0">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </ng-container>
+</div>
