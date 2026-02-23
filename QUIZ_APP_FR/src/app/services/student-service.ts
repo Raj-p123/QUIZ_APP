@@ -58,4 +58,78 @@ submitQuiz(payload: any): Observable<any> {
 }
 
 
+
+
+
+getRecommendedQuizzes() {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/api/student/recommended`
+  );
+}
+
+
+
+getLeaderboard() {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/api/student/leaderboard`
+  );
+}
+
+
+getPerformance(studentId: any) {
+  return this.http.get<any>(
+    `${this.apiUrl}/api/student/performance/${studentId}`
+  );
+}
+
+getSubjectAnalytics(studentId: any) {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/api/student/subject-analytics/${studentId}`
+  );
+}
+
+
+
+getDashboardStats(studentId: any) {
+  return this.http.get<any>(
+    `${this.apiUrl}/api/student/dashboard-stats/${studentId}`
+  );
+}
+
+
+
+// ================= NOTIFICATIONS =================
+getNotifications(studentId: number) {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/api/student/notifications/${studentId}`
+  );
+}
+
+// ================= ACHIEVEMENTS =================
+getAchievements(studentId: number) {
+  return this.http.get<string[]>(
+    `${this.apiUrl}/api/student/achievements/${studentId}`
+  );
+}
+
+
+
+
+getActivity(studentId: number) {
+  return this.http.get<any[]>(
+    `${environment.apiUrl}/api/student/activity/${studentId}`
+  );
+}
+
+
+
+getClasses(studentId: number) {
+  return this.http.get<any[]>(`${this.apiUrl}/api/student/classes/${studentId}`);
+}
+
+
+getStudentClasses(studentId: number) {
+  return this.http.get<any>(`/api/student/classes/${studentId}`);
+}
+
 }

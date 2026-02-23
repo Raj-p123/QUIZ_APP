@@ -16,4 +16,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     // Student - overview (SAFE)
     Optional<Quiz> findByIdAndPublishedTrue(Long id);
+    
+    List<Quiz> findTop5ByOrderByIdDesc();
 }

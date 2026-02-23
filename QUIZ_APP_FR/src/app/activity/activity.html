@@ -1,0 +1,92 @@
+<div class="activity-wrapper">
+
+  <div class="page-header">
+    <h2>📊 My Learning Activity</h2>
+    <p>Track your performance and progress over time</p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    Loading activity data...
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-row" *ngIf="!loading">
+
+    <div class="summary-card attempts">
+      <div class="icon">📘</div>
+      <div>
+        <h4>Total Attempts</h4>
+        <span>{{ totalAttempts }}</span>
+      </div>
+    </div>
+
+    <div class="summary-card average">
+      <div class="icon">📈</div>
+      <div>
+        <h4>Average Score</h4>
+        <span>{{ avgScore }}%</span>
+      </div>
+    </div>
+
+    <div class="summary-card highest">
+      <div class="icon">🏆</div>
+      <div>
+        <h4>Highest Score</h4>
+        <span>{{ highestScore }}%</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Performance Graph -->
+  <div class="chart-card" *ngIf="!loading && attempts.length > 0">
+    <app-performance-chart></app-performance-chart>
+  </div>
+
+
+  <div class="chart-card" *ngIf="!loading && attempts.length > 0">
+  <app-subject-analytics></app-subject-analytics>
+</div>
+
+
+
+  <!-- History Table -->
+  <div class="table-card" *ngIf="!loading">
+
+    <h3>📋 Attempt History</h3>
+
+    <table *ngIf="attempts.length > 0; else noData">
+      <thead>
+        <tr>
+          <th>Quiz</th>
+          <th>Date</th>
+          <th>Score</th>
+          <th>Percentage</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let a of attempts">
+          <td>{{ a.quizTitle }}</td>
+          <td>{{ a.attemptedAt | date:'medium' }}</td>
+          <td>{{ a.score }}/{{ a.totalQuestions }}</td>
+          <td>{{ a.percentage }}%</td>
+          <td>
+            <span 
+              [ngClass]="a.percentage >= 50 ? 'status-pass' : 'status-fail'">
+              {{ a.percentage >= 50 ? 'PASS' : 'FAIL' }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #noData>
+      <p class="empty-text">No attempts yet.</p>
+    </ng-template>
+
+  </div>
+
+</div>

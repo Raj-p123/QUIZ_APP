@@ -1,0 +1,42 @@
+<div class="classes-container">
+
+  <h2>🏫 My Classes</h2>
+  <p>Manage your enrolled classrooms and track performance.</p>
+
+  <!-- Stats Section -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h4>Total Classes</h4>
+      <p>{{ stats?.totalClasses }}</p>
+    </div>
+    <div class="stat-card">
+      <h4>Active Classes</h4>
+      <p>{{ stats?.activeClasses }}</p>
+    </div>
+    <div class="stat-card">
+      <h4>Total Quizzes</h4>
+      <p>{{ stats?.totalQuizzes }}</p>
+    </div>
+    <div class="stat-card">
+      <h4>Avg Class Score</h4>
+      <p>{{ stats?.averageScore }}%</p>
+    </div>
+  </div>
+
+  <!-- Classes Grid -->
+  <div class="class-grid">
+    <div class="class-card" *ngFor="let c of classes">
+      <h3>{{ c.className }}</h3>
+      <p><strong>Code:</strong> {{ c.classCode }}</p>
+      <p><strong>Teacher:</strong> {{ c.teacherName }}</p>
+      <p><strong>Students:</strong> {{ c.totalStudents }}</p>
+      <p><strong>Quizzes:</strong> {{ c.totalQuizzes }}</p>
+
+      <div class="btn-group">
+        <button class="view-btn">View Class</button>
+        <button class="leave-btn">Leave</button>
+      </div>
+    </div>
+  </div>
+
+</div>

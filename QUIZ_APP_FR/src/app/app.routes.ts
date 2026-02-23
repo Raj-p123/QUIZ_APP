@@ -24,6 +24,8 @@ import { AvailableQuizzes } from './available-quizzes/available-quizzes';
 import { QuizOverview } from './quiz-overview/quiz-overview';
 import { PlayQuiz } from './play-quiz/play-quiz';
 import { Profile } from './profile/profile';   // ✅ NEW IMPORT
+import { ClassesComponent } from './classes/classes';
+import { ActivityComponent } from './activity/activity';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -60,10 +62,11 @@ export const routes: Routes = [
   { path: 'student/quizzes', component: AvailableQuizzes },
   { path: 'student/quiz/:quizId/overview', component: QuizOverview },
   { path: 'student/quiz/:quizId/play', component: PlayQuiz },
+  { path: 'activity', component: ActivityComponent },
+  { path: 'classes', component: ClassesComponent },
 
-  
- // ================= RESULTS =================
-{ path: 'results', component: ResultsComponent },
+// ================= RESULTS =================
+  { path: 'results', component: ResultsComponent },
 
   // ================= FALLBACK =================
   { path: '**', redirectTo: 'login' },

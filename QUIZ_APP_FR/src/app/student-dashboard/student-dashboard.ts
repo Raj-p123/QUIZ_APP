@@ -1,38 +1,50 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { StudentService } from '../services/student-service';
+import { Router, RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { StudentService } from '../services/student-service';
+
+import { PerformanceChartComponent } from '../performance-chart/performance-chart';
+import { AchievementsComponent } from '../achievements/achievements';
+import { NotificationsComponent } from '../notifications/notifications';
+import { SubjectAnalyticsComponent } from '../subject-analytics/subject-analytics';
+import { StreakCardComponent } from '../streak-card/streak-card';
 
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    PerformanceChartComponent,
+    AchievementsComponent,
+    NotificationsComponent,
+    SubjectAnalyticsComponent,
+    StreakCardComponent
+  ],
   templateUrl: './student-dashboard.html',
   styleUrl: './student-dashboard.css',
 })
 export class StudentDashboard implements OnInit {
 
-  studentName = 'Alex Chen';
-  averageScore = 88;
-  highestScore = 95;
-  attemptedQuizzes = 4;
+  studentName = '';
+  currentStreak = 5;
+  attemptedQuizzes: number = 0;
+averageScore: number = 0;
+highestScore: number = 0;
 
-  recentHistory = [
-    { title: 'Math Basics', score: 92, date: 'April 10, 2026' },
-    { title: 'Physics Fundamentals', score: 85, date: 'April 7, 2026' }
-  ];
 
-  recommended = [
-    { title: 'Advanced Algebra', time: '10 mins', coverImageUrl: null },
-    { title: 'Logic Building', time: '8 mins', coverImageUrl: null }
-  ];
+  recommended: any[] = [];
 
-  leaderboard = [
-    { name: 'Emily R.', score: 94 },
-    { name: 'John D.', score: 91 },
-    { name: 'Alex S.', score: 89 }
-  ];
+ leaderboard: any[] = [];
+
+ showAchievements = false;
+showNotifications = false;
+
+achievements: string[] = [];
+notifications: any[] = [];
+
+
 
   private dashboardDataSubject = new BehaviorSubject<any>(null);
   dashboardData$ = this.dashboardDataSubject.asObservable();
@@ -43,10 +55,53 @@ export class StudentDashboard implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.refreshData();
+    const name = localStorage.getItem('studentName');
+    this.studentName = name ? name : 'Student';
+
+    this.loadAvailableQuizzes();
+    this.loadRecommendedQuizzes();
+     this.loadDashboardStats();
+
+    this.studentService.getLeaderboard().subscribe(data => {
+  this.leaderboard = data;
+
+  this.loadDashboardStats();
+
+});
+
+
+this.studentService.getNotifications(21).subscribe(data => {
+  this.notifications = data;
+});
+
+this.studentService.getAchievements(21).subscribe(data => {
+  this.achievements = data;
+});
+
+
+
   }
 
-  refreshData(): void {
+  // ================= loadDASHBOARD stats =================
+  loadDashboardStats(): void {
+  const studentId = localStorage.getItem('studentId');
+
+  if (studentId) {
+    this.studentService.getDashboardStats(studentId).subscribe({
+      next: (data) => {
+        console.log("Dashboard Data:", data); 
+        this.attemptedQuizzes = data.attempted;
+        this.averageScore = data.averageScore;
+        this.highestScore = data.highestScore;
+      },
+      error: (err) => console.error('Error loading dashboard stats', err)
+    });
+  }
+}
+
+
+  // ================= AVAILABLE QUIZZES =================
+  loadAvailableQuizzes(): void {
     this.studentService.getAvailableQuizzes().subscribe({
       next: (data) => {
         const mappedQuizzes = data.map((q: any) => ({
@@ -60,10 +115,30 @@ export class StudentDashboard implements OnInit {
           totalAvailable: mappedQuizzes.length,
           visibleQuizzes: mappedQuizzes.slice(0, 4)
         });
-      }
+      },
+      error: (err) => console.error('Error loading quizzes', err)
     });
   }
 
+  // ================= RECOMMENDED QUIZZES =================
+  loadRecommendedQuizzes(): void {
+  this.studentService.getRecommendedQuizzes().subscribe({
+    next: (data) => {
+      console.log("Recommended API Data:", data);  // 👈 ADD THIS
+
+      this.recommended = data.map((q: any) => ({
+        id: q.id,
+        title: q.title,
+        time: q.questionCount + ' Questions',
+        coverImageUrl: q.coverImageUrl
+      }));
+    },
+    error: (err) => console.error('Error loading recommended', err)
+  });
+}
+
+
+  // ================= NAVIGATION =================
   startQuiz(id: number): void {
     this.router.navigate(['/student/quiz', id, 'overview']);
   }
@@ -80,8 +155,37 @@ export class StudentDashboard implements OnInit {
     this.router.navigate(['/student-dashboard'], { replaceUrl: true });
   }
 
-  handleImageError(event: any) {
-  event.target.src = 'assets/default-quiz.jpg';
+
+
+
+toggleAchievements() {
+  this.showAchievements = !this.showAchievements;
+  this.showNotifications = false;
 }
+
+toggleNotifications() {
+  this.showNotifications = !this.showNotifications;
+  this.showAchievements = false;
+}
+
+
+
+
+
+goActivity() {
+  this.router.navigate(['/activity']);
+}
+
+goClasses() {
+  this.router.navigate(['/classes']);
+}
+
+logout() {
+  localStorage.clear();
+  this.router.navigate(['/login']);
+}
+
+
+
 
 }
