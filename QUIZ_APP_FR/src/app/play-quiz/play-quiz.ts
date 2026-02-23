@@ -22,7 +22,7 @@ export class PlayQuiz implements OnInit, OnDestroy {
   timeLeft$ = new BehaviorSubject<number>(0);
   private timerSub: Subscription | null = null;
 
-  loading = true; // Shows the themed loader
+  loading = true;
   quizFinished = false;
   isSubmitting = false;
 
@@ -40,19 +40,26 @@ export class PlayQuiz implements OnInit, OnDestroy {
   ) {}
 
   get timerPercentage(): number {
-    if (!this.currentQuestion || this.currentQuestion.timeLimitSeconds <= 0) return 0;
-    return (this.timeLeft$.value / this.currentQuestion.timeLimitSeconds) * 100;
+    if (!this.currentQuestion || this.currentQuestion.timeLimitSeconds <= 0)
+      return 0;
+    return (
+      (this.timeLeft$.value /
+        this.currentQuestion.timeLimitSeconds) *
+      100
+    );
   }
 
   get timerColor(): string {
     const pct = this.timerPercentage;
-    if (pct > 50) return '#22c55e'; // Green
-    if (pct > 20) return '#f97316'; // Orange
-    return '#ef4444'; // Red
+    if (pct > 50) return '#22c55e';
+    if (pct > 20) return '#f97316';
+    return '#ef4444';
   }
 
   ngOnInit(): void {
-    this.quizId = Number(this.route.snapshot.paramMap.get('quizId'));
+    this.quizId = Number(
+      this.route.snapshot.paramMap.get('quizId')
+    );
     this.loadQuestions();
   }
 
@@ -60,45 +67,35 @@ export class PlayQuiz implements OnInit, OnDestroy {
     this.stopTimer();
   }
 
-  private shuffleArray(array: any[]): any[] {
-    if (!array) return [];
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
-  }
-
   loadQuestions(): void {
-    this.loading = true; // Ensure loader is visible
+    this.loading = true;
+
     this.studentService.getQuizQuestions(this.quizId).subscribe({
       next: (data) => {
-        this.questions = data.map((q: any) => ({
-          ...q,
-          options: this.shuffleArray(q.options)
-        }));
-        
+        // 🔥 Backend already shuffles questions + options
+        this.questions = data;
         this.currentIndex = 0;
-        
-        // 🔥 FIX: Wait for the UI to be ready before starting timer
+
         setTimeout(() => {
           this.loading = false;
           this.loadCurrentQuestion();
           this.cdr.detectChanges();
-        }, 800); // Small delay for smooth transition
+        }, 800);
       },
       error: (err) => {
         console.error('Failed to load questions', err);
         this.loading = false;
-      }
+      },
     });
   }
 
   loadCurrentQuestion(): void {
     this.currentQuestion = this.questions[this.currentIndex];
-    this.selectedOptionId = this.answers.get(this.currentQuestion.id) ?? null;
-    this.startTimer(this.currentQuestion.timeLimitSeconds);
+    this.selectedOptionId =
+      this.answers.get(this.currentQuestion.id) ?? null;
+    this.startTimer(
+      this.currentQuestion.timeLimitSeconds
+    );
   }
 
   selectOption(optionId: number): void {
@@ -147,6 +144,7 @@ export class PlayQuiz implements OnInit, OnDestroy {
 
   submitQuiz(): void {
     if (this.isSubmitting) return;
+
     this.isSubmitting = true;
     this.stopTimer();
 
@@ -159,16 +157,16 @@ export class PlayQuiz implements OnInit, OnDestroy {
       answers: Array.from(this.answers.entries()).map(
         ([questionId, optionId]) => ({
           questionId,
-          optionId: optionId === -1 ? null : optionId
+          optionId: optionId === -1 ? null : optionId,
         })
-      )
+      ),
     };
 
     this.studentService.submitQuiz(payload).subscribe({
       next: (res: any) => {
         this.score = res.score;
         this.totalQuestions = res.totalQuestions;
-        this.review = res.review; 
+        this.review = res.review;
         this.quizFinished = true;
         this.isSubmitting = false;
         this.cdr.detectChanges();
@@ -176,9 +174,11 @@ export class PlayQuiz implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Submission failed', err);
         this.isSubmitting = false;
-        alert('An error occurred while calculating your score.');
+        alert(
+          'An error occurred while calculating your score.'
+        );
         this.cdr.detectChanges();
-      }
+      },
     });
   }
 
@@ -190,7 +190,10 @@ export class PlayQuiz implements OnInit, OnDestroy {
     return option.correct === true;
   }
 
-  isWrongSelected(option: any, selectedId: number): boolean {
+  isWrongSelected(
+    option: any,
+    selectedId: number
+  ): boolean {
     return option.id === selectedId && !option.correct;
   }
 }

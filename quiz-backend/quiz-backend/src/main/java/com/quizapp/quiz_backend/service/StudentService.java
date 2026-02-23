@@ -14,6 +14,7 @@ import com.quizapp.quiz_backend.dto.RecommendedQuizDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,25 +73,35 @@ public class StudentService {
         );
     }
 
-    // ================= PLAY QUIZ =================
+ // ================= PLAY QUIZ =================
     public List<StudentQuestionResponse> getQuizQuestions(Long quizId) {
+
         Quiz quiz = quizRepository.findByIdAndPublishedTrue(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found or not published"));
 
-        return quiz.getQuestions()
-                .stream()
-                .map(q -> new StudentQuestionResponse(
-                        q.getId(),
-                        q.getQuestionText(),
-                        q.getTimeLimitSeconds(),
-                        q.getOptions()
-                                .stream()
-                                .map(o -> new StudentOptionResponse(
-                                        o.getId(),
-                                        o.getOptionText()
-                                ))
-                                .collect(Collectors.toList())
-                ))
+        // 🔥 Shuffle questions
+        List<Question> shuffledQuestions = new ArrayList<>(quiz.getQuestions());
+        Collections.shuffle(shuffledQuestions);
+
+        return shuffledQuestions.stream()
+                .map(q -> {
+
+                    // 🔥 Shuffle options inside each question
+                    List<Option> shuffledOptions = new ArrayList<>(q.getOptions());
+                    Collections.shuffle(shuffledOptions);
+
+                    return new StudentQuestionResponse(
+                            q.getId(),
+                            q.getQuestionText(),
+                            q.getTimeLimitSeconds(),
+                            shuffledOptions.stream()
+                                    .map(o -> new StudentOptionResponse(
+                                            o.getId(),
+                                            o.getOptionText()
+                                    ))
+                                    .collect(Collectors.toList())
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
