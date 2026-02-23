@@ -1,0 +1,155 @@
+<div class="detail-container">
+
+  <div class="header-actions">
+    <button class="btn-back" (click)="goBack()">
+      ← Back to Results
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="state-container">
+    <div class="loader"></div>
+    <p>Analyzing Quiz Data...</p>
+  </div>
+
+  <div *ngIf="!loading && result" class="fade-in">
+
+    <div class="page-title">
+      <h1>Quiz Detailed Analytics</h1>
+      <p class="subtitle">Comprehensive performance breakdown</p>
+
+      <!-- ✅ Performance Banner -->
+      <div class="performance-banner" [ngClass]="performanceClass">
+        {{ performanceLabel }}
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+
+      <!-- OVERVIEW -->
+      <section class="card summary-card">
+        <div class="card-header">
+          <h3>Overview</h3>
+        </div>
+        <div class="card-body metrics">
+          <div class="metric-item">
+            <span class="label">Attempts</span>
+            <span class="value">{{ result?.totalAttempts || 0 }}</span>
+          </div>
+
+          <div class="metric-item">
+            <span class="label">Avg Score</span>
+            <span class="value">{{ result?.averageScore || 0 }}</span>
+          </div>
+
+          <div class="metric-item">
+            <span class="label">Highest</span>
+            <span class="value">{{ result?.highestScore || 0 }}</span>
+          </div>
+
+          <div class="metric-item">
+            <span class="label">Lowest</span>
+            <span class="value">{{ result?.lowestScore || 0 }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- STUDENTS -->
+      <section class="card students-card">
+        <div class="card-header">
+          <h3>Top Performing Students</h3>
+        </div>
+
+        <div class="card-body">
+
+          <div *ngIf="!result?.topStudents?.length" class="empty-msg">
+            No student data available.
+          </div>
+
+          <div class="student-list">
+            <div *ngFor="let s of result?.topStudents; let i = index"
+                 class="student-item">
+
+              <div class="rank" [ngClass]="{
+                'gold': i === 0,
+                'silver': i === 1,
+                'bronze': i === 2
+              }">
+                #{{ i + 1 }}
+              </div>
+
+              <span class="name">{{ s.studentName }}</span>
+
+              <span class="score-badge">
+                {{ s.score }}
+              </span>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUESTION ANALYSIS -->
+      <section class="card analysis-card full-width">
+        <div class="card-header">
+          <h3>Question Breakdown</h3>
+        </div>
+
+        <div class="card-body">
+
+          <div *ngIf="!result?.questionAnalysis?.length" class="empty-msg">
+            No question analysis available.
+          </div>
+
+          <div *ngFor="let q of result?.questionAnalysis" class="question-group">
+
+            <div class="question-info">
+              <p class="text">{{ q.questionText }}</p>
+
+              <span class="difficulty-badge"
+                    [ngClass]="getDifficultyClass(q.correctPercentage)">
+                {{
+                  q.correctPercentage >= 75 ? 'Easy' :
+                  q.correctPercentage >= 50 ? 'Moderate' :
+                  'Difficult'
+                }}
+              </span>
+            </div>
+
+            <div class="progress-stack">
+
+              <div class="progress-label">
+                <span>Correct</span>
+                <span>{{ round(q.correctPercentage) }}%</span>
+              </div>
+
+              <div class="progress-bar-container">
+                <div class="bar-fill success"
+                     [style.width.%]="q.correctPercentage">
+                </div>
+              </div>
+
+              <div class="progress-label">
+                <span>Incorrect</span>
+                <span>{{ round(q.wrongPercentage) }}%</span>
+              </div>
+
+              <div class="progress-bar-container">
+                <div class="bar-fill danger"
+                     [style.width.%]="q.wrongPercentage">
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !result" class="state-container error">
+    <p>Failed to load analytics data.</p>
+    <button class="btn-retry" (click)="fetchData()">Retry</button>
+  </div>
+
+</div>

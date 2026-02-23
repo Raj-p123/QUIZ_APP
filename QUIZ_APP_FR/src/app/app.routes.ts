@@ -15,6 +15,7 @@ import { AdminDashboard } from './admin-dashboard/admin-dashboard';
 import { Quiz } from './pages/quiz/quiz';
 //import { Results } from './pages/results/results';
 import { ResultsComponent } from './results/results';
+import { ResultDetailComponent } from './result-detail/result-detail';
 
 import { History } from './pages/history/history';
 import { CreateQuiz } from './create-quiz/create-quiz';
@@ -67,6 +68,7 @@ export const routes: Routes = [
 
 // ================= RESULTS =================
   { path: 'results', component: ResultsComponent },
+  { path: 'results/:quizId', component: ResultDetailComponent },
 
   // ================= FALLBACK =================
   { path: '**', redirectTo: 'login' },

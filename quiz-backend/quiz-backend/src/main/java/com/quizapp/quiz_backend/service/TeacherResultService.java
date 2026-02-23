@@ -78,11 +78,22 @@ public class TeacherResultService {
     // 2️⃣ QUIZ DETAILED RESULT
     // =========================================================
 
-    public QuizDetailedResultDTO getQuizDetailedResult(Long quizId) {
+    public TeacherQuizDetailedResult getQuizDetailedResult(Long quizId) {
 
         long totalAttempts = quizAttemptRepository.countByQuizId(quizId);
         Double avgScore = quizAttemptRepository.findAverageScoreByQuizId(quizId);
+        Integer high = quizAttemptRepository.findHighestScoreByQuizId(quizId);
+        Integer low = quizAttemptRepository.findLowestScoreByQuizId(quizId);
 
+        int totalMarks = questionRepository.countByQuizId(quizId);
+
+        double averageScore = avgScore == null ? 0 : avgScore;
+
+        double averagePercentage = totalMarks == 0
+                ? 0
+                : (averageScore * 100.0) / totalMarks;
+
+        // Top students
         List<QuizAttempt> topAttempts =
                 quizAttemptRepository.findByQuizIdOrderByScoreDesc(quizId);
 
@@ -99,6 +110,7 @@ public class TeacherResultService {
             );
         }
 
+        // Question analysis
         List<Question> questions = questionRepository.findByQuizId(quizId);
         List<QuestionAnalysisDTO> analysisList = new ArrayList<>();
 
@@ -124,9 +136,13 @@ public class TeacherResultService {
             ));
         }
 
-        return new QuizDetailedResultDTO(
+        return new TeacherQuizDetailedResult(
                 totalAttempts,
-                avgScore == null ? 0 : avgScore,
+                averageScore,
+                high == null ? 0 : high,
+                low == null ? 0 : low,
+                totalMarks,
+                averagePercentage,
                 topStudents,
                 analysisList
         );
