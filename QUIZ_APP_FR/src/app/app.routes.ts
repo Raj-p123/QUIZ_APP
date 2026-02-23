@@ -13,7 +13,9 @@ import { StudentDashboard } from './student-dashboard/student-dashboard';
 import { TeacherDashboard } from './teacher-dashboard/teacher-dashboard';
 import { AdminDashboard } from './admin-dashboard/admin-dashboard';
 import { Quiz } from './pages/quiz/quiz';
-import { Results } from './pages/results/results';
+//import { Results } from './pages/results/results';
+import { ResultsComponent } from './results/results';
+
 import { History } from './pages/history/history';
 import { CreateQuiz } from './create-quiz/create-quiz';
 import { TeacherMyQuizzes } from './teacher-my-quizzes/teacher-my-quizzes';
@@ -46,7 +48,7 @@ export const routes: Routes = [
   // ================= GENERAL =================
   { path: 'create-quiz', component: CreateQuiz },
   { path: 'quiz', component: Quiz },
-  { path: 'results', component: Results },
+  //{ path: 'results', component: Results },
   { path: 'history', component: History },
 
   // ================= TEACHER =================
@@ -58,6 +60,10 @@ export const routes: Routes = [
   { path: 'student/quizzes', component: AvailableQuizzes },
   { path: 'student/quiz/:quizId/overview', component: QuizOverview },
   { path: 'student/quiz/:quizId/play', component: PlayQuiz },
+
+  
+ // ================= RESULTS =================
+{ path: 'results', component: ResultsComponent },
 
   // ================= FALLBACK =================
   { path: '**', redirectTo: 'login' },
