@@ -109,4 +109,11 @@ export class ApiService {
       `${this.baseUrl}/api/teacher/results/${teacherId}`
     );
   }
+
+  // Detail page: /results/:quizId
+  getQuizDetailedResult(quizId: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/api/teacher/results/quiz/${quizId}`
+    );
+  }
 }
