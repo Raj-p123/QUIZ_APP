@@ -1,18 +1,24 @@
 <div class="create-page-wrapper">
-  <div class="create-card">
-    
-    <div class="card-header">
-      <button class="back-btn" (click)="cancel()">←</button>
-      <div class="header-text">
-        <h2>Create New Quiz</h2>
-        <p>Fill in the details to build your assessment</p>
-      </div>
-    </div>
 
-    <form (ngSubmit)="submit()" #quizForm="ngForm">
-      
-      <div class="form-grid">
-        <div class="form-main">
+  <div class="create-layout">
+
+    <!-- LEFT: FORM -->
+    <div class="create-card">
+
+      <div class="card-header">
+        <button class="back-btn" (click)="cancel()">←</button>
+        <div class="header-text">
+          <h2>Create New Quiz</h2>
+          <p>Configure basic information before adding questions</p>
+        </div>
+      </div>
+
+      <form (ngSubmit)="submit()" #quizForm="ngForm">
+
+        <!-- BASIC INFO -->
+        <div class="section">
+          <h4 class="section-title">Basic Information</h4>
+
           <div class="input-group">
             <label>Quiz Title</label>
             <input
@@ -28,13 +34,21 @@
             <textarea
               [(ngModel)]="quiz.description"
               name="description"
-              placeholder="What should students know before starting?">
+              placeholder="Short description about the quiz">
             </textarea>
           </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="section">
+          <h4 class="section-title">Quiz Settings</h4>
 
           <div class="row">
+
+            <!-- CATEGORY -->
             <div class="input-group half">
               <label>Category</label>
+
               <div class="category-wrapper">
                 <input
                   type="text"
@@ -42,9 +56,8 @@
                   [(ngModel)]="categorySearch"
                   name="categorySearch"
                   (focus)="showCategoryList = true"
-                  (input)="filterCategories()"
-                  class="search-input" />
-                
+                  (input)="filterCategories()" />
+
                 <div class="category-dropdown" *ngIf="showCategoryList">
                   <div
                     class="category-item"
@@ -57,8 +70,9 @@
               </div>
             </div>
 
+            <!-- TIME -->
             <div class="input-group half">
-              <label>Time Limit (Sec/Q)</label>
+              <label>Time Limit (Seconds / Question)</label>
               <input
                 type="number"
                 [(ngModel)]="quiz.timePerQuestionSeconds"
@@ -67,51 +81,66 @@
                 max="120"
                 required />
             </div>
+
           </div>
         </div>
 
-        <div class="form-aside">
-          <label>Cover Image</label>
-          <div class="upload-zone" [class.has-image]="imagePreview" (click)="fileInput.click()">
+        <!-- ACTIONS -->
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="cancel()">
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="loading || !quiz.title || !quiz.categoryId">
+
+            <span *ngIf="!loading">🚀 Create Quiz</span>
+            <span *ngIf="loading">Creating...</span>
+
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- RIGHT: LIVE PREVIEW PANEL -->
+    <div class="preview-panel">
+
+      <div class="preview-card">
+
+        <div class="preview-cover"
+             [style.background-image]="imagePreview ? 'url(' + imagePreview + ')' : ''">
+
+          <div class="cover-upload" (click)="fileInput.click()">
             <input
               #fileInput
               type="file"
               hidden
               accept="image/*"
               (change)="onFileSelected($event)" />
-            
-            <ng-container *ngIf="!imagePreview; else previewTpl">
-              <div class="upload-placeholder">
-                <span class="upload-icon">🖼️</span>
-                <span>Click to upload cover</span>
-                <small>Recommended: 16:9 Aspect Ratio</small>
-              </div>
+
+            <ng-container *ngIf="!imagePreview">
+              <span>🖼️ Upload Cover</span>
             </ng-container>
-            
-            <ng-template #previewTpl>
-              <img [src]="imagePreview" class="preview-img" />
-              <div class="change-overlay">Change Image</div>
-            </ng-template>
+          </div>
+
+        </div>
+
+        <div class="preview-content">
+          <h3>{{ quiz.title || 'Quiz Title Preview' }}</h3>
+          <p>{{ quiz.description || 'Quiz description will appear here.' }}</p>
+
+          <div class="preview-meta">
+            <span>{{ quiz.timePerQuestionSeconds || 0 }} sec / question</span>
           </div>
         </div>
+
       </div>
 
-      <div class="form-actions">
-        <button
-          type="button"
-          class="btn-cancel"
-          (click)="cancel()">
-          Cancel
-        </button>
-        <button
-          type="submit"
-          class="btn-submit"
-          [disabled]="loading || !quiz.title || !quiz.categoryId">
-          <span *ngIf="!loading">🚀 Create Quiz</span>
-          <span *ngIf="loading">Creating...</span>
-        </button>
-      </div>
+    </div>
 
-    </form>
   </div>
+
 </div>
