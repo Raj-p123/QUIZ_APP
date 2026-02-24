@@ -1,78 +1,180 @@
-<div class="dashboard-container" [class.collapsed]="isSidebarCollapsed">
-  
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-group" (click)="goToDashboard()" *ngIf="!isSidebarCollapsed">
-        <img src="assets/logoo.png" class="logo-img">
-        <span class="logo-text">QuizApp</span>
-      </div>
-      <button class="toggle-btn" (click)="toggleSidebar()">
-        {{ isSidebarCollapsed ? '→' : '←' }}
-      </button>
-    </div>
+<div class="dashboard-layout">
 
-    <nav class="sidebar-nav">
-      <a routerLink="/teacher-dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [title]="'Dashboard'">
-        <i class="icon">📊</i> <span class="nav-label">Dashboard</span>
-      </a>
-      <a routerLink="/teacher-quizzes" routerLinkActive="active" [title]="'My Quizzes'">
-        <i class="icon">📝</i> <span class="nav-label">My Quizzes</span>
-      </a>
-      <a routerLink="/create-quiz" routerLinkActive="active" [title]="'Create Quiz'">
-        <i class="icon">➕</i> <span class="nav-label">Create Quiz</span>
-      </a>
-      <a routerLink="/results" routerLinkActive="active" [title]="'Results'">
-        <i class="icon">🏆</i> <span class="nav-label">Results</span>
-      </a>
+  <aside class="sidebar">
+    <div class="brand">QuizPro</div>
+
+    <nav class="nav-links">
+      <a routerLink="/teacher-dashboard" routerLinkActive="active">📊 Dashboard</a>
+      <a routerLink="/teacher-quizzes">📝 My Quizzes</a>
+      <a routerLink="/create-quiz">➕ Create Quiz</a>
+      <a>📚 Question Bank</a>
+      <a>🎯 Student Attempts</a>
+
+      <!-- ✅ Added Result Tab -->
+      <a routerLink="/results" routerLinkActive="active">📈 Results</a>
+
+      <a>🏆 Leaderboard</a>
+      <a>⚙ Settings</a>
+      <a>❓ Support</a>
     </nav>
 
-    <div class="sidebar-footer">
-      <button class="logout-btn" (click)="logout()">
-        <i class="icon">🚪</i>
-        <span class="nav-label">Logout</span>
-      </button>
-    </div>
+    <!-- Divider Added (No removal of anything) -->
+    <div class="sidebar-divider"></div>
+
+    <button class="logout-btn" (click)="logout()">🚪 Logout</button>
   </aside>
 
-  <main class="main-content">
-    <header class="top-header">
-      <div class="welcome-text">
-        <h1>Welcome back, {{ teacherName }} 👋</h1>
-        <p>Here's what's happening with your assessments today.</p>
-      </div>
-      <div class="header-actions">
-        <button class="primary-btn" routerLink="/create-quiz">
-          + Create New Quiz
-        </button>
+  <main class="main-area">
+
+    <header class="topbar">
+      <input type="text" placeholder="Search..." class="search-box">
+      <div class="profile-mini">
+        <img src="https://i.pravatar.cc/150?u=smruti" width="35" style="border-radius:50%">
+        <span class="teacher-label">Teacher</span>
       </div>
     </header>
 
-    <section class="stats-grid">
+    <section class="welcome">
+      <h2>Welcome back, {{ teacherName }} 👋</h2>
+    </section>
+
+    <section class="stats-row">
       <div class="stat-card">
-        <span class="stat-label">Total Quizzes</span>
-        <span class="stat-value">12</span>
-        <span class="stat-trend positive">↑ 2 this week</span>
+        <div class="stat-icon" style="background:#DBEAFE;color:#1D4ED8;">12</div>
+        <div class="stat-content">
+          <h3>12</h3>
+          <p>Active Quizzes</p>
+        </div>
       </div>
+
       <div class="stat-card">
-        <span class="stat-label">Total Students</span>
-        <span class="stat-value">458</span>
-        <span class="stat-trend positive">↑ 12%</span>
+        <div class="stat-icon" style="background:#DCFCE7;color:#15803D;">5</div>
+        <div class="stat-content">
+          <h3>5</h3>
+          <p>Classes</p>
+        </div>
       </div>
+
       <div class="stat-card">
-        <span class="stat-label">Avg. Score</span>
-        <span class="stat-value">78%</span>
-        <span class="stat-trend">Steady</span>
+        <div class="stat-icon" style="background:#FEF3C7;color:#B45309;">245</div>
+        <div class="stat-content">
+          <h3>245</h3>
+          <p>Total Attempts</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#E2E8F0;color:#334155;">6</div>
+        <div class="stat-content">
+          <h3>6</h3>
+          <p>Under Moderation</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#FEE2E2;color:#B91C1C;">6</div>
+        <div class="stat-content">
+          <h3>6</h3>
+          <p>Pending Admission</p>
+        </div>
       </div>
     </section>
 
-    <section class="content-card">
-      <div class="card-header">
-        <h2>Recent Overview</h2>
-        <button class="text-btn">View All</button>
+    <div class="dashboard-content">
+
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <h3>My Quizzes</h3>
+            <button class="btn-new-quiz" (click)="router.navigate(['/create-quiz'])">
+              + New Quiz
+            </button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Quiz Title</th>
+                <th>Status</th>
+                <th>Class</th>
+                <th>Questions</th>
+                <th>Attempts</th>
+                <th>Last Activity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>General Knowledge Quiz</td>
+                <td><span class="badge active-bg">Active</span></td>
+                <td>Class 10A</td>
+                <td>12</td>
+                <td>84</td>
+                <td>2 hours ago</td>
+              </tr>
+              <tr>
+                <td>Math Skills Test</td>
+                <td><span class="badge scheduled-bg">Scheduled</span></td>
+                <td>Class 8B</td>
+                <td>10</td>
+                <td>83</td>
+                <td>1 day ago</td>
+              </tr>
+              <tr>
+                <td>Chemistry Basics</td>
+                <td><span class="badge draft-bg">Draft</span></td>
+                <td>Class 9C</td>
+                <td>11</td>
+                <td>87</td>
+                <td>2 days ago</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:25px;">
+          <div class="card-header">
+            <h3>Recent Activity</h3>
+          </div>
+
+          <div class="activity-item">
+            <p>You started <strong>General Knowledge Quiz</strong></p>
+            <span class="act-time">2 hours ago</span>
+          </div>
+
+          <div class="activity-item">
+            <p><strong>Math Skills Test</strong> edited</p>
+            <span class="act-time">1 day ago</span>
+          </div>
+        </div>
       </div>
-      <div class="empty-state">
-        <p>Your recent quiz analytics will appear here. Start by creating a quiz!</p>
+
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Leader Board</h3>
+          </div>
+
+          <div class="leader-item">
+            <img src="https://i.pravatar.cc/150?u=1" class="leader-avatar">
+            <div>
+              <p class="l-name">Mark Wilson</p>
+              <p class="l-sub">8 Quizzes Completed</p>
+            </div>
+            <span class="l-score">92%</span>
+          </div>
+
+          <div class="leader-item">
+            <img src="https://i.pravatar.cc/150?u=2" class="leader-avatar">
+            <div>
+              <p class="l-name">Emma Brown</p>
+              <p class="l-sub">9 Quizzes Completed</p>
+            </div>
+            <span class="l-score">90%</span>
+          </div>
+        </div>
       </div>
-    </section>
+
+    </div>
+
   </main>
 </div>

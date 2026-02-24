@@ -9,15 +9,15 @@ import { Subscription, filter } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './teacher-dashboard.html',
-  styleUrl: './teacher-dashboard.css'
+  styleUrls: ['./teacher-dashboard.css']
 })
 export class TeacherDashboard implements OnInit, OnDestroy {
   teacherName = 'Smruti Ranjan';
-  isSidebarCollapsed = false; // <--- ADD THIS
+  isSidebarCollapsed = false;
   
   private routerSub!: Subscription;
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(private api: ApiService, public router: Router) {}
 
   toggleSidebar(): void {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
