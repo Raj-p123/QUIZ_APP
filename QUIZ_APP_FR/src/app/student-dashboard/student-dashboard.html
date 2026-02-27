@@ -1,71 +1,5 @@
 <div class="dashboard-wrapper">
 
-  <!-- 🔵 TOP NAVBAR -->
-  <header class="top-navbar">
-
-    <div class="nav-left">
-      <div class="brand">QuizApp</div>
-      <input type="text" placeholder="Find a quiz..." class="search-input">
-    </div>
-
-   <div class="nav-center">
-  <a routerLink="/activity" routerLinkActive="active">Activity</a>
-<a routerLink="/classes" routerLinkActive="active">Classes</a>
-<a routerLink="/student-dashboard" routerLinkActive="active">Home</a>
-  <a (click)="logout()">Logout</a>
-</div>
-
-
-    <div class="nav-right">
-
-      <!-- 🏆 Achievements -->
-      <div class="nav-icon" (click)="toggleAchievements()">
-        🏆
-        <span class="badge" *ngIf="achievements.length">
-          {{ achievements.length }}
-        </span>
-
-        <div class="dropdown-card" *ngIf="showAchievements">
-          <h4>Achievements</h4>
-
-          <div *ngIf="achievements.length; else noAch">
-            <div class="dropdown-item"
-                 *ngFor="let a of achievements">
-              {{ a }}
-            </div>
-          </div>
-
-          <ng-template #noAch>
-            <p class="empty-text">No achievements yet.</p>
-          </ng-template>
-        </div>
-      </div>
-
-      <!-- 🔔 Notifications -->
-      <div class="nav-icon" (click)="toggleNotifications()">
-        🔔
-        <span class="badge" *ngIf="notifications.length">
-          {{ notifications.length }}
-        </span>
-
-        <div class="dropdown-card" *ngIf="showNotifications">
-          <h4>Notifications</h4>
-
-          <div class="dropdown-item"
-               *ngFor="let n of notifications">
-            {{ n.message }}
-          </div>
-        </div>
-      </div>
-
-      <!-- 👤 Profile -->
-      <div class="profile-circle" (click)="openProfile()">
-        {{ studentName?.charAt(0) }}
-      </div>
-
-    </div>
-  </header>
-
   <!-- 🔥 WELCOME -->
   <section class="welcome-section">
     <h2>Welcome back, {{ studentName }}!</h2>
@@ -135,7 +69,7 @@
 
       <!-- 🏆 LEADERBOARD -->
       <div class="widget-card leaderboard-card">
-        <h3>🏆 Global Leaderboard</h3>
+        <h3>🏆Leaderboard</h3>
 
         <div class="leader-rows">
           <div class="leader-row"
@@ -166,8 +100,7 @@
         </div>
       </div>
 
-    </div> <!-- END LEFT COLUMN -->
-
+    </div>
 
     <!-- RIGHT COLUMN -->
     <div class="right-column">
@@ -196,9 +129,10 @@
           <button (click)="startQuiz(r.id)">▶</button>
 
         </div>
+
       </div>
 
-    </div> <!-- END RIGHT COLUMN -->
+    </div>
 
   </section>
 

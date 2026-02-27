@@ -17,34 +17,19 @@ import { StreakCardComponent } from '../streak-card/streak-card';
     CommonModule,
     RouterModule,
     PerformanceChartComponent,
-    AchievementsComponent,
-    NotificationsComponent,
     SubjectAnalyticsComponent,
-    StreakCardComponent
   ],
   templateUrl: './student-dashboard.html',
   styleUrl: './student-dashboard.css',
 })
 export class StudentDashboard implements OnInit {
-
-  studentName = '';
-  currentStreak = 5;
-  attemptedQuizzes: number = 0;
-averageScore: number = 0;
-highestScore: number = 0;
-
+studentName = '';
+  attemptedQuizzes = 0;
+  averageScore = 0;
+  highestScore = 0;
 
   recommended: any[] = [];
-
- leaderboard: any[] = [];
-
- showAchievements = false;
-showNotifications = false;
-
-achievements: string[] = [];
-notifications: any[] = [];
-
-
+  leaderboard: any[] = [];
 
   private dashboardDataSubject = new BehaviorSubject<any>(null);
   dashboardData$ = this.dashboardDataSubject.asObservable();
@@ -60,51 +45,31 @@ notifications: any[] = [];
 
     this.loadAvailableQuizzes();
     this.loadRecommendedQuizzes();
-     this.loadDashboardStats();
+    this.loadDashboardStats();
 
     this.studentService.getLeaderboard().subscribe(data => {
-  this.leaderboard = data;
-
-  this.loadDashboardStats();
-
-});
-
-
-this.studentService.getNotifications(21).subscribe(data => {
-  this.notifications = data;
-});
-
-this.studentService.getAchievements(21).subscribe(data => {
-  this.achievements = data;
-});
-
-
-
-  }
-
-  // ================= loadDASHBOARD stats =================
-  loadDashboardStats(): void {
-  const studentId = localStorage.getItem('studentId');
-
-  if (studentId) {
-    this.studentService.getDashboardStats(studentId).subscribe({
-      next: (data) => {
-        console.log("Dashboard Data:", data); 
-        this.attemptedQuizzes = data.attempted;
-        this.averageScore = data.averageScore;
-        this.highestScore = data.highestScore;
-      },
-      error: (err) => console.error('Error loading dashboard stats', err)
+      this.leaderboard = data;
     });
   }
-}
 
+  loadDashboardStats(): void {
+    const studentId = localStorage.getItem('studentId');
 
-  // ================= AVAILABLE QUIZZES =================
+    if (studentId) {
+      this.studentService.getDashboardStats(studentId).subscribe({
+        next: (data) => {
+          this.attemptedQuizzes = data.attempted;
+          this.averageScore = data.averageScore;
+          this.highestScore = data.highestScore;
+        }
+      });
+    }
+  }
+
   loadAvailableQuizzes(): void {
     this.studentService.getAvailableQuizzes().subscribe({
       next: (data) => {
-        const mappedQuizzes = data.map((q: any) => ({
+        const mapped = data.map((q: any) => ({
           id: q.id,
           title: q.title,
           details: `${q.questionCount} Qs • ${q.timePerQuestionSeconds}s/q`,
@@ -112,33 +77,26 @@ this.studentService.getAchievements(21).subscribe(data => {
         }));
 
         this.dashboardDataSubject.next({
-          totalAvailable: mappedQuizzes.length,
-          visibleQuizzes: mappedQuizzes.slice(0, 4)
+          totalAvailable: mapped.length,
+          visibleQuizzes: mapped.slice(0, 4)
         });
-      },
-      error: (err) => console.error('Error loading quizzes', err)
+      }
     });
   }
 
-  // ================= RECOMMENDED QUIZZES =================
   loadRecommendedQuizzes(): void {
-  this.studentService.getRecommendedQuizzes().subscribe({
-    next: (data) => {
-      console.log("Recommended API Data:", data);  // 👈 ADD THIS
+    this.studentService.getRecommendedQuizzes().subscribe({
+      next: (data) => {
+        this.recommended = data.map((q: any) => ({
+          id: q.id,
+          title: q.title,
+          time: q.questionCount + ' Questions',
+          coverImageUrl: q.coverImageUrl
+        }));
+      }
+    });
+  }
 
-      this.recommended = data.map((q: any) => ({
-        id: q.id,
-        title: q.title,
-        time: q.questionCount + ' Questions',
-        coverImageUrl: q.coverImageUrl
-      }));
-    },
-    error: (err) => console.error('Error loading recommended', err)
-  });
-}
-
-
-  // ================= NAVIGATION =================
   startQuiz(id: number): void {
     this.router.navigate(['/student/quiz', id, 'overview']);
   }
@@ -150,42 +108,4 @@ this.studentService.getAchievements(21).subscribe(data => {
   openProfile(): void {
     this.router.navigate(['/profile']);
   }
-
-  goHome(): void {
-    this.router.navigate(['/student-dashboard'], { replaceUrl: true });
-  }
-
-
-
-
-toggleAchievements() {
-  this.showAchievements = !this.showAchievements;
-  this.showNotifications = false;
-}
-
-toggleNotifications() {
-  this.showNotifications = !this.showNotifications;
-  this.showAchievements = false;
-}
-
-
-
-
-
-goActivity() {
-  this.router.navigate(['/activity']);
-}
-
-goClasses() {
-  this.router.navigate(['/classes']);
-}
-
-logout() {
-  localStorage.clear();
-  this.router.navigate(['/login']);
-}
-
-
-
-
 }

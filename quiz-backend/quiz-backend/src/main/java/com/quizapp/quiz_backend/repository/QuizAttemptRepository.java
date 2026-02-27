@@ -80,6 +80,8 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
     	
     	List<QuizAttempt> findByStudentIdOrderBySubmittedAtDesc(Long studentId);
 
+    	
+    	
 
     
     

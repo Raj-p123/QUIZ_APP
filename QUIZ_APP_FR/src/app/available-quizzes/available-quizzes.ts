@@ -51,7 +51,7 @@ export class AvailableQuizzes implements OnInit {
     );
   }
 
-  // 🔥 FIX IMAGE LOGIC
+  // ================= IMAGE =================
   getImage(url: string | null): string {
     if (!url || url === 'null' || url.trim() === '') {
       return 'assets/default-quiz.jpg';
@@ -63,6 +63,7 @@ export class AvailableQuizzes implements OnInit {
     event.target.src = 'assets/default-quiz.jpg';
   }
 
+  // ================= DETAILS =================
   extractTime(details: string): string {
     const parts = details.split('•');
     return parts[1]?.trim() || '15s/q';
@@ -77,6 +78,8 @@ export class AvailableQuizzes implements OnInit {
     this.searchSubject.next(this.searchText);
   }
 
+  // ================= NAVIGATION =================
+
   goBack(): void {
     this.router.navigate(['/student-dashboard']);
   }
@@ -85,7 +88,9 @@ export class AvailableQuizzes implements OnInit {
     this.router.navigate(['/profile']);
   }
 
+  // 🔥 BOTH CARD + BUTTON → OVERVIEW
   openQuiz(quizId: number) {
     this.router.navigate(['/student/quiz', quizId, 'overview']);
   }
+
 }

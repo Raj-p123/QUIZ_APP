@@ -12,8 +12,7 @@ import { Observable, switchMap, map, catchError, of, shareReplay } from 'rxjs';
   styleUrl: './quiz-overview.css',
 })
 export class QuizOverview implements OnInit {
-  
-  // 🔥 The reactive data stream
+
   quizData$!: Observable<any>;
   quizId!: number;
 
@@ -24,20 +23,21 @@ export class QuizOverview implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // We listen to paramMap reactively. 
-    // If the quizId in the URL changes, this stream re-fires automatically!
+
     this.quizData$ = this.route.paramMap.pipe(
       map(params => {
         this.quizId = Number(params.get('quizId'));
         return this.quizId;
       }),
-      switchMap(id => this.studentService.getQuizOverview(id).pipe(
-        catchError(err => {
-          console.error('Failed to load quiz overview', err);
-          return of({ error: true });
-        })
-      )),
-      shareReplay(1) // 🔥 Prevents the data from "vanishing" on re-renders
+      switchMap(id =>
+        this.studentService.getQuizOverview(id).pipe(
+          catchError(err => {
+            console.error('Failed to load quiz overview', err);
+            return of({ error: true });
+          })
+        )
+      ),
+      shareReplay(1)
     );
   }
 
@@ -48,4 +48,5 @@ export class QuizOverview implements OnInit {
   goBack(): void {
     this.router.navigate(['/student/quizzes']);
   }
+
 }

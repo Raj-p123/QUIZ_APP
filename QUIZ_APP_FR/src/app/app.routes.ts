@@ -9,26 +9,33 @@ import { Privacy } from './privacy/privacy';
 import { Terms } from './terms/terms';
 import { Contact } from './contact/contact';
 import { ForgotPassword } from './forgot-password/forgot-password';
+
 import { StudentDashboard } from './student-dashboard/student-dashboard';
 import { TeacherDashboard } from './teacher-dashboard/teacher-dashboard';
 import { AdminDashboard } from './admin-dashboard/admin-dashboard';
+
 import { Quiz } from './pages/quiz/quiz';
-//import { Results } from './pages/results/results';
 import { ResultsComponent } from './results/results';
 import { ResultDetailComponent } from './result-detail/result-detail';
-
 import { History } from './pages/history/history';
+
 import { CreateQuiz } from './create-quiz/create-quiz';
 import { TeacherMyQuizzes } from './teacher-my-quizzes/teacher-my-quizzes';
 import { TeacherEditQuiz } from './teacher-edit-quiz/teacher-edit-quiz';
+
 import { AvailableQuizzes } from './available-quizzes/available-quizzes';
 import { QuizOverview } from './quiz-overview/quiz-overview';
 import { PlayQuiz } from './play-quiz/play-quiz';
-import { Profile } from './profile/profile';   // ✅ NEW IMPORT
+
+import { Profile } from './profile/profile';
 import { ClassesComponent } from './classes/classes';
 import { ActivityComponent } from './activity/activity';
 
+import { MainLayout } from './main-layout/main-layout';
+
 export const routes: Routes = [
+
+  // ================= PUBLIC PAGES =================
   { path: '', component: Home },
   { path: 'select-role', component: RoleSelect },
   { path: 'select-role2', component: RoleSelect2 },
@@ -40,36 +47,42 @@ export const routes: Routes = [
   { path: 'contact', component: Contact },
   { path: 'forgot-password', component: ForgotPassword },
 
-  // ================= DASHBOARDS =================
-  { path: 'student-dashboard', component: StudentDashboard },
+  // ================= TEACHER / ADMIN =================
   { path: 'teacher-dashboard', component: TeacherDashboard },
   { path: 'admin-dashboard', component: AdminDashboard },
 
-  // ================= PROFILE (NEW) =================
-  { path: 'profile', component: Profile },
+  // ================= STUDENT SECTION (WITH NAVBAR LAYOUT) =================
+  {
+    path: '',
+    component: MainLayout,
+    children: [
+
+      { path: 'student-dashboard', component: StudentDashboard },
+      { path: 'profile', component: Profile },
+      { path: 'activity', component: ActivityComponent },
+      { path: 'classes', component: ClassesComponent },
+
+      { path: 'student/quizzes', component: AvailableQuizzes },
+      { path: 'student/quiz/:quizId/overview', component: QuizOverview },
+      { path: 'student/quiz/:quizId/play', component: PlayQuiz },
+
+      { path: 'history', component: History },
+      { path: 'results', component: ResultsComponent },
+      { path: 'results/:quizId', component: ResultDetailComponent }
+
+    ]
+  },
 
   // ================= GENERAL =================
   { path: 'create-quiz', component: CreateQuiz },
   { path: 'quiz', component: Quiz },
-  //{ path: 'results', component: Results },
-  { path: 'history', component: History },
 
-  // ================= TEACHER =================
+  // ================= TEACHER QUIZZES =================
   { path: 'teacher-quizzes', component: TeacherMyQuizzes },
   { path: 'teacher/quizzes/:quizId/edit', component: TeacherEditQuiz },
   { path: 'teacher/quizzes/:quizId/view', component: TeacherEditQuiz },
 
-  // ================= STUDENT =================
-  { path: 'student/quizzes', component: AvailableQuizzes },
-  { path: 'student/quiz/:quizId/overview', component: QuizOverview },
-  { path: 'student/quiz/:quizId/play', component: PlayQuiz },
-  { path: 'activity', component: ActivityComponent },
-  { path: 'classes', component: ClassesComponent },
-
-// ================= RESULTS =================
-  { path: 'results', component: ResultsComponent },
-  { path: 'results/:quizId', component: ResultDetailComponent },
-
   // ================= FALLBACK =================
-  { path: '**', redirectTo: 'login' },
+  { path: '**', redirectTo: 'login' }
+
 ];

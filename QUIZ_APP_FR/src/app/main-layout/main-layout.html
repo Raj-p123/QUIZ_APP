@@ -1,0 +1,25 @@
+<div class="layout-wrapper">
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="top-navbar">
+
+    <div class="nav-left">
+      <div class="brand">QuizApp</div>
+      <input type="text" placeholder="Find a quiz..." class="search-input">
+    </div>
+
+    <div class="nav-center">
+      <a routerLink="/activity" routerLinkActive="active">Activity</a>
+      <a routerLink="/classes" routerLinkActive="active">Classes</a>
+      <a routerLink="/student-dashboard" routerLinkActive="active">Home</a>
+      <a (click)="logout()">Logout</a>
+    </div>
+
+  </header>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <main class="page-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

@@ -1,0 +1,128 @@
+/* ================= LAYOUT WRAPPER ================= */
+.layout-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(120deg, #f8fafc 0%, #eef2ff 100%);
+  font-family: 'Inter', sans-serif;
+}
+
+/* ================= NAVBAR ================= */
+.top-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 60px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(99,102,241,0.15);
+  box-shadow: 0 10px 40px rgba(99,102,241,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+/* ================= BRAND ================= */
+.brand {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg,#6366f1,#8b5cf6,#ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+}
+
+/* ================= SEARCH ================= */
+.search-input {
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+  width: 260px;
+  background: rgba(99,102,241,0.08);
+  color: #1e293b;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+  color: #64748b;
+}
+
+.search-input:focus {
+  outline: none;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
+  transform: scale(1.02);
+}
+
+/* ================= NAV CENTER LINKS ================= */
+.nav-center {
+  display: flex;
+  gap: 40px;
+}
+
+.nav-center a {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  color: #475569;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Hover Effect */
+.nav-center a:hover {
+  color: #6366f1;
+  transform: translateY(-2px);
+}
+
+/* Active underline animation */
+.nav-center a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 0%;
+  height: 3px;
+  border-radius: 10px;
+  background: linear-gradient(90deg,#6366f1,#8b5cf6);
+  transition: width 0.3s ease;
+}
+
+.nav-center a:hover::after,
+.nav-center a.active::after {
+  width: 100%;
+}
+
+/* Logout Special Style */
+.nav-center a:last-child {
+  color: #ef4444;
+}
+
+.nav-center a:last-child:hover {
+  color: #dc2626;
+}
+
+/* ================= PAGE CONTENT ================= */
+.page-content {
+  flex: 1;
+  padding-top: 10px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1000px) {
+  .top-navbar {
+    padding: 15px 30px;
+  }
+
+  .nav-center {
+    gap: 20px;
+  }
+
+  .search-input {
+    width: 180px;
+  }
+}

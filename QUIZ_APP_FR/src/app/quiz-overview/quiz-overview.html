@@ -1,7 +1,8 @@
 <div class="overview-page">
 
   <ng-container *ngIf="quizData$ | async as quiz; else loadingOrError">
-    
+
+    <!-- 🔥 HEADER -->
     <div class="overview-header">
       <button class="back-btn" (click)="goBack()">← Back</button>
 
@@ -11,6 +12,7 @@
       </div>
     </div>
 
+    <!-- 🔥 STATS -->
     <div class="stats-grid">
       <div class="stat-card">
         <p>Total Questions</p>
@@ -28,12 +30,14 @@
       </div>
 
       <div class="stat-card">
-        <p>Attempts</p>
+        <p>Total Attempts</p>
         <h2>{{ quiz.attempts }}</h2>
       </div>
     </div>
 
+    <!-- 🔥 START QUIZ CARD -->
     <div class="action-card" *ngIf="!quiz.error">
+
       <div class="action-info">
         <h4 *ngIf="quiz.attempts === 0">
           You haven’t attempted this quiz yet
@@ -51,17 +55,44 @@
       <button class="start-btn" (click)="startQuiz()">
         Start Quiz
       </button>
+
     </div>
 
+    <!-- 🔥 ATTEMPT HISTORY -->
+    <div class="history-card" *ngIf="quiz.attemptHistory?.length">
+
+      <h3>Attempt History</h3>
+
+      <div class="attempt-row"
+           *ngFor="let attempt of quiz.attemptHistory; let i = index">
+
+        <div class="attempt-left">
+          <span class="attempt-badge">
+            Attempt {{ i + 1 }}
+          </span>
+          <span class="attempt-date">
+            {{ attempt.date }}
+          </span>
+        </div>
+
+        <div class="attempt-score">
+          {{ attempt.score }}%
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ERROR -->
     <div *ngIf="quiz.error" class="error-msg">
-       <p>Could not load quiz details. Please try again later.</p>
+      Could not load quiz details. Please try again later.
     </div>
 
   </ng-container>
 
   <ng-template #loadingOrError>
-    <div class="loading-state" style="text-align: center; padding: 50px; color: white;">
-      <p>Fetching quiz details...</p>
+    <div class="loading-state">
+      Fetching quiz details...
     </div>
   </ng-template>
 

@@ -1,105 +1,87 @@
-<!-- Navbar -->
+<!-- 🔥 Modern Navbar -->
 <nav class="navbar">
   <div class="logo">QuizApp</div>
-  <ul class="nav-links">
-    <li>Dashboard</li>
-    <li>Leaderboard</li>
-    <li>User</li>
-  </ul>
+
+  <div class="nav-links">
+    <a routerLink="/">Home</a>
+    <a routerLink="/about">About</a>
+    <a routerLink="/contact">Contact</a>
+    <a routerLink="/select-role" class="login-btn">Login</a>
+  </div>
 </nav>
 
-<!-- Hero Section -->
+<!-- 🚀 HERO SECTION (Centered Now) -->
 <section class="hero">
-  <div class="hero-left">
-    <h1>Test Your Knowledge,<br />Track Your Progress</h1>
+  <div class="hero-content centered">
+
+    <h1>
+      Level Up Your <span>Knowledge</span><br />
+      With Smart Quizzes
+    </h1>
+
     <p>
-      Take quizzes and improve your skills with real-time results.
+      Challenge yourself. Track your growth.
+      Compete globally and improve every day.
     </p>
 
-    <div class="buttons">
-  <button class="btn primary" routerLink="/select-role2">Sign Up</button>
-  <button class="btn secondary" routerLink="/select-role">Login</button>
-</div>
-  </div>
+    <div class="hero-buttons">
+      <button class="primary-btn" routerLink="/select-role2">
+        Get Started
+      </button>
 
-  <div class="hero-right">
-    <img src="assets/quiz-hero.png" alt="Quiz Illustration" />
+      <button class="secondary-btn" routerLink="/select-role">
+        Login
+      </button>
+    </div>
+
   </div>
 </section>
 
-<!-- Features -->
+<!-- 🌟 FEATURES SECTION -->
 <section class="features">
-  <h2>Features</h2>
+  <h2>Why Choose QuizApp?</h2>
 
-  <div class="feature-cards">
-    <div class="card">
-      <img src="assets/Multiplechoice.png" />
-      <h3>Multiple Choice</h3>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="icon">🧠</div>
+      <h3>Smart MCQs</h3>
+      <p>AI-powered questions to test real understanding.</p>
     </div>
 
-    <div class="card">
-      <img src="assets/timer.png" />
-      <h3>Timed Quizzes</h3>
+    <div class="feature-card">
+      <div class="icon">⏱</div>
+      <h3>Timed Challenges</h3>
+      <p>Boost speed and accuracy with real-time timers.</p>
     </div>
 
-    <div class="card">
-      <img src="assets/results.png" />
-      <h3>Detailed Results</h3>
+    <div class="feature-card">
+      <div class="icon">📊</div>
+      <h3>Performance Analytics</h3>
+      <p>Track progress with detailed visual reports.</p>
     </div>
 
-    <div class="card">
-      <img src="assets/leaderboard.png" />
-      <h3>Leaderboards</h3>
+    <div class="feature-card">
+      <div class="icon">🏆</div>
+      <h3>Global Leaderboard</h3>
+      <p>Compete with learners worldwide.</p>
     </div>
   </div>
 </section>
 
-<!-- Info Section -->
-<section class="info">
-  <div class="info-card">
-    <h3>Topic Categories</h3>
-    <ul>
-      <li>✔ Programming</li>
-      <li>✔ Science</li>
-      <li>✔ Aptitude</li>
-      <li>✔ General Knowledge</li>
-    </ul>
-  </div>
+<!-- 🎯 CALL TO ACTION -->
+<section class="cta">
+  <h2>Ready to Improve Your Skills?</h2>
+  <p>Join thousands of learners today.</p>
+  <button routerLink="/select-role2">Create Free Account</button>
+</section>
 
-  <div class="info-card">
-    <h3>Track Your Progress</h3>
-    <ul>
-      <li>✔ Performance graphs</li>
-      <li>✔ Score history</li>
-      <li>✔ Accuracy tracking</li>
-    </ul>
-  </div>
-
-  <div class="info-card">
-    <h3>Secure & Accessible</h3>
-    <ul>
-      <li>✔ Secure login</li>
-      <li>✔ Mobile friendly</li>
-      <li>✔ Fast performance</li>
-    </ul>
-  </div>
-
-
-<!-- Footer -->
+<!-- 🔻 FOOTER -->
 <footer class="footer">
+
   <div class="footer-links">
     <a routerLink="/about">About</a>
-    <span>|</span>
-    <a routerLink="/privacy">Privacy Policy</a>
-    <span>|</span>
-    <a routerLink="/terms">Terms & Conditions</a>
-    <span>|</span>
+    <a routerLink="/privacy">Privacy</a>
+    <a routerLink="/terms">Terms</a>
     <a routerLink="/contact">Contact</a>
   </div>
 </footer>
-
-
-
-</section>
-
-

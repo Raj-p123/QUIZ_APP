@@ -1,105 +1,77 @@
-<div class="dashboard-container">
-  <aside class="sidebar">
-    <div class="logo-brand" (click)="goBack()">
-      <div class="logo-icon">Q</div>
-      <span class="logo-text">Quiz<span>App</span></span>
-    </div>
-    
-    <nav class="side-nav">
-      <a class="nav-item" (click)="goBack()">
-        <span class="nav-icon">📊</span> Dashboard
-      </a>
-      <a class="nav-item active">
-        <span class="nav-icon">📚</span> Quizzes
-      </a>
-      <a class="nav-item" (click)="goProfile()">
-        <span class="nav-icon">👤</span> Profile
-      </a>
-    </nav>
+<div class="quizzes-page">
 
-    <div class="sidebar-promo">
-      <div class="promo-card">
-        <p>Keep learning!</p>
-        <button class="promo-btn" (click)="goBack()">Dashboard</button>
+  <!-- 🔥 HEADER SECTION -->
+  <div class="quizzes-header">
+
+    <div class="header-left">
+      <button class="back-btn" (click)="goBack()">←</button>
+      <div>
+        <h1>Available Quizzes</h1>
+        <p>Find your next challenge and level up</p>
       </div>
     </div>
-  </aside>
 
-  <main class="main-content">
-    <header class="top-header">
-      <div class="header-left">
-        <div class="title-with-back">
-          <button class="icon-back-btn" (click)="goBack()">←</button>
-          <div>
-            <h1>Available Quizzes</h1>
-            <p class="header-subtitle">Find your next challenge and level up</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="header-right">
-        <div class="search-wrapper">
-          <span class="search-icon">🔍</span>
-          <input 
-            type="text" 
-            placeholder="Search by topic..." 
-            [(ngModel)]="searchText"
-            (input)="onSearchChange()"
+    <div class="search-wrapper">
+      <span>🔍</span>
+      <input 
+        type="text" 
+        placeholder="Search quizzes..." 
+        [(ngModel)]="searchText"
+        (input)="onSearchChange()"
+      >
+    </div>
+
+  </div>
+
+  <!-- 🔥 QUIZ GRID -->
+  <ng-container *ngIf="filteredQuizzes$ | async as quizzes; else loading">
+    <div class="quiz-grid-modern" *ngIf="quizzes.length > 0; else noQuizzes">
+
+      <!-- 🔥 CLICK ANYWHERE → OVERVIEW -->
+      <div class="quiz-card-modern"
+           *ngFor="let q of quizzes"
+           (click)="openQuiz(q.id)">
+
+        <div class="quiz-image">
+          <img 
+            [src]="getImage(q.coverImageUrl)" 
+            (error)="handleImageError($event)"
           >
+          <div class="quiz-badge">Intermediate</div>
         </div>
-      </div>
-    </header>
 
-    <ng-container *ngIf="filteredQuizzes$ | async as quizzes; else loading">
-      <div class="quiz-modern-grid" *ngIf="quizzes.length > 0; else noQuizzes">
-        
-        <div class="quiz-item-card" *ngFor="let q of quizzes">
-          
-          <div class="card-thumb">
-            <img 
-              [src]="getImage(q.coverImageUrl)" 
-              (error)="handleImageError($event)"
-              alt="Quiz Cover"
-            >
-            <div class="card-overlay">
-              <span class="difficulty-tag">Intermediate</span>
-            </div>
-          </div>
-          
-          <div class="card-details">
-            <h4>{{ q.title }}</h4>
+        <div class="quiz-content">
+          <h3>{{ q.title }}</h3>
 
-            <div class="quiz-meta">
-              <span class="meta-item">
-                ⏱ {{ extractTime(q.details) }}
-              </span>
-              <span class="meta-item">
-                ❓ {{ extractQuestions(q.details) }}
-              </span>
-            </div>
-            
-            <button class="action-btn-primary" (click)="openQuiz(q.id)">
-              Start Quiz
-            </button>
+          <div class="quiz-info">
+            <span>⏱ {{ extractTime(q.details) }}</span>
+            <span>❓ {{ extractQuestions(q.details) }}</span>
           </div>
+
+          <!-- No stopPropagation needed -->
+          <button class="start-btn">
+            Start Quiz
+          </button>
         </div>
 
       </div>
-    </ng-container>
 
-    <ng-template #loading>
-      <div class="status-state">
-        <div class="spinner"></div>
-        <p>Fetching the latest quizzes...</p>
-      </div>
-    </ng-template>
+    </div>
+  </ng-container>
 
-    <ng-template #noQuizzes>
-      <div class="status-state">
-        <div class="empty-icon">📂</div>
-        <h3>No quizzes found</h3>
-        <p>Try adjusting your search terms.</p>
-      </div>
-    </ng-template>
-  </main>
+  <!-- STATES -->
+  <ng-template #loading>
+    <div class="state-box">
+      <div class="spinner"></div>
+      <p>Loading quizzes...</p>
+    </div>
+  </ng-template>
+
+  <ng-template #noQuizzes>
+    <div class="state-box">
+      <h3>No quizzes found</h3>
+      <p>Try searching something else.</p>
+    </div>
+  </ng-template>
+
 </div>
