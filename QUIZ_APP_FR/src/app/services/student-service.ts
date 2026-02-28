@@ -36,19 +36,30 @@ export class StudentService {
 }
 
   // ================= QUIZ OVERVIEW (NEW 🔥) =================
-  getQuizOverview(quizId: number): Observable<any> {
+ getQuizOverview(quizId: number): Observable<any> {
+
+  const userData = localStorage.getItem('user');
+  const user = userData ? JSON.parse(userData) : null;
+
+  if (!user || !user.id) {
+    console.error("No logged-in user found!");
     return this.http.get<any>(
-      `${this.apiUrl}/api/student/quizzes/${quizId}/overview`
+      `${this.apiUrl}/api/student/quizzes/${quizId}/overview?studentId=0`
     );
   }
 
-  getQuizQuestions(quizId: number): Observable<any[]> {
+  return this.http.get<any>(
+    `${this.apiUrl}/api/student/quizzes/${quizId}/overview?studentId=${user.id}`
+  );
+}
+
+  // ================= PLAY QUIZ =================
+getQuizQuestions(quizId: number): Observable<any[]> {
   return this.http.get<any[]>(
     `${this.apiUrl}/api/student/quizzes/${quizId}/play`
   );
-
-  
 }
+
 // ================= SUBMIT QUIZ =================
 submitQuiz(payload: any): Observable<any> {
   return this.http.post(
@@ -134,5 +145,11 @@ getStudentClasses(studentId: number) {
 
 
 
+
+getAttemptReview(attemptId: number) {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/api/student/attempt-review/${attemptId}`
+  );
+}
 
 }

@@ -26,9 +26,10 @@ public class StudentController {
     // ================= QUIZ OVERVIEW =================
     @GetMapping("/quizzes/{quizId}/overview")
     public StudentQuizOverviewResponse getQuizOverview(
-            @PathVariable Long quizId
+            @PathVariable Long quizId,
+            @RequestParam Long studentId
     ) {
-        return studentService.getQuizOverview(quizId);
+        return studentService.getQuizOverview(quizId, studentId);
     }
 
     // ================= PLAY QUIZ (NEW 🔥) =================
@@ -116,4 +117,9 @@ public class StudentController {
     
     
     
+    @GetMapping("/attempt-review/{attemptId}")
+    public List<AttemptReviewDTO> getAttemptReview(
+            @PathVariable Long attemptId) {
+        return studentService.getAttemptReview(attemptId);
+    }
 }

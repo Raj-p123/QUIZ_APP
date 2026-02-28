@@ -1,0 +1,20 @@
+<div class="review-container">
+
+  <div *ngFor="let item of reviewData" class="question-card">
+
+    <h3>{{ item.question }}</h3>
+
+    <div *ngFor="let option of item.options"
+         class="option"
+         [ngClass]="{
+           'correct': option.correct,
+           'wrong': isWrongSelected(option, item.selectedOptionId)
+         }">
+
+      {{ option.text }}
+
+    </div>
+
+  </div>
+
+</div>

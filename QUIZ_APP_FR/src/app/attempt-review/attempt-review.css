@@ -1,0 +1,22 @@
+.question-card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+}
+
+.option {
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+}
+
+.correct {
+  background: #d1fae5;
+  border: 1px solid #10b981;
+}
+
+.wrong {
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+}

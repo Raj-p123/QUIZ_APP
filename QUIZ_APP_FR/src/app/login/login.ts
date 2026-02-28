@@ -31,7 +31,7 @@ export class Login {
   ngOnInit(): void {
 
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('user');
+      localStorage.clear();
     }
 
     const roleParam = this.route.snapshot.queryParamMap.get('role');
@@ -78,12 +78,19 @@ export class Login {
           }
         }
 
-        // ✅ Save logged in user
+        // ✅ SAVE USER PROPERLY
         if (isPlatformBrowser(this.platformId)) {
+
           localStorage.setItem('user', JSON.stringify(res));
+
+          // 🔥 Save individual values for navbar
+          localStorage.setItem('studentId', res.id);
+          localStorage.setItem('studentName', res.name);
+          localStorage.setItem('studentEmail', res.email);
+          localStorage.setItem('userRole', res.role);
         }
 
-        // ✅ Role based redirect
+        // ✅ Redirect by role
         if (dbRole === 'STUDENT') {
           this.router.navigate(['/student-dashboard']);
         }

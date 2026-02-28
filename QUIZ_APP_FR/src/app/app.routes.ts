@@ -32,6 +32,7 @@ import { ClassesComponent } from './classes/classes';
 import { ActivityComponent } from './activity/activity';
 
 import { MainLayout } from './main-layout/main-layout';
+import path from 'path/win32';
 
 export const routes: Routes = [
 
@@ -68,7 +69,11 @@ export const routes: Routes = [
 
       { path: 'history', component: History },
       { path: 'results', component: ResultsComponent },
-      { path: 'results/:quizId', component: ResultDetailComponent }
+      { path: 'results/:quizId', component: ResultDetailComponent },
+      {path: 'student/attempt-review/:attemptId',
+  loadComponent: () =>
+    import('./attempt-review/attempt-review')
+      .then(m => m.AttemptReview) }
 
     ]
   },

@@ -16,6 +16,10 @@ export class QuizOverview implements OnInit {
   quizData$!: Observable<any>;
   quizId!: number;
 
+  totalAttempts = 0;
+  bestScore = 0;
+  averageScore = 0;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -31,6 +35,28 @@ export class QuizOverview implements OnInit {
       }),
       switchMap(id =>
         this.studentService.getQuizOverview(id).pipe(
+          map((quiz: any) => {
+
+            if (quiz?.attemptHistory?.length) {
+
+              this.totalAttempts = quiz.attemptHistory.length;
+
+              const scores = quiz.attemptHistory.map((a: any) => a.score ?? 0);
+
+              this.bestScore = Math.max(...scores);
+
+              const sum = scores.reduce((acc: number, val: number) => acc + val, 0);
+
+              this.averageScore = Math.round(sum / scores.length);
+
+            } else {
+              this.totalAttempts = 0;
+              this.bestScore = 0;
+              this.averageScore = 0;
+            }
+
+            return quiz;
+          }),
           catchError(err => {
             console.error('Failed to load quiz overview', err);
             return of({ error: true });
@@ -48,5 +74,12 @@ export class QuizOverview implements OnInit {
   goBack(): void {
     this.router.navigate(['/student/quizzes']);
   }
+
+
+
+goToReview(attemptId: number): void {
+  this.router.navigate(['/student/attempt-review', attemptId]);
+}
+
 
 }

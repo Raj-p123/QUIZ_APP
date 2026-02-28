@@ -1,7 +1,13 @@
 package com.quizapp.quiz_backend.service;
 
 import com.quizapp.quiz_backend.dto.*;
-import com.quizapp.quiz_backend.model.*;
+import com.quizapp.quiz_backend.model.Quiz;
+import com.quizapp.quiz_backend.model.Question;
+import com.quizapp.quiz_backend.model.Option;
+import com.quizapp.quiz_backend.model.User;
+import com.quizapp.quiz_backend.model.QuizAttempt;
+import com.quizapp.quiz_backend.model.AttemptAnswer;
+import com.quizapp.quiz_backend.model.ClassRoom;
 import com.quizapp.quiz_backend.repository.*;
 import org.springframework.stereotype.Service;
 
@@ -56,11 +62,32 @@ public class StudentService {
     }
 
     // ================= QUIZ OVERVIEW =================
-    public StudentQuizOverviewResponse getQuizOverview(Long quizId) {
+    public StudentQuizOverviewResponse getQuizOverview(Long quizId, Long studentId) {
+
         Quiz quiz = quizRepository.findByIdAndPublishedTrue(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found or not published"));
 
-        int totalQuestions = quiz.getQuestions() != null ? quiz.getQuestions().size() : 0;
+        int totalQuestions = quiz.getQuestions() != null
+                ? quiz.getQuestions().size()
+                : 0;
+
+        List<QuizAttempt> attempts =
+                quizAttemptRepository.findByStudentIdAndQuizIdOrderBySubmittedAtAsc(
+                        studentId,
+                        quizId
+                );
+
+        List<AttemptDTO> history = attempts.stream()
+                .map(a -> new AttemptDTO(
+                		a.getId(), 
+                        a.getSubmittedAt(),
+                        a.getScore()
+                ))
+                .toList();
+
+        Integer lastScore = attempts.isEmpty()
+                ? null
+                : attempts.get(attempts.size() - 1).getScore();
 
         return new StudentQuizOverviewResponse(
                 quiz.getId(),
@@ -68,8 +95,9 @@ public class StudentService {
                 quiz.getDescription(),
                 totalQuestions,
                 quiz.getTimePerQuestionSeconds(),
-                0,
-                null
+                attempts.size(),
+                lastScore,
+                history
         );
     }
 
@@ -414,6 +442,38 @@ public class StudentService {
     
     
     
+    
+    
+    
+    public List<AttemptReviewDTO> getAttemptReview(Long attemptId) {
+
+        QuizAttempt attempt = quizAttemptRepository.findById(attemptId)
+                .orElseThrow(() -> new RuntimeException("Attempt not found"));
+
+        return attempt.getAnswers().stream()
+                .map(answer -> {
+
+                    Question question = answer.getQuestion();
+
+                    List<OptionReviewDTO> options =
+                            question.getOptions().stream()
+                                    .map(o -> new OptionReviewDTO(
+                                            o.getId(),
+                                            o.getOptionText(),
+                                            o.isCorrect()
+                                    ))
+                                    .toList();
+
+                    return new AttemptReviewDTO(
+                            question.getQuestionText(),
+                            options,
+                            answer.getSelectedOption() != null
+                                    ? answer.getSelectedOption().getId()
+                                    : null
+                    );
+                })
+                .toList();
+    }
     
 }
 

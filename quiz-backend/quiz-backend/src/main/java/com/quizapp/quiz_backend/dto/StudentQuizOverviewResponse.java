@@ -1,23 +1,22 @@
 package com.quizapp.quiz_backend.dto;
 
+import java.util.List;
+
 public class StudentQuizOverviewResponse {
 
     private Long quizId;
     private String title;
     private String description;
     private int totalQuestions;
-
-    // 🔥 NEW
     private int timePerQuestionSeconds;
 
-    // student-related (future-ready)
     private int attempts;
-    private Integer lastScore; // null if never attempted
+    private Integer lastScore;
 
-    // ===== constructors =====
+    // 🔥 NEW
+    private List<AttemptDTO> attemptHistory;
 
-    public StudentQuizOverviewResponse() {
-    }
+    public StudentQuizOverviewResponse() {}
 
     public StudentQuizOverviewResponse(
             Long quizId,
@@ -26,7 +25,8 @@ public class StudentQuizOverviewResponse {
             int totalQuestions,
             int timePerQuestionSeconds,
             int attempts,
-            Integer lastScore
+            Integer lastScore,
+            List<AttemptDTO> attemptHistory
     ) {
         this.quizId = quizId;
         this.title = title;
@@ -35,63 +35,36 @@ public class StudentQuizOverviewResponse {
         this.timePerQuestionSeconds = timePerQuestionSeconds;
         this.attempts = attempts;
         this.lastScore = lastScore;
+        this.attemptHistory = attemptHistory;
     }
 
-    // ===== getters & setters =====
+    // getters & setters
 
-    public Long getQuizId() {
-        return quizId;
-    }
+    public Long getQuizId() { return quizId; }
+    public void setQuizId(Long quizId) { this.quizId = quizId; }
 
-    public void setQuizId(Long quizId) {
-        this.quizId = quizId;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public int getTotalQuestions() { return totalQuestions; }
+    public void setTotalQuestions(int totalQuestions) { this.totalQuestions = totalQuestions; }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getTotalQuestions() {
-        return totalQuestions;
-    }
-
-    public void setTotalQuestions(int totalQuestions) {
-        this.totalQuestions = totalQuestions;
-    }
-
-    public int getTimePerQuestionSeconds() {
-        return timePerQuestionSeconds;
-    }
-
+    public int getTimePerQuestionSeconds() { return timePerQuestionSeconds; }
     public void setTimePerQuestionSeconds(int timePerQuestionSeconds) {
         this.timePerQuestionSeconds = timePerQuestionSeconds;
     }
 
-    public int getAttempts() {
-        return attempts;
-    }
+    public int getAttempts() { return attempts; }
+    public void setAttempts(int attempts) { this.attempts = attempts; }
 
-    public void setAttempts(int attempts) {
-        this.attempts = attempts;
-    }
+    public Integer getLastScore() { return lastScore; }
+    public void setLastScore(Integer lastScore) { this.lastScore = lastScore; }
 
-    public Integer getLastScore() {
-        return lastScore;
-    }
-
-    public void setLastScore(Integer lastScore) {
-        this.lastScore = lastScore;
+    public List<AttemptDTO> getAttemptHistory() { return attemptHistory; }
+    public void setAttemptHistory(List<AttemptDTO> attemptHistory) {
+        this.attemptHistory = attemptHistory;
     }
 }

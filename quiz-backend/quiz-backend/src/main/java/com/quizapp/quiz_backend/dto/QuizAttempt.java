@@ -1,93 +1,62 @@
-package com.quizapp.quiz_backend.model;
+package com.quizapp.quiz_backend.dto;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
-@Table(name = "quiz_attempts")
+import com.quizapp.quiz_backend.model.Quiz;
+import com.quizapp.quiz_backend.model.User;
+
 public class QuizAttempt {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
-
-    @ManyToOne
-    @JoinColumn(name = "student_id", nullable = false)
     private User student;
-
     private Integer score;
-
-    @Column(name = "started_at")
     private LocalDateTime startedAt;
-
-    @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
-
-    // 🔥 ADD THIS
-    @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL)
-    private List<AttemptAnswer> answers = new ArrayList<>();
-
-    public List<AttemptAnswer> getAnswers() {
-        return answers;
-    }
-
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	public Quiz getQuiz() {
 		return quiz;
 	}
-
 	public void setQuiz(Quiz quiz) {
 		this.quiz = quiz;
 	}
-
 	public User getStudent() {
 		return student;
 	}
-
 	public void setStudent(User student) {
 		this.student = student;
 	}
-
 	public Integer getScore() {
 		return score;
 	}
-
 	public void setScore(Integer score) {
 		this.score = score;
 	}
-
 	public LocalDateTime getStartedAt() {
 		return startedAt;
 	}
-
 	public void setStartedAt(LocalDateTime startedAt) {
 		this.startedAt = startedAt;
 	}
-
 	public LocalDateTime getSubmittedAt() {
 		return submittedAt;
 	}
-
 	public void setSubmittedAt(LocalDateTime submittedAt) {
 		this.submittedAt = submittedAt;
 	}
-
-	public void setAnswers(List<AttemptAnswer> answers) {
-		this.answers = answers;
+	@Override
+	public String toString() {
+		return "QuizAttempt [id=" + id + ", quiz=" + quiz + ", student=" + student + ", score=" + score + ", startedAt="
+				+ startedAt + ", submittedAt=" + submittedAt + ", getId()=" + getId() + ", getQuiz()=" + getQuiz()
+				+ ", getStudent()=" + getStudent() + ", getScore()=" + getScore() + ", getStartedAt()=" + getStartedAt()
+				+ ", getSubmittedAt()=" + getSubmittedAt() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
+				+ ", toString()=" + super.toString() + "]";
 	}
 
-    // other getters...
+    // ❌ NO answers field here
 }

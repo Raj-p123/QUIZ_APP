@@ -1,55 +1,55 @@
-<div class="overview-page">
+<div class="overview-clean">
 
   <ng-container *ngIf="quizData$ | async as quiz; else loadingOrError">
 
-    <!-- 🔥 HEADER -->
-    <div class="overview-header">
+    <!-- ===== TOP BAR ===== -->
+    <div class="top-row">
       <button class="back-btn" (click)="goBack()">← Back</button>
 
-      <div class="header-text">
+      <div class="title-block">
         <h1>{{ quiz.title }}</h1>
         <p>{{ quiz.description || 'Test your knowledge and track your progress' }}</p>
       </div>
     </div>
 
-    <!-- 🔥 STATS -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <p>Total Questions</p>
-        <h2>{{ quiz.totalQuestions }}</h2>
+    <!-- ===== QUICK INFO STRIP ===== -->
+    <div class="info-strip">
+      <div class="info-item">
+        <span>Questions</span>
+        <strong>{{ quiz.totalQuestions }}</strong>
       </div>
 
-      <div class="stat-card">
-        <p>Time per Question</p>
-        <h2>{{ quiz.timePerQuestionSeconds }} sec</h2>
+      <div class="info-item">
+        <span>Time / Q</span>
+        <strong>{{ quiz.timePerQuestionSeconds }} sec</strong>
       </div>
 
-      <div class="stat-card">
-        <p>Last Score</p>
-        <h2>{{ quiz.lastScore !== null ? quiz.lastScore + '%' : '--' }}</h2>
+      <div class="info-item">
+        <span>Last Score</span>
+        <strong>
+          {{ quiz.lastScore !== null ? quiz.lastScore + '%' : '--' }}
+        </strong>
       </div>
 
-      <div class="stat-card">
-        <p>Total Attempts</p>
-        <h2>{{ quiz.attempts }}</h2>
+      <div class="info-item">
+        <span>Attempts</span>
+        <strong>{{ quiz.attempts }}</strong>
       </div>
     </div>
 
-    <!-- 🔥 START QUIZ CARD -->
-    <div class="action-card" *ngIf="!quiz.error">
+    <!-- ===== START SECTION ===== -->
+    <div class="start-section" *ngIf="!quiz.error">
 
-      <div class="action-info">
-        <h4 *ngIf="quiz.attempts === 0">
-          You haven’t attempted this quiz yet
-        </h4>
+      <div>
+        <h3 *ngIf="quiz.attempts === 0">
+          Start your first attempt
+        </h3>
 
-        <h4 *ngIf="quiz.attempts > 0">
-          You have attempted this quiz before
-        </h4>
+        <h3 *ngIf="quiz.attempts > 0">
+          Try again and improve your score
+        </h3>
 
-        <p class="hint">
-          You can attempt this quiz multiple times to improve your score.
-        </p>
+        <p>You can attempt this quiz multiple times.</p>
       </div>
 
       <button class="start-btn" (click)="startQuiz()">
@@ -58,40 +58,86 @@
 
     </div>
 
-    <!-- 🔥 ATTEMPT HISTORY -->
-    <div class="history-card" *ngIf="quiz.attemptHistory?.length">
+    <!-- ===== ATTEMPT SUMMARY ===== -->
+    <div class="attempt-summary" *ngIf="totalAttempts > 0">
 
-      <h3>Attempt History</h3>
+      <div class="summary-box">
+        <span>Total Attempts</span>
+        <strong>{{ totalAttempts }}</strong>
+      </div>
 
-      <div class="attempt-row"
+      <div class="summary-box">
+        <span>Best Score</span>
+        <strong>{{ bestScore }}%</strong>
+      </div>
+
+      <div class="summary-box">
+        <span>Average Score</span>
+        <strong>{{ averageScore }}%</strong>
+      </div>
+
+    </div>
+
+    <!-- ===== NEW PROFESSIONAL ATTEMPT HISTORY ===== -->
+    <div class="history-section" *ngIf="quiz.attemptHistory?.length">
+
+      <h2 class="history-title">Attempt History</h2>
+
+      <div class="attempt-card"
            *ngFor="let attempt of quiz.attemptHistory; let i = index">
 
-        <div class="attempt-left">
-          <span class="attempt-badge">
-            Attempt {{ i + 1 }}
-          </span>
-          <span class="attempt-date">
-            {{ attempt.date }}
-          </span>
+        <!-- STATUS -->
+        <div class="attempt-badge-status">
+          Attempted
         </div>
 
-        <div class="attempt-score">
-          {{ attempt.score }}%
+        <!-- DATE -->
+        <div class="attempt-date">
+          {{ attempt.date }}
+        </div>
+
+        <!-- DETAILS -->
+        <div class="attempt-details">
+
+          <div class="detail-box">
+            📋
+            <span>
+              {{ attempt.score }}/{{ quiz.totalQuestions }}
+            </span>
+          </div>
+
+          <div class="detail-box">
+            ⏱
+            <span>
+              {{ attempt.timeTaken || '00:05:00' }}
+            </span>
+          </div>
+
+          <div class="detail-box">
+            🎓
+            <span>
+              {{
+                ((attempt.score / quiz.totalQuestions) * 100)
+                | number:'1.2-2'
+              }}%
+            </span>
+          </div>
+
+          <button class="review-btn"
+        (click)="goToReview(attempt.id)">
+  Review
+</button>
+
         </div>
 
       </div>
 
     </div>
 
-    <!-- ERROR -->
-    <div *ngIf="quiz.error" class="error-msg">
-      Could not load quiz details. Please try again later.
-    </div>
-
   </ng-container>
 
   <ng-template #loadingOrError>
-    <div class="loading-state">
+    <div class="loading-clean">
       Fetching quiz details...
     </div>
   </ng-template>

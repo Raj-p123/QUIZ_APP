@@ -1,18 +1,49 @@
 <div class="layout-wrapper">
 
-  <!-- ===== NAVBAR ===== -->
-  <header class="top-navbar">
+  <!-- ===== NAVBAR (ONLY FOR STUDENT) ===== -->
+  <header class="top-navbar" *ngIf="isStudent()">
 
+    <!-- LEFT -->
     <div class="nav-left">
       <div class="brand">QuizApp</div>
       <input type="text" placeholder="Find a quiz..." class="search-input">
     </div>
 
+    <!-- CENTER -->
     <div class="nav-center">
       <a routerLink="/activity" routerLinkActive="active">Activity</a>
       <a routerLink="/classes" routerLinkActive="active">Classes</a>
       <a routerLink="/student-dashboard" routerLinkActive="active">Home</a>
-      <a (click)="logout()">Logout</a>
+    </div>
+
+    <!-- RIGHT PROFILE -->
+    <div class="nav-right">
+
+      <div class="profile-wrapper">
+
+        <div class="profile-circle" (click)="toggleProfile()">
+          {{ studentName ? studentName.charAt(0) : 'S' }}
+        </div>
+
+        <div class="profile-dropdown" *ngIf="showProfileMenu">
+
+          <div class="dropdown-user">
+            <strong>{{ studentName || 'Student' }}</strong>
+            <small>{{ studentEmail || '' }}</small>
+          </div>
+
+          <div class="dropdown-item" (click)="goProfile()">
+            👤 My Profile
+          </div>
+
+          <div class="dropdown-item logout" (click)="logout()">
+            🚪 Logout
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
 
   </header>
