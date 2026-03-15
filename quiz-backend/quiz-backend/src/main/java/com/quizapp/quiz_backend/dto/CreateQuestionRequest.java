@@ -1,11 +1,19 @@
 package com.quizapp.quiz_backend.dto;
 
+import com.quizapp.quiz_backend.model.QuestionType;
+
 public class CreateQuestionRequest {
 
     private Long quizId;
     private String questionText;
 
-    // ✅ NEW: time per question (seconds)
+    // 🔥 NEW: Question type
+    private QuestionType type;
+
+    // 🔥 Used for fill blank / short answer
+    private String correctAnswer;
+
+    // ⏱ Time per question (seconds)
     private int timeLimitSeconds;
 
     // ===== getters & setters =====
@@ -24,6 +32,22 @@ public class CreateQuestionRequest {
 
     public void setQuestionText(String questionText) {
         this.questionText = questionText;
+    }
+
+    public QuestionType getType() {
+        return type;
+    }
+
+    public void setType(QuestionType type) {
+        this.type = type;
+    }
+
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 
     public int getTimeLimitSeconds() {

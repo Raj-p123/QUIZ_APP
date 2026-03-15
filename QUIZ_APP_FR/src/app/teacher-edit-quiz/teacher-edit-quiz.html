@@ -12,82 +12,250 @@
         <p class="subtitle">{{ quiz.categoryName }} • {{ questions.length }} Questions</p>
       </div>
     </div>
+
     <div class="header-actions">
-      <button class="btn-secondary" *ngIf="!quiz.published" (click)="publishQuiz()" [disabled]="questions.length === 0">
+      <button class="btn-secondary"
+        *ngIf="!quiz.published"
+        (click)="publishQuiz()"
+        [disabled]="questions.length === 0">
         🚀 Publish
       </button>
+
       <span class="badge-published" *ngIf="quiz.published">✅ Published</span>
     </div>
   </header>
 
   <main class="edit-content">
+
     <section class="toolbar">
-      <button class="btn-primary" *ngIf="!quiz.published" (click)="openAddQuestionModal()">
+      <button class="btn-primary"
+        *ngIf="!quiz.published"
+        (click)="openAddQuestionModal()">
         + Add New Question
       </button>
-      <button class="btn-danger" *ngIf="hasSelectedQuestions()" (click)="deleteSelectedQuestions()">
+
+      <button class="btn-danger"
+        *ngIf="hasSelectedQuestions()"
+        (click)="deleteSelectedQuestions()">
         🗑 Delete Selected
       </button>
     </section>
 
     <div class="questions-list">
+
       <div class="q-card" *ngFor="let q of questions; let i = index">
+
         <div class="q-card-header">
           <div class="q-title-group">
-            <input type="checkbox" class="q-check" *ngIf="!quiz.published" [checked]="q.selected" (change)="toggleSelection(q)">
+
+            <input
+              type="checkbox"
+              class="q-check"
+              *ngIf="!quiz.published"
+              [checked]="q.selected"
+              (change)="toggleSelection(q)">
+
             <span class="q-number">Q{{ i + 1 }}</span>
+
             <h3 class="q-text">{{ q.questionText }}</h3>
+
+            <span class="q-type">{{ q.type }}</span>
+
           </div>
-          <button class="btn-outline-small" *ngIf="!quiz.published" (click)="openEditOptionModal(q)">
+
+          <button
+            class="btn-outline-small"
+            *ngIf="!quiz.published && q.type === 'MCQ'"
+            (click)="openEditOptionModal(q)">
             {{ hasOptions(q) ? 'Edit Options' : '+ Add Options' }}
           </button>
         </div>
 
-        <div class="options-preview-grid" *ngIf="hasOptions(q)">
-          <div class="opt-preview-item" *ngFor="let opt of q.options" [class.is-correct]="opt.correct">
-            <span class="opt-indicator">{{ opt.correct ? '✓' : '' }}</span>
-            <span class="opt-label">{{ opt.optionText }}</span>
+
+        <!-- MCQ OPTIONS PREVIEW -->
+        <div class="options-preview-grid"
+             *ngIf="q.type === 'MCQ' && hasOptions(q)">
+          <div
+            class="opt-preview-item"
+            *ngFor="let opt of q.options"
+            [class.is-correct]="opt.correct">
+
+            <span class="opt-indicator">
+              {{ opt.correct ? '✓' : '' }}
+            </span>
+
+            <span class="opt-label">
+              {{ opt.optionText }}
+            </span>
+
           </div>
         </div>
 
-        <div class="empty-options" *ngIf="!hasOptions(q)">
-          <p>⚠️ No options added. Click "Add Options" to set the answers.</p>
+        <div class="empty-options"
+             *ngIf="q.type === 'MCQ' && !hasOptions(q)">
+          <p>⚠️ No options added. Click "Add Options".</p>
         </div>
+
+
+        <!-- TRUE FALSE PREVIEW -->
+        <div class="options-preview-grid"
+             *ngIf="q.type === 'TRUE_FALSE' && hasOptions(q)">
+          <div
+            class="opt-preview-item"
+            *ngFor="let opt of q.options"
+            [class.is-correct]="opt.correct">
+
+            <span class="opt-indicator">
+              {{ opt.correct ? '✓' : '' }}
+            </span>
+
+            <span class="opt-label">
+              {{ opt.optionText }}
+            </span>
+
+          </div>
+        </div>
+
+
+        <!-- FILL BLANK PREVIEW -->
+        <div class="empty-options"
+             *ngIf="q.type === 'FILL_BLANK'">
+          <p><strong>Correct Answer:</strong> {{ q.correctAnswer }}</p>
+        </div>
+
       </div>
+
     </div>
+
   </main>
 </div>
 
+
+
 <div class="modal-overlay" *ngIf="showModal">
   <div class="modal-content">
+
     <div class="modal-header">
       <h2>{{ modalMode === 'question' ? 'New Question' : 'Manage Options' }}</h2>
       <button class="close-x" (click)="closeModal()">×</button>
     </div>
 
     <div class="modal-body">
+
+      <!-- QUESTION TYPE -->
       <div *ngIf="modalMode === 'question'" class="form-group">
-        <label>Question Prompt</label>
-        <textarea [(ngModel)]="newQuestionText" placeholder="e.g. What is the capital of France?"></textarea>
+
+        <label>Question Type</label>
+
+        <select [(ngModel)]="selectedType">
+
+          <option value="MCQ">MCQ</option>
+          <option value="TRUE_FALSE">True / False</option>
+          <option value="FILL_BLANK">Fill in the Blank</option>
+
+        </select>
+
       </div>
 
-      <div *ngIf="modalMode === 'option'" class="options-form">
-        <p class="form-hint">Type options and click the radio button for the correct one.</p>
-        <div class="option-input-item" *ngFor="let opt of options; let i = index" [class.active-correct]="opt.correct">
-          <input type="radio" name="correctOpt" [checked]="opt.correct" (change)="selectCorrect(i)">
-          <input type="text" [(ngModel)]="opt.text" placeholder="Enter option {{i+1}}...">
-        </div>
+
+      <!-- QUESTION TEXT -->
+      <div *ngIf="modalMode === 'question'" class="form-group">
+
+        <label>Question Prompt</label>
+
+        <textarea
+          [(ngModel)]="newQuestionText"
+          placeholder="Enter question">
+        </textarea>
+
       </div>
+
+
+      <!-- FILL BLANK CORRECT ANSWER -->
+      <div *ngIf="selectedType === 'FILL_BLANK'" class="form-group">
+
+        <label>Correct Answer</label>
+
+        <input
+          type="text"
+          [(ngModel)]="correctAnswer"
+          placeholder="Correct answer">
+
+      </div>
+
+
+      <!-- TRUE FALSE SELECTION -->
+      <div *ngIf="selectedType === 'TRUE_FALSE'" class="form-group">
+
+        <label>Select Correct Answer</label>
+
+        <div class="option-input-item">
+          <input
+            type="radio"
+            name="trueFalse"
+            value="TRUE"
+            [(ngModel)]="trueFalseAnswer">
+          <span>True</span>
+        </div>
+
+        <div class="option-input-item">
+          <input
+            type="radio"
+            name="trueFalse"
+            value="FALSE"
+            [(ngModel)]="trueFalseAnswer">
+          <span>False</span>
+        </div>
+
+      </div>
+
+
+      <!-- OPTIONS (MCQ ONLY) -->
+      <div *ngIf="modalMode === 'option'" class="options-form">
+
+        <p class="form-hint">
+          Type options and select the correct one.
+        </p>
+
+        <div
+          class="option-input-item"
+          *ngFor="let opt of options; let i = index"
+          [class.active-correct]="opt.correct">
+
+          <input
+            type="radio"
+            name="correctOpt"
+            [checked]="opt.correct"
+            (change)="selectCorrect(i)">
+
+          <input
+            type="text"
+            [(ngModel)]="opt.text"
+            placeholder="Enter option {{i+1}}">
+
+        </div>
+
+      </div>
+
     </div>
 
     <div class="modal-footer">
+
       <button class="btn-ghost" (click)="closeModal()">Cancel</button>
-      <button class="btn-primary" (click)="modalMode === 'question' ? submitQuestion() : submitOptions()">
+
+      <button
+        class="btn-primary"
+        (click)="modalMode === 'question' ? submitQuestion() : submitOptions()">
+
         {{ modalMode === 'question' ? 'Add Question' : 'Save Options' }}
+
       </button>
+
     </div>
+
   </div>
 </div>
+
 
 <ng-template #loadingState>
   <div class="loading-container">

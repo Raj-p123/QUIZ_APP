@@ -1,0 +1,32 @@
+
+<div class="quiz-type-container">
+
+  <h1>Create a Quiz</h1>
+  <p class="subtitle">Choose the type of quiz you want to create</p>
+
+  <div class="quiz-type-grid">
+
+    <div class="quiz-card" (click)="goClassicQuiz()">
+      <div class="icon">📘</div>
+      <h3>Classic Quiz</h3>
+      <p>Standard quiz where you manually add questions.</p>
+      <button>Start</button>
+    </div>
+
+    <div class="quiz-card disabled">
+      <div class="icon">🎯</div>
+      <h3>Practice Quiz</h3>
+      <p>Students can retry and learn from answers.</p>
+      <button disabled>Coming Soon</button>
+    </div>
+
+    <div class="quiz-card disabled">
+      <div class="icon">🎲</div>
+      <h3>Random Quiz</h3>
+      <p>Questions selected randomly from question bank.</p>
+      <button disabled>Coming Soon</button>
+    </div>
+
+  </div>
+
+</div>

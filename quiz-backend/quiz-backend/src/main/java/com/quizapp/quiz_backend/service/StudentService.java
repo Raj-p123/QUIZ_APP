@@ -107,34 +107,48 @@ public class StudentService {
         Quiz quiz = quizRepository.findByIdAndPublishedTrue(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found or not published"));
 
-        // 🔥 Shuffle questions
         List<Question> shuffledQuestions = new ArrayList<>(quiz.getQuestions());
         Collections.shuffle(shuffledQuestions);
 
         return shuffledQuestions.stream()
                 .map(q -> {
 
-                    // 🔥 Shuffle options inside each question
-                    List<Option> shuffledOptions = new ArrayList<>(q.getOptions());
-                    Collections.shuffle(shuffledOptions);
+                    List<StudentOptionResponse> optionResponses = new ArrayList<>();
+
+                    // Only MCQ / TRUE_FALSE should send options
+                    if (q.getType() != null &&
+                            (q.getType().name().equals("MCQ")
+                            || q.getType().name().equals("TRUE_FALSE"))) {
+
+                        if (q.getOptions() != null) {
+
+                            List<Option> shuffledOptions = new ArrayList<>(q.getOptions());
+                            Collections.shuffle(shuffledOptions);
+
+                            optionResponses = shuffledOptions.stream()
+                                    .map(o -> new StudentOptionResponse(
+                                            o.getId(),
+                                            o.getOptionText()
+                                    ))
+                                    .collect(Collectors.toList());
+                        }
+                    }
 
                     return new StudentQuestionResponse(
                             q.getId(),
                             q.getQuestionText(),
                             q.getTimeLimitSeconds(),
-                            shuffledOptions.stream()
-                                    .map(o -> new StudentOptionResponse(
-                                            o.getId(),
-                                            o.getOptionText()
-                                    ))
-                                    .collect(Collectors.toList())
+                            q.getType(),
+                            optionResponses
                     );
+
                 })
                 .collect(Collectors.toList());
     }
 
-    // ================= SUBMIT QUIZ =================
+ // ================= SUBMIT QUIZ =================
     public SubmitQuizResponse submitQuiz(SubmitQuizRequest request) {
+
         if (request.getAnswers() == null) {
             throw new RuntimeException("No answers submitted");
         }
@@ -145,7 +159,6 @@ public class StudentService {
         User student = userRepository.findById(request.getStudentId())
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        // Create attempt
         QuizAttempt attempt = new QuizAttempt();
         attempt.setQuiz(quiz);
         attempt.setStudent(student);
@@ -158,6 +171,7 @@ public class StudentService {
         List<SubmitQuizResponse.QuestionReview> reviewList = new ArrayList<>();
 
         for (SubmitQuizRequest.Answer ans : request.getAnswers()) {
+
             Question question = quiz.getQuestions().stream()
                     .filter(q -> q.getId().equals(ans.getQuestionId()))
                     .findFirst()
@@ -165,43 +179,68 @@ public class StudentService {
 
             if (question == null) continue;
 
-            // 🔥 Safety Check: Try to find the selected option only if an ID was provided
-            Option selected = null;
-            if (ans.getOptionId() != null && ans.getOptionId() > 0) {
-                selected = question.getOptions().stream()
+            boolean correct = false;
+
+            // ================= MCQ / TRUE_FALSE =================
+            if (ans.getOptionId() != null) {
+
+                Option selected = question.getOptions().stream()
                         .filter(o -> o.getId().equals(ans.getOptionId()))
                         .findFirst()
                         .orElse(null);
-            }
 
-            // If an option was actually selected, save it and check if correct
-            if (selected != null) {
-                AttemptAnswer attemptAnswer = new AttemptAnswer();
-                attemptAnswer.setAttempt(attempt);
-                attemptAnswer.setQuestion(question);
-                attemptAnswer.setSelectedOption(selected);
-                attemptAnswer.setCorrect(selected.isCorrect());   // ✅ REQUIRED
-                attemptAnswerRepository.save(attemptAnswer);
+                if (selected != null) {
 
-                if (selected.isCorrect()) {
-                    score++;
+                    AttemptAnswer attemptAnswer = new AttemptAnswer();
+                    attemptAnswer.setAttempt(attempt);
+                    attemptAnswer.setQuestion(question);
+                    attemptAnswer.setSelectedOption(selected);
+                    attemptAnswer.setCorrect(selected.isCorrect());
+
+                    attemptAnswerRepository.save(attemptAnswer);
+
+                    correct = selected.isCorrect();
+
+                    if (correct) score++;
                 }
             }
 
+         // ================= FILL BLANK =================
+            if (ans.getTextAnswer() != null && question.getCorrectAnswer() != null) {
 
-            // Build review options for the frontend
-            List<SubmitQuizResponse.OptionReview> optionReviews = question.getOptions().stream()
-                    .map(o -> new SubmitQuizResponse.OptionReview(
-                            o.getId(),
-                            o.getOptionText(),
-                            o.isCorrect()
-                    ))
-                    .collect(Collectors.toList());
+                String studentAnswer = ans.getTextAnswer().trim().toLowerCase();
+                String correctAnswer = question.getCorrectAnswer().trim().toLowerCase();
+
+                correct = studentAnswer.equals(correctAnswer);
+
+                AttemptAnswer attemptAnswer = new AttemptAnswer();
+                attemptAnswer.setAttempt(attempt);
+                attemptAnswer.setQuestion(question);
+                attemptAnswer.setSelectedOption(null);
+
+                // 🔥 STORE STUDENT ANSWER
+                attemptAnswer.setTextAnswer(ans.getTextAnswer());
+
+                attemptAnswer.setCorrect(correct);
+
+                attemptAnswerRepository.save(attemptAnswer);
+
+                if (correct) score++;
+            }
+
+            List<SubmitQuizResponse.OptionReview> optionReviews =
+                    question.getOptions().stream()
+                            .map(o -> new SubmitQuizResponse.OptionReview(
+                                    o.getId(),
+                                    o.getOptionText(),
+                                    o.isCorrect()
+                            ))
+                            .collect(Collectors.toList());
 
             reviewList.add(new SubmitQuizResponse.QuestionReview(
                     question.getQuestionText(),
                     optionReviews,
-                    ans.getOptionId() // This carries the user's choice (or null/-1) back to UI
+                    ans.getOptionId()
             ));
         }
 

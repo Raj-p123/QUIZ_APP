@@ -14,7 +14,16 @@ public class Question {
     @Column(name = "question_text", nullable = false, length = 1000)
     private String questionText;
 
-    // ✅ Time limit per question (seconds)
+    // 🔥 NEW: Question type (MCQ, TRUE_FALSE, FILL_BLANK, SHORT_ANSWER)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private QuestionType type;
+
+    // 🔥 NEW: Used for fill blank / short answer
+    @Column(name = "correct_answer")
+    private String correctAnswer;
+
+    // ⏱ Time limit per question
     @Column(name = "time_limit_seconds", nullable = false)
     private int timeLimitSeconds;
 
@@ -27,7 +36,7 @@ public class Question {
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
-    // 🔥 REQUIRED FOR PLAY QUIZ
+    // Used only for MCQ / TRUE_FALSE
     @OneToMany(
         mappedBy = "question",
         fetch = FetchType.LAZY,
@@ -48,6 +57,22 @@ public class Question {
 
     public void setQuestionText(String questionText) {
         this.questionText = questionText;
+    }
+
+    public QuestionType getType() {
+        return type;
+    }
+
+    public void setType(QuestionType type) {
+        this.type = type;
+    }
+
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 
     public int getTimeLimitSeconds() {
@@ -74,7 +99,6 @@ public class Question {
         this.quiz = quiz;
     }
 
-    // ✅ THIS FIXES THE ERROR
     public List<Option> getOptions() {
         return options;
     }

@@ -64,15 +64,17 @@ export class ApiService {
 
   // ✅ UPDATED: supports time per question
   addQuestion(payload: {
-    quizId: number;
-    questionText: string;
-    timeLimitSeconds: number;
-  }) {
-    return this.http.post(
-      `${this.baseUrl}/api/teacher/quizzes/questions`,
-      payload
-    );
-  }
+  quizId: number;
+  questionText: string;
+  type: string;
+  correctAnswer?: string;
+  timeLimitSeconds: number;
+}) {
+  return this.http.post(
+    `${this.baseUrl}/api/teacher/quizzes/questions`,
+    payload
+  );
+}
 
   deleteQuestion(questionId: number) {
     return this.http.delete(

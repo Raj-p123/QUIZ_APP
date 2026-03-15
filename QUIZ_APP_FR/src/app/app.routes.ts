@@ -32,7 +32,10 @@ import { ClassesComponent } from './classes/classes';
 import { ActivityComponent } from './activity/activity';
 
 import { MainLayout } from './main-layout/main-layout';
-import path from 'path/win32';
+import { TeacherLayout } from './teacher-layout/teacher-layout';
+
+/* NEW COMPONENT */
+import { QuizTypeComponent } from './quiz-type/quiz-type';
 
 export const routes: Routes = [
 
@@ -48,11 +51,10 @@ export const routes: Routes = [
   { path: 'contact', component: Contact },
   { path: 'forgot-password', component: ForgotPassword },
 
-  // ================= TEACHER / ADMIN =================
-  { path: 'teacher-dashboard', component: TeacherDashboard },
+  // ================= ADMIN =================
   { path: 'admin-dashboard', component: AdminDashboard },
 
-  // ================= STUDENT SECTION (WITH NAVBAR LAYOUT) =================
+  // ================= STUDENT SECTION =================
   {
     path: '',
     component: MainLayout,
@@ -68,24 +70,44 @@ export const routes: Routes = [
       { path: 'student/quiz/:quizId/play', component: PlayQuiz },
 
       { path: 'history', component: History },
-      { path: 'results', component: ResultsComponent },
+
       { path: 'results/:quizId', component: ResultDetailComponent },
-      {path: 'student/attempt-review/:attemptId',
-  loadComponent: () =>
-    import('./attempt-review/attempt-review')
-      .then(m => m.AttemptReview) }
+
+      {
+        path: 'student/attempt-review/:attemptId',
+        loadComponent: () =>
+          import('./attempt-review/attempt-review')
+            .then(m => m.AttemptReview)
+      }
+
+    ]
+  },
+
+  // ================= TEACHER SECTION =================
+  {
+    path: '',
+    component: TeacherLayout,
+    children: [
+
+      { path: 'teacher-dashboard', component: TeacherDashboard },
+      { path: 'teacher-quizzes', component: TeacherMyQuizzes },
+
+      /* NEW PAGE */
+      { path: 'quiz-type', component: QuizTypeComponent },
+
+      /* EXISTING CREATE QUIZ PAGE */
+      { path: 'create-quiz', component: CreateQuiz },
+
+      { path: 'teacher/quizzes/:quizId/edit', component: TeacherEditQuiz },
+      { path: 'teacher/quizzes/:quizId/view', component: TeacherEditQuiz },
+
+      { path: 'results', component: ResultsComponent }
 
     ]
   },
 
   // ================= GENERAL =================
-  { path: 'create-quiz', component: CreateQuiz },
   { path: 'quiz', component: Quiz },
-
-  // ================= TEACHER QUIZZES =================
-  { path: 'teacher-quizzes', component: TeacherMyQuizzes },
-  { path: 'teacher/quizzes/:quizId/edit', component: TeacherEditQuiz },
-  { path: 'teacher/quizzes/:quizId/view', component: TeacherEditQuiz },
 
   // ================= FALLBACK =================
   { path: '**', redirectTo: 'login' }

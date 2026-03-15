@@ -21,10 +21,14 @@ public class AttemptAnswer {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    // 🔹 Selected Option
+    // 🔹 Selected Option (MCQ / TRUE_FALSE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "selected_option_id", nullable = true)
     private Option selectedOption;
+
+    // 🔥 NEW: store answer for FILL_BLANK
+    @Column(name = "text_answer")
+    private String textAnswer;
 
     // ✅ IMPORTANT: store correctness at submission time
     @Column(name = "correct", nullable = false)
@@ -66,6 +70,14 @@ public class AttemptAnswer {
 
     public void setSelectedOption(Option selectedOption) {
         this.selectedOption = selectedOption;
+    }
+
+    public String getTextAnswer() {
+        return textAnswer;
+    }
+
+    public void setTextAnswer(String textAnswer) {
+        this.textAnswer = textAnswer;
     }
 
     public boolean isCorrect() {
