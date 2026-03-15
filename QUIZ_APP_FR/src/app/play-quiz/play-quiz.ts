@@ -3,21 +3,25 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudentService } from '../services/student-service';
 import { Subscription, interval, BehaviorSubject } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-play-quiz',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './play-quiz.html',
   styleUrl: './play-quiz.css',
 })
 export class PlayQuiz implements OnInit, OnDestroy {
+
   quizId!: number;
   questions: any[] = [];
   currentIndex = 0;
   currentQuestion: any;
 
   selectedOptionId: number | null = null;
+
+  typedAnswer: string = ''; // NEW
 
   timeLeft$ = new BehaviorSubject<number>(0);
   private timerSub: Subscription | null = null;
@@ -30,7 +34,8 @@ export class PlayQuiz implements OnInit, OnDestroy {
   totalQuestions = 0;
 
   review: any[] = [];
-  answers = new Map<number, number>();
+
+  answers = new Map<number, any>(); // UPDATED
 
   constructor(
     private route: ActivatedRoute,
@@ -42,11 +47,7 @@ export class PlayQuiz implements OnInit, OnDestroy {
   get timerPercentage(): number {
     if (!this.currentQuestion || this.currentQuestion.timeLimitSeconds <= 0)
       return 0;
-    return (
-      (this.timeLeft$.value /
-        this.currentQuestion.timeLimitSeconds) *
-      100
-    );
+    return (this.timeLeft$.value / this.currentQuestion.timeLimitSeconds) * 100;
   }
 
   get timerColor(): string {
@@ -57,9 +58,7 @@ export class PlayQuiz implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.quizId = Number(
-      this.route.snapshot.paramMap.get('quizId')
-    );
+    this.quizId = Number(this.route.snapshot.paramMap.get('quizId'));
     this.loadQuestions();
   }
 
@@ -68,132 +67,213 @@ export class PlayQuiz implements OnInit, OnDestroy {
   }
 
   loadQuestions(): void {
+
     this.loading = true;
 
     this.studentService.getQuizQuestions(this.quizId).subscribe({
+
       next: (data) => {
-        // 🔥 Backend already shuffles questions + options
+
         this.questions = data;
+
         this.currentIndex = 0;
 
         setTimeout(() => {
+
           this.loading = false;
+
           this.loadCurrentQuestion();
+
           this.cdr.detectChanges();
+
         }, 800);
+
       },
+
       error: (err) => {
+
         console.error('Failed to load questions', err);
+
         this.loading = false;
+
       },
+
     });
+
   }
 
   loadCurrentQuestion(): void {
+
     this.currentQuestion = this.questions[this.currentIndex];
-    this.selectedOptionId =
-      this.answers.get(this.currentQuestion.id) ?? null;
-    this.startTimer(
-      this.currentQuestion.timeLimitSeconds
-    );
+
+    this.selectedOptionId = null;
+
+    this.typedAnswer = '';
+
+    this.startTimer(this.currentQuestion.timeLimitSeconds);
+
   }
 
   selectOption(optionId: number): void {
+
     if (this.quizFinished || this.isSubmitting) return;
+
     this.selectedOptionId = optionId;
+
     this.answers.set(this.currentQuestion.id, optionId);
+
+  }
+
+  storeTypedAnswer(): void {
+
+    this.answers.set(this.currentQuestion.id, this.typedAnswer);
+
   }
 
   nextQuestion(): void {
+
     if (this.isSubmitting) return;
+
     this.stopTimer();
 
-    if (this.currentIndex < this.questions.length - 1) {
-      this.currentIndex++;
-      this.loadCurrentQuestion();
-    } else {
-      this.submitQuiz();
+    if (this.currentQuestion.type === 'FILL_BLANK') {
+
+      this.answers.set(this.currentQuestion.id, this.typedAnswer);
+
     }
+
+    if (this.currentIndex < this.questions.length - 1) {
+
+      this.currentIndex++;
+
+      this.loadCurrentQuestion();
+
+    } else {
+
+      this.submitQuiz();
+
+    }
+
   }
 
   startTimer(seconds: number): void {
+
     this.stopTimer();
+
     this.timeLeft$.next(seconds);
 
     this.timerSub = interval(1000).subscribe(() => {
+
       const current = this.timeLeft$.value;
 
       if (current > 0) {
+
         this.timeLeft$.next(current - 1);
+
         this.cdr.detectChanges();
+
       } else {
-        if (!this.answers.has(this.currentQuestion.id)) {
-          this.answers.set(this.currentQuestion.id, -1);
-        }
+
         this.nextQuestion();
+
       }
+
     });
+
   }
 
   stopTimer(): void {
+
     if (this.timerSub) {
+
       this.timerSub.unsubscribe();
+
       this.timerSub = null;
+
     }
+
   }
 
   submitQuiz(): void {
+
     if (this.isSubmitting) return;
 
     this.isSubmitting = true;
+
     this.stopTimer();
 
     const userData = localStorage.getItem('user');
+
     const user = userData ? JSON.parse(userData) : {};
 
     const payload = {
+
       quizId: this.quizId,
+
       studentId: user.id,
-      answers: Array.from(this.answers.entries()).map(
-        ([questionId, optionId]) => ({
-          questionId,
-          optionId: optionId === -1 ? null : optionId,
-        })
-      ),
+
+      answers: Array.from(this.answers.entries()).map(([questionId, answer]) => ({
+
+        questionId,
+
+        optionId: typeof answer === 'number' ? answer : null,
+
+        textAnswer: typeof answer === 'string' ? answer : null
+
+      }))
+
     };
 
     this.studentService.submitQuiz(payload).subscribe({
+
       next: (res: any) => {
+
         this.score = res.score;
+
         this.totalQuestions = res.totalQuestions;
+
         this.review = res.review;
+
         this.quizFinished = true;
+
         this.isSubmitting = false;
+
         this.cdr.detectChanges();
+
       },
+
       error: (err) => {
+
         console.error('Submission failed', err);
+
         this.isSubmitting = false;
-        alert(
-          'An error occurred while calculating your score.'
-        );
+
+        alert('An error occurred while calculating your score.');
+
         this.cdr.detectChanges();
+
       },
+
     });
+
   }
 
   goBack(): void {
+
     this.router.navigate(['/student-dashboard']);
+
   }
 
   isCorrectOption(option: any): boolean {
+
     return option.correct === true;
+
   }
 
-  isWrongSelected(
-    option: any,
-    selectedId: number
-  ): boolean {
+  isWrongSelected(option: any, selectedId: number): boolean {
+
     return option.id === selectedId && !option.correct;
+
   }
+
 }

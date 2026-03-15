@@ -31,7 +31,7 @@ public class TeacherQuizService {
         this.optionRepository = optionRepository;
     }
 
-    // ================= CREATE QUIZ (CLOUDINARY URL ONLY) =================
+    // ================= CREATE QUIZ =================
     public Quiz createQuiz(CreateQuizRequest request) {
 
         User teacher = userRepository.findById(request.getTeacherId())
@@ -50,10 +50,7 @@ public class TeacherQuizService {
         quiz.setTeacherId(teacher.getId());
         quiz.setCategory(category);
         quiz.setTimePerQuestionSeconds(request.getTimePerQuestionSeconds());
-
-        // ✅ Cloudinary image URL (already uploaded from frontend)
         quiz.setCoverImageUrl(request.getCoverImageUrl());
-
         quiz.setPublished(false);
 
         return quizRepository.save(quiz);
@@ -101,12 +98,18 @@ public class TeacherQuizService {
         question.setTimeLimitSeconds(request.getTimeLimitSeconds());
         question.setQuiz(quiz);
 
+        // 🔥 NEW
+        question.setType(request.getType());
+        question.setCorrectAnswer(request.getCorrectAnswer());
+
         Question saved = questionRepository.save(question);
 
         QuestionResponse response = new QuestionResponse();
         response.setId(saved.getId());
         response.setQuestionText(saved.getQuestionText());
         response.setQuizId(quiz.getId());
+        response.setType(saved.getType());
+        response.setCorrectAnswer(saved.getCorrectAnswer());
 
         return response;
     }
@@ -118,6 +121,7 @@ public class TeacherQuizService {
                 .orElseThrow(() -> new RuntimeException("Question not found"));
 
         if (request.isCorrect()) {
+
             boolean alreadyHasCorrect =
                     optionRepository.existsByQuestionIdAndCorrectTrue(request.getQuestionId());
 
@@ -154,6 +158,10 @@ public class TeacherQuizService {
                     QuestionWithOptionsResponse qDto = new QuestionWithOptionsResponse();
                     qDto.setId(question.getId());
                     qDto.setQuestionText(question.getQuestionText());
+
+                    // 🔥 NEW
+                    qDto.setType(question.getType());
+                    qDto.setCorrectAnswer(question.getCorrectAnswer());
 
                     List<OptionResponse> options = optionRepository
                             .findByQuestionId(question.getId())
@@ -195,20 +203,32 @@ public class TeacherQuizService {
                 throw new RuntimeException("Each question must have a valid time limit");
             }
 
-            List<Option> options = optionRepository.findByQuestionId(question.getId());
+            // 🔥 MCQ & TRUE_FALSE validation
+            if (question.getType() == QuestionType.MCQ || question.getType() == QuestionType.TRUE_FALSE) {
 
-            if (options.size() < 2) {
-                throw new RuntimeException("Each question must have at least 2 options");
+                List<Option> options = optionRepository.findByQuestionId(question.getId());
+
+                if (options.size() < 2) {
+                    throw new RuntimeException("Each MCQ/TRUE_FALSE question must have at least 2 options");
+                }
+
+                long correctCount = options.stream()
+                        .filter(Option::isCorrect)
+                        .count();
+
+                if (correctCount != 1) {
+                    throw new RuntimeException(
+                            "Each MCQ/TRUE_FALSE question must have exactly one correct option"
+                    );
+                }
             }
 
-            long correctCount = options.stream()
-                    .filter(Option::isCorrect)
-                    .count();
+            // 🔥 FILL BLANK validation
+            if (question.getType() == QuestionType.FILL_BLANK || question.getType() == QuestionType.SHORT_ANSWER) {
 
-            if (correctCount != 1) {
-                throw new RuntimeException(
-                        "Each question must have exactly one correct option"
-                );
+                if (question.getCorrectAnswer() == null || question.getCorrectAnswer().isBlank()) {
+                    throw new RuntimeException("Fill blank / short answer must have a correct answer");
+                }
             }
         }
 

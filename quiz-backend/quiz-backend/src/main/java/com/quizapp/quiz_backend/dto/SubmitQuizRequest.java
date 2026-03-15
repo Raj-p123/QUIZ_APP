@@ -6,7 +6,7 @@ public class SubmitQuizRequest {
 
     private Long quizId;
 
-    // 🔥 NEW FIELD (REQUIRED)
+    // 🔥 REQUIRED
     private Long studentId;
 
     private List<Answer> answers;
@@ -42,7 +42,14 @@ public class SubmitQuizRequest {
     public static class Answer {
 
         private Long questionId;
+
+        // for MCQ / TRUE_FALSE
         private Long optionId;
+
+        // 🔥 NEW FIELD (for fill blank / short answer)
+        private String textAnswer;
+
+        // ================= GETTERS =================
 
         public Long getQuestionId() {
             return questionId;
@@ -58,6 +65,14 @@ public class SubmitQuizRequest {
 
         public void setOptionId(Long optionId) {
             this.optionId = optionId;
+        }
+
+        public String getTextAnswer() {
+            return textAnswer;
+        }
+
+        public void setTextAnswer(String textAnswer) {
+            this.textAnswer = textAnswer;
         }
     }
 }

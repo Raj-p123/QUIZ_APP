@@ -95,4 +95,7 @@ export class ResultsComponent implements OnInit {
   viewDetails(quizId: number) {
     this.router.navigate(['/results', quizId]);
   }
+  goBack() {
+  this.router.navigate(['/teacher-dashboard']);
+}
 }

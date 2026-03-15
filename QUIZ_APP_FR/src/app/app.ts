@@ -1,7 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Home } from './home/home';
-import { StudentDashboard } from './student-dashboard/student-dashboard';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +7,17 @@ import { StudentDashboard } from './student-dashboard/student-dashboard';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
+
   protected readonly title = signal('QUIZ_APP_FR');
+
+  ngOnInit(): void {
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }
 }

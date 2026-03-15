@@ -1,19 +1,14 @@
-:host {
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --bg: #f8fafc;
-  --card: #ffffff;
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  --shadow-md: 0 20px 50px rgba(0,0,0,0.08);
-}
+/* ==============================
+   CREATE QUIZ COMPONENT
+   (Dark Mode Compatible)
+============================== */
 
 .create-page-wrapper {
   min-height: 100vh;
   padding: 50px;
   background: var(--bg);
   font-family: 'Inter', sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .create-layout {
@@ -25,15 +20,18 @@
 }
 
 /* LEFT CARD */
+
 .create-card {
-  background: var(--card);
+  background: var(--card-bg);
   border-radius: 20px;
   padding: 40px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow);
   border: 1px solid var(--border);
+  transition: 0.3s ease;
 }
 
 /* HEADER */
+
 .card-header {
   display: flex;
   align-items: center;
@@ -46,9 +44,17 @@
   height: 40px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: white;
+  background: var(--card-bg);
+  color: var(--text);
   cursor: pointer;
+  transition: 0.2s ease;
 }
+
+.back-btn:hover {
+  background: var(--border);
+}
+
+/* SECTIONS */
 
 .section {
   margin-bottom: 35px;
@@ -58,7 +64,7 @@
   font-size: 13px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--text-muted);
   margin-bottom: 20px;
 }
 
@@ -71,6 +77,7 @@ label {
   margin-bottom: 6px;
   font-weight: 500;
   font-size: 14px;
+  color: var(--text);
 }
 
 input, textarea {
@@ -79,7 +86,14 @@ input, textarea {
   border-radius: 12px;
   border: 1px solid var(--border);
   font-size: 15px;
-  transition: 0.2s;
+  background: var(--card-bg);
+  color: var(--text);
+  transition: 0.2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
 }
 
 input:focus, textarea:focus {
@@ -93,10 +107,11 @@ textarea {
   resize: none;
 }
 
-/* FIXED SPACING */
+/* ROW */
+
 .row {
   display: flex;
-  gap: 30px; /* Increased spacing */
+  gap: 30px;
   align-items: flex-start;
 }
 
@@ -104,7 +119,8 @@ textarea {
   flex: 1;
 }
 
-/* CATEGORY DROPDOWN FIX */
+/* CATEGORY DROPDOWN */
+
 .category-wrapper {
   position: relative;
 }
@@ -114,13 +130,14 @@ textarea {
   width: 100%;
   max-height: 220px;
   overflow-y: auto;
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   border: 1px solid var(--border);
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
   margin-top: 8px;
   z-index: 100;
   padding: 6px 0;
+  transition: 0.3s ease;
 }
 
 .category-item {
@@ -128,19 +145,21 @@ textarea {
   font-size: 14px;
   cursor: pointer;
   transition: background 0.2s ease;
+  color: var(--text);
 }
 
 .category-item:hover {
-  background: #f1f5f9;
+  background: rgba(37,99,235,0.08);
 }
 
 .category-item.selected {
-  background: rgba(37,99,235,0.08);
+  background: rgba(37,99,235,0.15);
   color: var(--primary);
   font-weight: 600;
 }
 
 /* BUTTONS */
+
 .btn-primary {
   background: var(--primary);
   color: white;
@@ -149,7 +168,7 @@ textarea {
   border: none;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -158,12 +177,18 @@ textarea {
 }
 
 .btn-secondary {
-  background: white;
+  background: var(--card-bg);
   border: 1px solid var(--border);
   padding: 12px 25px;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
+  color: var(--text);
+  transition: 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--border);
 }
 
 .form-actions {
@@ -174,22 +199,24 @@ textarea {
 }
 
 /* PREVIEW PANEL */
+
 .preview-panel {
   position: sticky;
   top: 40px;
 }
 
 .preview-card {
-  background: var(--card);
+  background: var(--card-bg);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow);
   border: 1px solid var(--border);
+  transition: 0.3s ease;
 }
 
 .preview-cover {
   height: 200px;
-  background: #f1f5f9;
+  background: var(--border);
   background-size: cover;
   background-position: center;
   position: relative;
@@ -201,7 +228,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--muted);
+  color: var(--text-muted);
   cursor: pointer;
 }
 
@@ -211,20 +238,22 @@ textarea {
 
 .preview-content h3 {
   margin: 0 0 10px;
+  color: var(--text);
 }
 
 .preview-content p {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 14px;
 }
 
 .preview-meta {
   margin-top: 15px;
   font-size: 13px;
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 /* RESPONSIVE */
+
 @media (max-width: 1000px) {
   .create-layout {
     grid-template-columns: 1fr;
