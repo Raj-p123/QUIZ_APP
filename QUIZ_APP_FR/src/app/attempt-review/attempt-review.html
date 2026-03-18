@@ -1,17 +1,33 @@
 <div class="review-container">
 
-  <div *ngFor="let item of reviewData" class="question-card">
+  <button class="back-btn" (click)="goBack()">← Back</button>
 
-    <h3>{{ item.question }}</h3>
+  <h2>Attempt Review</h2>
 
-    <div *ngFor="let option of item.options"
-         class="option"
-         [ngClass]="{
-           'correct': option.correct,
-           'wrong': isWrongSelected(option, item.selectedOptionId)
-         }">
+  <div *ngIf="loading">Loading review...</div>
 
-      {{ option.text }}
+  <div *ngIf="!loading">
+
+    <div *ngFor="let q of review; let i = index" class="review-card">
+
+      <h3>
+        Q{{ i + 1 }}. {{ q.question }}
+      </h3>
+
+      <div
+        *ngFor="let opt of q.options"
+        class="option"
+        [ngClass]="{
+          'correct': opt.correct,
+          'wrong': opt.id === q.selectedOptionId && !opt.correct
+        }">
+
+        {{ opt.text }}
+
+        <span *ngIf="opt.correct">✔</span>
+        <span *ngIf="opt.id === q.selectedOptionId && !opt.correct">✘</span>
+
+      </div>
 
     </div>
 

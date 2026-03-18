@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,142 +12,150 @@ export class StudentService {
 
   constructor(private http: HttpClient) {}
 
-  // ================= DASHBOARD (FUTURE) =================
-  getDashboardData(studentId: number) {
+  // ================= DASHBOARD =================
+  getDashboardData(studentId: number): Observable<any> {
     return this.http.get(
       `${this.apiUrl}/api/student/dashboard/${studentId}`
     );
   }
 
-  // ================= AVAILABLE QUIZZES =================
-  getAvailableQuizzes(): Observable<any[]> {
-  // 2. Define headers to bypass browser caching
-  const headers = new HttpHeaders({
-    'Cache-Control': 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
-    'Pragma': 'no-cache',
-    'Expires': '0'
-  });
-
-  return this.http.get<any[]>(
-    `${this.apiUrl}/api/student/quizzes`, 
-    { headers } // 3. Pass the headers here
-  );
-}
-
-  // ================= QUIZ OVERVIEW (NEW 🔥) =================
- getQuizOverview(quizId: number): Observable<any> {
-
-  const userData = localStorage.getItem('user');
-  const user = userData ? JSON.parse(userData) : null;
-
-  if (!user || !user.id) {
-    console.error("No logged-in user found!");
-    return this.http.get<any>(
-      `${this.apiUrl}/api/student/quizzes/${quizId}/overview?studentId=0`
+  getDashboardStats(studentId: any): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/api/student/dashboard-stats/${studentId}`
     );
   }
 
-  return this.http.get<any>(
-    `${this.apiUrl}/api/student/quizzes/${quizId}/overview?studentId=${user.id}`
-  );
-}
+  // ================= AVAILABLE QUIZZES =================
+  getAvailableQuizzes(): Observable<any[]> {
+
+    const headers = new HttpHeaders({
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+
+    return this.http.get<any[]>(
+      `${this.apiUrl}/api/student/quizzes`,
+      { headers }
+    );
+  }
+
+  // ================= QUIZ OVERVIEW =================
+  getQuizOverview(quizId: number): Observable<any> {
+
+    const userData = localStorage.getItem('user');
+    const user = userData ? JSON.parse(userData) : null;
+
+    const studentId = user?.id || 0;
+
+    return this.http.get<any>(
+      `${this.apiUrl}/api/student/quizzes/${quizId}/overview?studentId=${studentId}`
+    );
+  }
 
   // ================= PLAY QUIZ =================
-getQuizQuestions(quizId: number): Observable<any[]> {
-  return this.http.get<any[]>(
-    `${this.apiUrl}/api/student/quizzes/${quizId}/play`
-  );
-}
+  getQuizQuestions(quizId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/api/student/quizzes/${quizId}/play`
+    );
+  }
 
-// ================= SUBMIT QUIZ =================
-submitQuiz(payload: any): Observable<any> {
-  return this.http.post(
-    `${this.apiUrl}/api/student/quizzes/submit`,
-    payload
-  );
-}
+  // ================= SUBMIT QUIZ =================
+  submitQuiz(payload: any): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/api/student/quizzes/submit`,
+      payload
+    );
+  }
 
+  // ================= RECOMMENDED QUIZZES =================
+  getRecommendedQuizzes(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/api/student/recommended`
+    );
+  }
 
-
-
-
-getRecommendedQuizzes() {
-  return this.http.get<any[]>(
-    `${this.apiUrl}/api/student/recommended`
-  );
-}
-
-
-
-getLeaderboard() {
-  return this.http.get<any[]>(
-    `${this.apiUrl}/api/student/leaderboard`
-  );
-}
-
-
-getPerformance(studentId: any) {
+  // ================= DAILY CHALLENGE (NEW 🔥) =================
+  getDailyChallenge(): Observable<any> {
   return this.http.get<any>(
-    `${this.apiUrl}/api/student/performance/${studentId}`
+    `${this.apiUrl}/api/student/daily-challenge`
   );
 }
 
-getSubjectAnalytics(studentId: any) {
-  return this.http.get<any[]>(
-    `${this.apiUrl}/api/student/subject-analytics/${studentId}`
-  );
-}
+  // ================= LEADERBOARD =================
+  getLeaderboard(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/api/student/leaderboard`
+    );
+  }
 
+  // ================= PERFORMANCE =================
+  getPerformance(studentId: any): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/api/student/performance/${studentId}`
+    );
+  }
 
+  // ================= SUBJECT ANALYTICS =================
+  getSubjectAnalytics(studentId: any): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/api/student/subject-analytics/${studentId}`
+    );
+  }
 
-getDashboardStats(studentId: any) {
+  // ================= NOTIFICATIONS =================
+  getNotifications(studentId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/api/student/notifications/${studentId}`
+    );
+  }
+
+  // ================= ACHIEVEMENTS =================
+  getAchievements(studentId: number): Observable<string[]> {
+    return this.http.get<string[]>(
+      `${this.apiUrl}/api/student/achievements/${studentId}`
+    );
+  }
+
+  // ================= RECENT ACTIVITY =================
+  getActivity(studentId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/api/student/activity/${studentId}`
+    );
+  }
+
+  // ================= STUDENT CLASSES =================
+  getClasses(studentId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/api/student/classes/${studentId}`
+    );
+  }
+
+  getStudentClasses(studentId: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/api/student/classes/${studentId}`
+    );
+  }
+
+  // ================= QUIZ ATTEMPT REVIEW =================
+  getAttemptReview(attemptId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/api/student/attempt-review/${attemptId}`
+    );
+  }
+//================STRAK =================
+getStreak(studentId: number){
   return this.http.get<any>(
-    `${this.apiUrl}/api/student/dashboard-stats/${studentId}`
+    `${this.apiUrl}/api/student/streak/${studentId}`
   );
 }
 
 
 
-// ================= NOTIFICATIONS =================
-getNotifications(studentId: number) {
-  return this.http.get<any[]>(
-    `${this.apiUrl}/api/student/notifications/${studentId}`
-  );
-}
-
-// ================= ACHIEVEMENTS =================
-getAchievements(studentId: number) {
-  return this.http.get<string[]>(
-    `${this.apiUrl}/api/student/achievements/${studentId}`
-  );
-}
-
-
-
-
-getActivity(studentId: number) {
-  return this.http.get<any[]>(
-    `${environment.apiUrl}/api/student/activity/${studentId}`
-  );
-}
-
-
-
-getClasses(studentId: number) {
-  return this.http.get<any[]>(`${this.apiUrl}/api/student/classes/${studentId}`);
-}
-
-
-getStudentClasses(studentId: number) {
-  return this.http.get<any>(`/api/student/classes/${studentId}`);
-}
-
-
-
-
-getAttemptReview(attemptId: number) {
-  return this.http.get<any[]>(
-    `${this.apiUrl}/api/student/attempt-review/${attemptId}`
+// ================= PROGRESS =================
+getStudentProgress(studentId: number): Observable<any> {
+  return this.http.get<any>(
+    `${this.apiUrl}/api/student/progress/${studentId}`
   );
 }
 

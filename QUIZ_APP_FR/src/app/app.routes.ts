@@ -73,12 +73,13 @@ export const routes: Routes = [
 
       { path: 'results/:quizId', component: ResultDetailComponent },
 
-      {
-        path: 'student/attempt-review/:attemptId',
-        loadComponent: () =>
-          import('./attempt-review/attempt-review')
-            .then(m => m.AttemptReview)
-      }
+     {
+  path: 'student/attempt-review/:attemptId',
+  loadComponent: () =>
+    import('./attempt-review/attempt-review')
+      .then(m => m.AttemptReviewComponent),
+  runGuardsAndResolvers: 'paramsChange'
+}
 
     ]
   },

@@ -9,7 +9,7 @@ import { Observable, switchMap, map, catchError, of, shareReplay } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './quiz-overview.html',
-  styleUrl: './quiz-overview.css',
+  styleUrls: ['./quiz-overview.css']
 })
 export class QuizOverview implements OnInit {
 
@@ -29,45 +29,60 @@ export class QuizOverview implements OnInit {
   ngOnInit(): void {
 
     this.quizData$ = this.route.paramMap.pipe(
+
       map(params => {
-        this.quizId = Number(params.get('quizId'));
+        const id = params.get('quizId');
+        this.quizId = id ? Number(id) : 0;
         return this.quizId;
       }),
-      switchMap(id =>
-        this.studentService.getQuizOverview(id).pipe(
-          map((quiz: any) => {
 
-            if (quiz?.attemptHistory?.length) {
+      switchMap(id => {
 
-              this.totalAttempts = quiz.attemptHistory.length;
+        if (!id) {
+          return of({ error: true });
+        }
 
-              const scores = quiz.attemptHistory.map((a: any) => a.score ?? 0);
+        return this.studentService.getQuizOverview(id);
+      }),
 
-              this.bestScore = Math.max(...scores);
+      map((quiz: any) => {
 
-              const sum = scores.reduce((acc: number, val: number) => acc + val, 0);
+        if (quiz?.attemptHistory?.length) {
 
-              this.averageScore = Math.round(sum / scores.length);
+          const scores = quiz.attemptHistory.map((a: any) => a.score ?? 0);
 
-            } else {
-              this.totalAttempts = 0;
-              this.bestScore = 0;
-              this.averageScore = 0;
-            }
+          this.totalAttempts = scores.length;
+          this.bestScore = Math.max(...scores);
 
-            return quiz;
-          }),
-          catchError(err => {
-            console.error('Failed to load quiz overview', err);
-            return of({ error: true });
-          })
-        )
-      ),
+          const sum = scores.reduce((acc: number, val: number) => acc + val, 0);
+
+          this.averageScore = Math.round(sum / scores.length);
+
+        } else {
+
+          this.totalAttempts = 0;
+          this.bestScore = 0;
+          this.averageScore = 0;
+
+        }
+
+        return quiz;
+
+      }),
+
+      catchError(err => {
+        console.error('Failed to load quiz overview', err);
+        return of({ error: true });
+      }),
+
       shareReplay(1)
+
     );
   }
 
   startQuiz(): void {
+    if (!this.quizId) return;
+
     this.router.navigate(['/student/quiz', this.quizId, 'play']);
   }
 
@@ -75,11 +90,15 @@ export class QuizOverview implements OnInit {
     this.router.navigate(['/student/quizzes']);
   }
 
+  goToReview(attemptId: number): void {
 
+  if (!attemptId) return;
 
-goToReview(attemptId: number): void {
-  this.router.navigate(['/student/attempt-review', attemptId]);
+  // force reload of route
+  this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    this.router.navigate(['/student/attempt-review', attemptId]);
+  });
+
 }
-
 
 }

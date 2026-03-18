@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StudentService } from '../services/student-service';
 import { CommonModule } from '@angular/common';
 
@@ -8,31 +8,59 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './attempt-review.html',
-  styleUrl: './attempt-review.css',
+  styleUrls: ['./attempt-review.css']
 })
-export class AttemptReview implements OnInit {
+export class AttemptReviewComponent implements OnInit {
 
-  reviewData: any[] = [];
   attemptId!: number;
+  review: any[] = [];
+  loading = true;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private studentService: StudentService
   ) {}
 
   ngOnInit(): void {
-  this.attemptId = Number(this.route.snapshot.paramMap.get('attemptId'));
 
-  console.log("Attempt ID:", this.attemptId);
+    this.route.params.subscribe(params => {
 
-  this.studentService.getAttemptReview(this.attemptId)
-    .subscribe((data: any[]) => {
-      console.log("Review Data:", data);  // 🔥 ADD THIS
-      this.reviewData = data;
+      this.attemptId = Number(params['attemptId']);
+
+      if (!this.attemptId) {
+        console.warn('Invalid attemptId');
+        return;
+      }
+
+      this.fetchReview();
+
     });
-}
 
-  isWrongSelected(option: any, selectedId: number): boolean {
-    return option.id === selectedId && !option.correct;
   }
+
+  fetchReview() {
+
+    this.loading = true;
+
+    this.studentService.getAttemptReview(this.attemptId).subscribe({
+
+      next: (data: any) => {
+        this.review = data || [];
+        this.loading = false;
+      },
+
+      error: (err) => {
+        console.error('Review load error', err);
+        this.loading = false;
+      }
+
+    });
+
+  }
+
+  goBack() {
+    this.router.navigate(['/student/quizzes']);
+  }
+
 }

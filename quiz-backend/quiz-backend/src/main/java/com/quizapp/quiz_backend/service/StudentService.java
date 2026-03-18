@@ -10,6 +10,8 @@ import com.quizapp.quiz_backend.model.AttemptAnswer;
 import com.quizapp.quiz_backend.model.ClassRoom;
 import com.quizapp.quiz_backend.repository.*;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.util.Random;
 
 
 import com.quizapp.quiz_backend.dto.RecommendedQuizDTO;
@@ -146,6 +148,9 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
+ 
+         
+
  // ================= SUBMIT QUIZ =================
     public SubmitQuizResponse submitQuiz(SubmitQuizRequest request) {
 
@@ -165,9 +170,11 @@ public class StudentService {
         attempt.setStartedAt(LocalDateTime.now());
         attempt.setSubmittedAt(LocalDateTime.now());
         attempt.setScore(0);
+
         quizAttemptRepository.save(attempt);
 
         int score = 0;
+
         List<SubmitQuizResponse.QuestionReview> reviewList = new ArrayList<>();
 
         for (SubmitQuizRequest.Answer ans : request.getAnswers()) {
@@ -182,6 +189,7 @@ public class StudentService {
             boolean correct = false;
 
             // ================= MCQ / TRUE_FALSE =================
+
             if (ans.getOptionId() != null) {
 
                 Option selected = question.getOptions().stream()
@@ -205,7 +213,8 @@ public class StudentService {
                 }
             }
 
-         // ================= FILL BLANK =================
+            // ================= FILL BLANK =================
+
             if (ans.getTextAnswer() != null && question.getCorrectAnswer() != null) {
 
                 String studentAnswer = ans.getTextAnswer().trim().toLowerCase();
@@ -216,11 +225,7 @@ public class StudentService {
                 AttemptAnswer attemptAnswer = new AttemptAnswer();
                 attemptAnswer.setAttempt(attempt);
                 attemptAnswer.setQuestion(question);
-                attemptAnswer.setSelectedOption(null);
-
-                // 🔥 STORE STUDENT ANSWER
                 attemptAnswer.setTextAnswer(ans.getTextAnswer());
-
                 attemptAnswer.setCorrect(correct);
 
                 attemptAnswerRepository.save(attemptAnswer);
@@ -228,23 +233,31 @@ public class StudentService {
                 if (correct) score++;
             }
 
-            List<SubmitQuizResponse.OptionReview> optionReviews =
-                    question.getOptions().stream()
-                            .map(o -> new SubmitQuizResponse.OptionReview(
-                                    o.getId(),
-                                    o.getOptionText(),
-                                    o.isCorrect()
-                            ))
-                            .collect(Collectors.toList());
+            List<SubmitQuizResponse.OptionReview> optionReviews = new ArrayList<>();
+
+            if (question.getOptions() != null) {
+
+                optionReviews = question.getOptions().stream()
+                        .map(o -> new SubmitQuizResponse.OptionReview(
+                                o.getId(),
+                                o.getOptionText(),
+                                o.isCorrect()
+                        ))
+                        .collect(Collectors.toList());
+            }
 
             reviewList.add(new SubmitQuizResponse.QuestionReview(
                     question.getQuestionText(),
+                    question.getType().name(),
                     optionReviews,
-                    ans.getOptionId()
+                    ans.getOptionId(),
+                    ans.getTextAnswer(),
+                    question.getCorrectAnswer()
             ));
         }
 
         attempt.setScore(score);
+
         quizAttemptRepository.save(attempt);
 
         return new SubmitQuizResponse(
@@ -253,7 +266,6 @@ public class StudentService {
                 reviewList
         );
     }
-    
     
     
     public List<RecommendedQuizDTO> getRecommendedQuizzes() {
@@ -270,20 +282,45 @@ public class StudentService {
     }
     
     
-    
+    //====================streak=================== 
+
     public StreakDTO getStreak(Long studentId) {
 
-        User user = userRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<QuizAttempt> attempts =
+                quizAttemptRepository.findByStudentIdOrderBySubmittedAtDesc(studentId);
 
-        return new StreakDTO(
-                user.getCurrentStreak(),
-                user.getLongestStreak()
-        );
+        if (attempts.isEmpty()) {
+            return new StreakDTO(0, 0);
+        }
+
+        // Unique attempt dates
+        List<LocalDate> dates = attempts.stream()
+                .map(a -> a.getSubmittedAt().toLocalDate())
+                .distinct()
+                .toList();
+
+        int currentStreak = 1;
+        int longestStreak = 1;
+
+        for (int i = 1; i < dates.size(); i++) {
+
+            LocalDate prev = dates.get(i - 1);
+            LocalDate curr = dates.get(i);
+
+            if (prev.minusDays(1).equals(curr)) {
+
+                currentStreak++;
+                longestStreak = Math.max(longestStreak, currentStreak);
+
+            } else {
+                break;
+            }
+        }
+
+        return new StreakDTO(currentStreak, longestStreak);
     }
-
     
-    
+    //===========performance=======
     public PerformanceDTO getPerformance(Long studentId) {
 
         List<QuizAttempt> attempts = quizAttemptRepository
@@ -301,7 +338,7 @@ public class StudentService {
         return new PerformanceDTO(labels, scores);
     }
 
-    
+    //========Subject analysiss====
     public List<SubjectAnalyticsDTO> getSubjectAnalytics(Long studentId) {
 
         List<Object[]> results =
@@ -315,7 +352,8 @@ public class StudentService {
                 .toList();
     }
 
-    
+
+    //=======Notification======
     public List<NotificationDTO> getNotifications(Long studentId) {
 
         return List.of(
@@ -327,7 +365,7 @@ public class StudentService {
 
     
     
-    
+    //==============leaderboard========
     public List<LeaderboardDTO> getLeaderboard() {
 
         List<Object[]> results = quizAttemptRepository.getLeaderboardData();
@@ -358,7 +396,7 @@ public class StudentService {
 
     
     
-    
+    //======dashboard stats ==========
     public DashboardStatsDTO getDashboardStats(Long studentId) {
 
         List<QuizAttempt> attempts =
@@ -390,7 +428,7 @@ public class StudentService {
     
     
     
-    
+    //=======Activity ========
     public List<ActivityDTO> getStudentActivity(Long studentId) {
 
         List<QuizAttempt> attempts =
@@ -416,7 +454,7 @@ public class StudentService {
     }
 
 
-    
+    //========classes=======
     public List<ClassDTO> getStudentClasses(Long studentId) {
 
         List<ClassRoom> classes =
@@ -476,14 +514,8 @@ public class StudentService {
 
         return achievements;
     }
-
     
-    
-    
-    
-    
-    
-    
+    //========attempt review=====
     public List<AttemptReviewDTO> getAttemptReview(Long attemptId) {
 
         QuizAttempt attempt = quizAttemptRepository.findById(attemptId)
@@ -514,5 +546,60 @@ public class StudentService {
                 .toList();
     }
     
+  
+    
+ // ================= DAILY CHALLENGE =================
+    public DailyChallengeDTO getDailyChallenge() {
+
+        List<Quiz> quizzes = quizRepository.findByPublishedTrue();
+
+        if (quizzes.isEmpty()) {
+            throw new RuntimeException("No published quizzes available");
+        }
+
+        Quiz quiz = quizzes.get(new Random().nextInt(quizzes.size()));
+
+        return new DailyChallengeDTO(
+                quiz.getId(),
+                quiz.getTitle(),
+                quiz.getQuestions() != null ? quiz.getQuestions().size() : 0,
+                quiz.getTimePerQuestionSeconds()
+        );
+    }
+    
+    
+    //===========Student progrres
+    
+    public StudentProgressDTO getStudentProgress(Long studentId) {
+
+        List<QuizAttempt> attempts =
+                quizAttemptRepository.findByStudentId(studentId);
+
+        int xp = 0;
+
+        for (QuizAttempt attempt : attempts) {
+
+            int totalQuestions = attempt.getQuiz().getQuestions().size();
+
+            if (totalQuestions == 0) continue;
+
+            int score = attempt.getScore();
+
+            int percentage = (score * 100) / totalQuestions;
+
+            // XP per correct answer
+            xp += score * 10;
+
+            // Bonus XP
+            if (percentage >= 80) {
+                xp += 50;
+            }
+        }
+
+        int level = (xp / 1000) + 1;
+        int nextLevelXp = level * 1000;
+
+        return new StudentProgressDTO(xp, level, nextLevelXp);
+    }
 }
 

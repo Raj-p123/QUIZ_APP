@@ -14,6 +14,7 @@
 
     <!-- ===== QUICK INFO STRIP ===== -->
     <div class="info-strip">
+
       <div class="info-item">
         <span>Questions</span>
         <strong>{{ quiz.totalQuestions }}</strong>
@@ -35,12 +36,14 @@
         <span>Attempts</span>
         <strong>{{ quiz.attempts }}</strong>
       </div>
+
     </div>
 
     <!-- ===== START SECTION ===== -->
     <div class="start-section" *ngIf="!quiz.error">
 
       <div>
+
         <h3 *ngIf="quiz.attempts === 0">
           Start your first attempt
         </h3>
@@ -50,6 +53,7 @@
         </h3>
 
         <p>You can attempt this quiz multiple times.</p>
+
       </div>
 
       <button class="start-btn" (click)="startQuiz()">
@@ -78,25 +82,23 @@
 
     </div>
 
-    <!-- ===== NEW PROFESSIONAL ATTEMPT HISTORY ===== -->
-    <div class="history-section" *ngIf="quiz.attemptHistory?.length">
+    <!-- ===== ATTEMPT HISTORY ===== -->
+    <div class="history-section" *ngIf="quiz?.attemptHistory?.length">
 
       <h2 class="history-title">Attempt History</h2>
 
-      <div class="attempt-card"
-           *ngFor="let attempt of quiz.attemptHistory; let i = index">
+      <div
+        class="attempt-card"
+        *ngFor="let attempt of quiz.attemptHistory; let i = index">
 
-        <!-- STATUS -->
         <div class="attempt-badge-status">
           Attempted
         </div>
 
-        <!-- DATE -->
         <div class="attempt-date">
           {{ attempt.date }}
         </div>
 
-        <!-- DETAILS -->
         <div class="attempt-details">
 
           <div class="detail-box">
@@ -116,17 +118,15 @@
           <div class="detail-box">
             🎓
             <span>
-              {{
-                ((attempt.score / quiz.totalQuestions) * 100)
-                | number:'1.2-2'
-              }}%
+              {{ ((attempt.score / quiz.totalQuestions) * 100) | number:'1.2-2' }}%
             </span>
           </div>
 
-          <button class="review-btn"
-        (click)="goToReview(attempt.id)">
-  Review
-</button>
+          <button
+            class="review-btn"
+            (click)="goToReview(attempt.id)">
+            Review
+          </button>
 
         </div>
 

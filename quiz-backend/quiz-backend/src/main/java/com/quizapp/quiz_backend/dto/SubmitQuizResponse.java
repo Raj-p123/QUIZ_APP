@@ -26,24 +26,39 @@ public class SubmitQuizResponse {
         return review;
     }
 
-    // ================= INNER CLASSES =================
+    // ================= QUESTION REVIEW =================
 
     public static class QuestionReview {
 
         private String questionText;
+        private String type;
         private List<OptionReview> options;
         private Long selectedOptionId;
+        private String studentAnswer;
+        private String correctAnswer;
 
-        public QuestionReview(String questionText,
-                              List<OptionReview> options,
-                              Long selectedOptionId) {
+        public QuestionReview(
+                String questionText,
+                String type,
+                List<OptionReview> options,
+                Long selectedOptionId,
+                String studentAnswer,
+                String correctAnswer
+        ) {
             this.questionText = questionText;
+            this.type = type;
             this.options = options;
             this.selectedOptionId = selectedOptionId;
+            this.studentAnswer = studentAnswer;
+            this.correctAnswer = correctAnswer;
         }
 
         public String getQuestionText() {
             return questionText;
+        }
+
+        public String getType() {
+            return type;
         }
 
         public List<OptionReview> getOptions() {
@@ -53,7 +68,17 @@ public class SubmitQuizResponse {
         public Long getSelectedOptionId() {
             return selectedOptionId;
         }
+
+        public String getStudentAnswer() {
+            return studentAnswer;
+        }
+
+        public String getCorrectAnswer() {
+            return correctAnswer;
+        }
     }
+
+    // ================= OPTION REVIEW =================
 
     public static class OptionReview {
 

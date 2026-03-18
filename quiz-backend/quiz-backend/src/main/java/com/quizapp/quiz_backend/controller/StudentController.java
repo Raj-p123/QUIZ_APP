@@ -122,4 +122,21 @@ public class StudentController {
             @PathVariable Long attemptId) {
         return studentService.getAttemptReview(attemptId);
     }
+    
+    
+    
+    @GetMapping("/daily-challenge")
+    public DailyChallengeDTO getDailyChallenge() {
+        return studentService.getDailyChallenge();
+    }
+    
+    
+    
+    @GetMapping("/progress/{studentId}")
+    public StudentProgressDTO getProgress(@PathVariable Long studentId) {
+        return studentService.getStudentProgress(studentId);
+    }
+    
+    
+    
 }

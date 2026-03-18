@@ -1,22 +1,39 @@
-.question-card {
-  background: white;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 12px;
+.review-container{
+  max-width:700px;
+  margin:40px auto;
 }
 
-.option {
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 8px;
+.review-card{
+  background:white;
+  padding:20px;
+  margin-bottom:20px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
 }
 
-.correct {
-  background: #d1fae5;
-  border: 1px solid #10b981;
+.question-text{
+  margin-bottom:15px;
 }
 
-.wrong {
-  background: #fee2e2;
-  border: 1px solid #ef4444;
+.option{
+  padding:12px;
+  border:1px solid #e5e7eb;
+  margin-bottom:10px;
+  border-radius:8px;
+}
+
+.correct{
+  background:#dcfce7;
+  border-color:#22c55e;
+}
+
+.wrong{
+  background:#fee2e2;
+  border-color:#ef4444;
+}
+
+.loading{
+  text-align:center;
+  padding:30px;
+  color:#64748b;
 }
