@@ -1,25 +1,60 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // ✅ ADD THIS
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-forgot-password',
-  imports: [CommonModule, FormsModule, RouterLink],
+  standalone: true, // ✅ IMPORTANT
+  imports: [CommonModule, FormsModule], // ✅ ADD HERE
   templateUrl: './forgot-password.html',
-  styleUrl: './forgot-password.css',
+  styleUrl: './forgot-password.css'
 })
 export class ForgotPassword {
 
   email = '';
+  otp = '';
+  newPassword = '';
+  otpSent = false;
 
-  sendResetLink() {
+  constructor(private authService: AuthService) {}
+
+  sendOtp() {
     if (!this.email) {
-      alert('❌ Please enter your email');
+      alert('❌ Enter email');
       return;
     }
 
-    // Demo logic
-    alert(`📩 Password reset link sent to ${this.email}`);
+    this.authService.sendOtp(this.email).subscribe({
+      next: (res: any) => {
+        alert('✅ ' + res);
+        this.otpSent = true;
+      },
+      error: (err) => {
+        alert('❌ ' + (err.error || 'Something went wrong'));
+      }
+    });
+  }
+
+  resetPassword() {
+    if (!this.otp || !this.newPassword) {
+      alert('❌ Fill all fields');
+      return;
+    }
+
+    const data = {
+      email: this.email,
+      otp: this.otp,
+      newPassword: this.newPassword
+    };
+
+    this.authService.resetPassword(data).subscribe({
+      next: (res: any) => {
+        alert('✅ ' + res);
+      },
+      error: (err) => {
+        alert('❌ ' + (err.error || 'Invalid OTP'));
+      }
+    });
   }
 }

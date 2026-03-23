@@ -7,6 +7,12 @@ import com.quizapp.quiz_backend.model.User;
 import com.quizapp.quiz_backend.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.http.ResponseEntity;
+import java.util.Map;
+
+
+
+
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
@@ -29,4 +35,29 @@ public class AuthController {
     public LoginResponse login(@RequestBody LoginRequest request) {
         return userService.login(request);
     }
+    
+    
+    
+    
+ 
+ // ================= SEND OTP =================
+    @PostMapping("/send-otp")
+    public ResponseEntity<?> sendOtp(@RequestBody Map<String, String> req) {
+        return ResponseEntity.ok(Map.of("message", userService.sendOtp(req.get("email"))));
+    }
+
+    // ================= RESET PASSWORD =================
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> req) {
+        return ResponseEntity.ok(
+            Map.of("message",
+                userService.resetPassword(
+                    req.get("email"),
+                    req.get("otp"),
+                    req.get("newPassword")
+                )
+            )
+        );
+    }
+    
 }

@@ -17,6 +17,10 @@
         [(ngModel)]="password"
         name="password" />
 
+        <p class="forgot" (click)="goToForgotPassword()">
+  Forgot Password?
+</p>
+
       <button class="btn student" (click)="login()">Login</button>
     </ng-container>
 
@@ -35,6 +39,10 @@
         placeholder="Password"
         [(ngModel)]="password"
         name="password" />
+
+        <p class="forgot" (click)="goToForgotPassword()">
+  Forgot Password?
+</p>
 
       <button class="btn teacher" (click)="login()">Login</button>
     </ng-container>
@@ -60,6 +68,10 @@
         placeholder="Admin Secret Code"
         [(ngModel)]="enteredAdminCode"
         name="enteredAdminCode" />
+
+        <p class="forgot" (click)="goToForgotPassword()">
+  Forgot Password?
+</p>
 
       <button class="btn admin" (click)="login()">Login</button>
     </ng-container>

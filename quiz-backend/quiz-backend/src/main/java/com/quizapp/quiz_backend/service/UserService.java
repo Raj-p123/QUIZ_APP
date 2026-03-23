@@ -5,8 +5,12 @@ import com.quizapp.quiz_backend.dto.LoginResponse;
 import com.quizapp.quiz_backend.dto.RegisterRequest;
 import com.quizapp.quiz_backend.model.User;
 import com.quizapp.quiz_backend.repository.UserRepository;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserService {
@@ -14,33 +18,33 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    // constructor injection
     public UserService(UserRepository userRepository,
                        BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    // ================= COMMON METHOD =================
+    private String normalizeEmail(String email) {
+        return email.trim().toLowerCase();
+    }
+
     // ================= REGISTER =================
     public User registerUser(RegisterRequest request) {
 
-        // check if email already exists
-        userRepository.findByEmail(request.getEmail())
+        String email = normalizeEmail(request.getEmail());
+
+        userRepository.findByEmailIgnoreCase(email)
                 .ifPresent(u -> {
                     throw new RuntimeException("Email already registered");
                 });
 
-        // convert DTO -> Entity
         User user = new User();
         user.setName(request.getName());
-        user.setEmail(request.getEmail());
-
-        // encrypt password
+        user.setEmail(email); // ✅ normalized
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
         user.setRole(request.getRole());
 
-        // role-specific fields
         user.setInstitution(request.getInstitution());
         user.setSubjectExpertise(request.getSubjectExpertise());
         user.setExperienceYears(request.getExperienceYears());
@@ -54,15 +58,15 @@ public class UserService {
     // ================= LOGIN =================
     public LoginResponse login(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
+        String email = normalizeEmail(request.getEmail());
+
+        User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
-        // compare encrypted password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid email or password");
         }
 
-        // prepare safe response (NO password)
         LoginResponse response = new LoginResponse();
         response.setId(user.getId());
         response.setName(user.getName());
@@ -70,5 +74,50 @@ public class UserService {
         response.setRole(user.getRole());
 
         return response;
+    }
+
+    // ================= SEND OTP =================
+    public String sendOtp(String email) {
+
+        email = normalizeEmail(email);
+
+        System.out.println("Searching email: " + email);
+
+        Optional<User> userOpt = userRepository.findByEmailIgnoreCase(email);
+
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = userOpt.get();
+
+        String otp = String.valueOf(new Random().nextInt(900000) + 100000);
+
+        user.setOtp(otp);
+        userRepository.save(user);
+
+        System.out.println("OTP for " + email + " is: " + otp);
+
+        return "OTP sent";
+    }
+
+    // ================= RESET PASSWORD =================
+    public String resetPassword(String email, String otp, String newPassword) {
+
+        email = normalizeEmail(email);
+
+        User user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getOtp() == null || !user.getOtp().equals(otp)) {
+            throw new RuntimeException("Invalid OTP");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setOtp(null);
+
+        userRepository.save(user);
+
+        return "Password reset successful";
     }
 }

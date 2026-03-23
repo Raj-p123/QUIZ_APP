@@ -106,4 +106,8 @@ export class Login {
       }
     });
   }
+
+  goToForgotPassword(): void {
+  this.router.navigate(['/forgot-password']);
+}
 }
