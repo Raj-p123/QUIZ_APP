@@ -1,0 +1,82 @@
+<div class="leaderboard-page">
+
+  <!-- HEADER -->
+  <div class="leaderboard-header">
+    <button class="back-btn" (click)="goBack()">←</button>
+    <h2>🏆 Leaderboard</h2>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-box">
+    <input 
+      type="text"
+      placeholder="Search student..."
+      [(ngModel)]="searchText"
+      (input)="onSearch()"
+    />
+  </div>
+
+  <!-- ✅ LOADING FIX -->
+  <div *ngIf="isLoading" class="loading">
+    Loading leaderboard...
+  </div>
+
+  <!-- ✅ ONLY SHOW AFTER DATA -->
+  <ng-container *ngIf="!isLoading && filteredLeaderboard.length > 0">
+
+    <!-- TOP 3 -->
+    <div class="top-3" *ngIf="filteredLeaderboard.length >= 3">
+
+      <div class="top-card second">
+        <div class="rank">🥈</div>
+        <h4>{{ filteredLeaderboard[1]?.name }}</h4>
+        <p>{{ filteredLeaderboard[1]?.averageScore }}%</p>
+      </div>
+
+      <div class="top-card first">
+        <div class="rank">👑</div>
+        <h3>{{ filteredLeaderboard[0]?.name }}</h3>
+        <p>{{ filteredLeaderboard[0]?.averageScore }}%</p>
+      </div>
+
+      <div class="top-card third">
+        <div class="rank">🥉</div>
+        <h4>{{ filteredLeaderboard[2]?.name }}</h4>
+        <p>{{ filteredLeaderboard[2]?.averageScore }}%</p>
+      </div>
+
+    </div>
+
+    <!-- LIST -->
+    <div class="leaderboard-card">
+
+      <div class="leader-row"
+           *ngFor="let l of filteredLeaderboard.slice(3); let i = index"
+           [class.me]="isMe(l.name)">
+
+        <div class="rank-circle">
+          {{ i + 4 }}
+        </div>
+
+        <div class="leader-info">
+          <span>
+            {{ l.name }}
+
+            <span *ngIf="isMe(l.name)" class="you-badge">
+              You
+            </span>
+
+          </span>
+        </div>
+
+        <div class="leader-score">
+          {{ l.averageScore }}%
+        </div>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

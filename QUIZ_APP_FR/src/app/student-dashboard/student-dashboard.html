@@ -1,99 +1,118 @@
 <div class="dashboard-wrapper">
 
-<!-- Welcome -->
-<section class="welcome-section">
-  <h2>Welcome back, {{ studentName }} 👋</h2>
-</section>
+  <!-- ================= WELCOME ================= -->
+  <section class="welcome-section glass">
 
-
-<!-- STATS -->
-<section class="stats-row">
-
-  <div class="stat-card">
-    <div class="icon blue">✔</div>
     <div>
-      <h3>{{ attemptedQuizzes }}</h3>
-      <p>Quizzes Taken</p>
+      <h2>Welcome back, {{ studentName }} 👋</h2>
+      <p>Level {{ level }} • Keep learning daily 🚀</p>
     </div>
-  </div>
 
-  <div class="stat-card">
-    <div class="icon yellow">🏆</div>
-    <div>
-      <h3>{{ averageScore }}%</h3>
-      <p>Avg Score</p>
+    <!-- XP BAR -->
+    <div class="xp-box">
+      <span>{{ xp }} / {{ nextLevelXp }} XP</span>
+      <div class="xp-bar">
+        <div class="xp-fill"
+          [style.width.%]="(xp / nextLevelXp) * 100">
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="stat-card">
-    <div class="icon purple">🎯</div>
-    <div>
-      <h3>{{ highestScore }}%</h3>
-      <p>Highest</p>
+  </section>
+
+  <!-- ================= STATS ================= -->
+  <section class="stats-row">
+
+    <div class="stat-card">
+      <div class="icon blue">✔</div>
+      <div>
+        <h3>{{ attemptedQuizzes }}</h3>
+        <p>Quizzes Taken</p>
+      </div>
     </div>
-  </div>
 
-  <div class="stat-card">
-    <div class="icon pink">🔥</div>
-    <div>
-      <h3>{{ streakDays }} Days</h3>
-      <p>Study Streak</p>
-      <small>Best: {{ longestStreak }}</small>
+    <div class="stat-card">
+      <div class="icon yellow">🏆</div>
+      <div>
+        <h3>{{ averageScore }}%</h3>
+        <p>Avg Score</p>
+      </div>
     </div>
-  </div>
 
-</section>
+    <div class="stat-card">
+      <div class="icon purple">🎯</div>
+      <div>
+        <h3>{{ highestScore }}%</h3>
+        <p>Highest</p>
+      </div>
+    </div>
 
+    <div class="stat-card">
+      <div class="icon pink">🔥</div>
+      <div>
+        <h3>{{ streakDays }} Days</h3>
+        <p>Study Streak</p>
+        <small>Best: {{ longestStreak }}</small>
+      </div>
+    </div>
 
-<!-- GRID -->
-<section class="dashboard-grid">
+  </section>
 
-<!-- LEFT -->
-<div class="left-column">
+  <!-- ================= GRID ================= -->
+  <section class="dashboard-grid">
 
-<div class="widget-card">
+    <!-- ===== LEFT ===== -->
+    <div class="left-column">
 
-  <div class="section-title-bar">
-    <h3>Continue Your Learning</h3>
-    <button (click)="viewAllQuizzes()">View All →</button>
-  </div>
+      <!-- QUIZZES -->
+      <div class="widget-card">
 
-  <div class="quiz-modern-grid">
+        <div class="section-title-bar">
+          <h3>Continue Your Learning</h3>
+          <button (click)="viewAllQuizzes()">View All →</button>
+        </div>
 
-    <div class="quiz-card"
-    *ngFor="let q of (dashboardData$ | async)?.visibleQuizzes">
+        <div class="quiz-modern-grid">
 
-      <img [src]="q.coverImageUrl || 'assets/default-quiz.jpg'" />
+          <div class="quiz-card"
+               *ngFor="let q of (dashboardData$ | async)?.visibleQuizzes || []">
 
-      <div class="quiz-content">
-        <h4>{{ q.title }}</h4>
-        <p>{{ q.details }}</p>
+            <img [src]="q.coverImageUrl || 'assets/default-quiz.jpg'" />
 
-        <button (click)="startQuiz(q.id)">Start</button>
+            <div class="quiz-content">
+              <h4>{{ q.title }}</h4>
+              <p>{{ q.details }}</p>
+
+              <button (click)="startQuiz(q.id)">Start</button>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
 
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- LEADERBOARD -->
-<div class="widget-card leaderboard-card">
+      <!-- LEADERBOARD -->
+      <div class="widget-card leaderboard-card">
 
   <div class="section-title-bar">
     <h3>Leaderboard</h3>
+
+    <button (click)="goToLeaderboard()">
+      View All →
+    </button>
   </div>
 
-  <div class="leader-row" *ngFor="let l of leaderboard">
+  <div class="leader-row"
+       *ngFor="let l of visibleLeaderboard"
+       [class.me]="l.name === studentName">
 
     <div class="rank-circle"
-    [ngClass]="{
-      'gold': l.rank===1,
-      'silver': l.rank===2,
-      'bronze': l.rank===3
-    }">
+         [ngClass]="{
+           'gold': l.rank===1,
+           'silver': l.rank===2,
+           'bronze': l.rank===3
+         }">
       {{ l.rank }}
     </div>
 
@@ -102,37 +121,41 @@
       <small>{{ l.totalAttempts }} attempts</small>
     </div>
 
-    <div class="leader-score">{{ l.averageScore }}%</div>
+    <div class="leader-score">
+      {{ l.averageScore }}%
+    </div>
 
   </div>
 
 </div>
-
 </div>
+    <!-- ===== RIGHT ===== -->
+    <div class="right-column">
 
+      <app-performance-chart></app-performance-chart>
+      <app-subject-analytics></app-subject-analytics>
 
-<!-- RIGHT -->
-<div class="right-column">
+      <!-- DAILY CHALLENGE -->
+      <div class="widget-card challenge-card">
 
-<app-performance-chart></app-performance-chart>
-<app-subject-analytics></app-subject-analytics>
+        <h3>Daily Challenge 🚀</h3>
 
-<!-- DAILY -->
-<div class="widget-card challenge-card">
+        <div *ngIf="dailyChallenge">
+          <h4>{{ dailyChallenge.title }}</h4>
+          <p>
+            {{ dailyChallenge.questions }} Questions •
+            {{ dailyChallenge.time }} sec
+          </p>
 
-  <h3>Daily Challenge 🚀</h3>
+          <button (click)="startQuiz(dailyChallenge.id)">
+            Start Now
+          </button>
+        </div>
 
-  <div *ngIf="dailyChallenge">
-    <h4>{{ dailyChallenge.title }}</h4>
-    <p>{{ dailyChallenge.questions }} Questions • {{ dailyChallenge.time }} sec</p>
+      </div>
 
-    <button (click)="startQuiz(dailyChallenge.id)">Start Now</button>
-  </div>
+    </div>
 
-</div>
-
-</div>
-
-</section>
+  </section>
 
 </div>
