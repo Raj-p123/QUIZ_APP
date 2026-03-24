@@ -293,10 +293,11 @@ public class StudentService {
             return new StreakDTO(0, 0);
         }
 
-        // Unique attempt dates
+        // Get unique dates
         List<LocalDate> dates = attempts.stream()
                 .map(a -> a.getSubmittedAt().toLocalDate())
                 .distinct()
+                .sorted() // ✅ IMPORTANT (ascending order)
                 .toList();
 
         int currentStreak = 1;
@@ -307,14 +308,21 @@ public class StudentService {
             LocalDate prev = dates.get(i - 1);
             LocalDate curr = dates.get(i);
 
-            if (prev.minusDays(1).equals(curr)) {
-
+            if (prev.plusDays(1).equals(curr)) {
                 currentStreak++;
-                longestStreak = Math.max(longestStreak, currentStreak);
-
             } else {
-                break;
+                currentStreak = 1;
             }
+
+            longestStreak = Math.max(longestStreak, currentStreak);
+        }
+
+        // ✅ FIX CURRENT STREAK (must end today or yesterday)
+        LocalDate lastDate = dates.get(dates.size() - 1);
+        LocalDate today = LocalDate.now();
+
+        if (!lastDate.equals(today) && !lastDate.equals(today.minusDays(1))) {
+            currentStreak = 0;
         }
 
         return new StreakDTO(currentStreak, longestStreak);
@@ -376,26 +384,26 @@ public class StudentService {
         for (Object[] row : results) {
 
             String name = (String) row[0];
-            Double avgScore = (Double) row[1];
+            Double avgScore = (Double) row[1]; // raw score
             Long attempts = (Long) row[2];
             Integer highest = (Integer) row[3];
 
+            // ✅ FIX: assume average total questions = 10 (or your standard)
+            double percentage = avgScore * 10; // adjust if needed
+
             leaderboard.add(
-                    new LeaderboardDTO(
-                            rank++,
-                            name,
-                            Math.round(avgScore * 100.0) / 100.0,
-                            attempts.intValue(),
-                            highest
-                    )
+                new LeaderboardDTO(
+                    rank++,
+                    name,
+                    Math.round(percentage * 10.0) / 10.0,
+                    attempts.intValue(),
+                    highest
+                )
             );
         }
 
         return leaderboard;
     }
-
-    
-    
     //======dashboard stats ==========
     public DashboardStatsDTO getDashboardStats(Long studentId) {
 
@@ -408,15 +416,26 @@ public class StudentService {
 
         int attempted = attempts.size();
 
-        int highest = attempts.stream()
-                .mapToInt(QuizAttempt::getScore)
-                .max()
-                .orElse(0);
+        int highest = 0;
+        double totalPercentage = 0;
 
-        double average = attempts.stream()
-                .mapToInt(QuizAttempt::getScore)
-                .average()
-                .orElse(0);
+        for (QuizAttempt attempt : attempts) {
+
+            int totalQuestions = attempt.getQuiz().getQuestions().size();
+            if (totalQuestions == 0) continue;
+
+            int score = attempt.getScore();
+
+            int percentage = (score * 100) / totalQuestions;
+
+            totalPercentage += percentage;
+
+            if (percentage > highest) {
+                highest = percentage;
+            }
+        }
+
+        double average = totalPercentage / attempts.size();
 
         return new DashboardStatsDTO(
                 attempted,
@@ -424,9 +443,6 @@ public class StudentService {
                 highest
         );
     }
-
-    
-    
     
     //=======Activity ========
     public List<ActivityDTO> getStudentActivity(Long studentId) {

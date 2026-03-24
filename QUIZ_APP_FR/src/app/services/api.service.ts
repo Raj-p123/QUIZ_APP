@@ -144,4 +144,5 @@ getGlobalLeaderboard() {
     'http://localhost:8080/api/teacher/results/leaderboard/global'
   );
 }
+
 }

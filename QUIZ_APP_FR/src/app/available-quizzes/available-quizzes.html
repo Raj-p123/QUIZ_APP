@@ -1,13 +1,13 @@
 <div class="quizzes-page">
 
-  <!-- 🔥 HEADER SECTION -->
+  <!-- HEADER -->
   <div class="quizzes-header">
 
     <div class="header-left">
       <button class="back-btn" (click)="goBack()">←</button>
       <div>
-        <h1>Available Quizzes</h1>
-        <p>Find your next challenge and level up</p>
+        <h1>Explore Quizzes</h1>
+        <p>Boost your skills with curated quizzes</p>
       </div>
     </div>
 
@@ -23,21 +23,31 @@
 
   </div>
 
-  <!-- 🔥 QUIZ GRID -->
+  <!-- SORT -->
+  <div class="sort-bar">
+    <label>Sort:</label>
+    <select [(ngModel)]="sortBy" (change)="onSortChange()">
+      <option value="latest">Latest</option>
+      <option value="popular">Popular</option>
+    </select>
+  </div>
+
+  <!-- GRID -->
   <ng-container *ngIf="filteredQuizzes$ | async as quizzes; else loading">
+
     <div class="quiz-grid-modern" *ngIf="quizzes.length > 0; else noQuizzes">
 
-      <!-- 🔥 CLICK ANYWHERE → OVERVIEW -->
       <div class="quiz-card-modern"
            *ngFor="let q of quizzes"
            (click)="openQuiz(q.id)">
 
         <div class="quiz-image">
-          <img 
-            [src]="getImage(q.coverImageUrl)" 
-            (error)="handleImageError($event)"
-          >
-          <div class="quiz-badge">Intermediate</div>
+          <img [src]="getImage(q.coverImageUrl)"
+               (error)="handleImageError($event)">
+
+          <div class="quiz-badge">
+            {{ q.level || 'Medium' }}
+          </div>
         </div>
 
         <div class="quiz-content">
@@ -48,18 +58,16 @@
             <span>❓ {{ extractQuestions(q.details) }}</span>
           </div>
 
-          <!-- No stopPropagation needed -->
-          <button class="start-btn">
-            Start Quiz
-          </button>
+          <button class="start-btn">Start Quiz</button>
         </div>
 
       </div>
 
     </div>
+
   </ng-container>
 
-  <!-- STATES -->
+  <!-- LOADING -->
   <ng-template #loading>
     <div class="state-box">
       <div class="spinner"></div>
@@ -67,10 +75,11 @@
     </div>
   </ng-template>
 
+  <!-- EMPTY -->
   <ng-template #noQuizzes>
     <div class="state-box">
       <h3>No quizzes found</h3>
-      <p>Try searching something else.</p>
+      <p>Try different filters.</p>
     </div>
   </ng-template>
 

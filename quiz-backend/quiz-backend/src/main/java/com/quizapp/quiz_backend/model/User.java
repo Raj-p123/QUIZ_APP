@@ -42,11 +42,20 @@ public class User {
     private int currentStreak;
     private int longestStreak;
     
+    private String otp;
     
 
     // ===== getters and setters =====
 
-    public Long getId() {
+    public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
+	public Long getId() {
         return id;
     }
 
