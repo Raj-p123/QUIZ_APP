@@ -5,17 +5,12 @@ import { BehaviorSubject, forkJoin } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { StudentService } from '../services/student-service';
 
-import { PerformanceChartComponent } from '../performance-chart/performance-chart';
-import { SubjectAnalyticsComponent } from '../subject-analytics/subject-analytics';
-
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    PerformanceChartComponent,
-    SubjectAnalyticsComponent
+    RouterModule
   ],
   templateUrl: './student-dashboard.html',
   styleUrl: './student-dashboard.css'
@@ -37,11 +32,9 @@ export class StudentDashboard implements OnInit, OnDestroy {
 
   dailyChallenge: any = {};
 
-  // ✅ LEADERBOARD
   allLeaderboard: any[] = [];
   visibleLeaderboard: any[] = [];
 
-  // ✅ AUTO REFRESH
   refreshInterval: any;
 
   private dashboardDataSubject = new BehaviorSubject<any>({
@@ -73,13 +66,10 @@ export class StudentDashboard implements OnInit, OnDestroy {
     this.loadDailyChallenge();
     this.loadLeaderboard();
 
-    // 🔥 REAL-TIME STREAK UPDATE (every 5 sec)
     this.refreshInterval = setInterval(() => {
       this.loadStreakOnly();
     }, 5000);
   }
-
-  /* ================= DASHBOARD ================= */
 
   loadDashboard() {
 
@@ -101,7 +91,6 @@ export class StudentDashboard implements OnInit, OnDestroy {
       this.level = res.progress.level;
       this.nextLevelXp = res.progress.nextLevelXp;
 
-      // ✅ INITIAL STREAK LOAD
       this.streakDays = res.streak.currentStreak;
       this.longestStreak = res.streak.longestStreak;
 
@@ -120,10 +109,7 @@ export class StudentDashboard implements OnInit, OnDestroy {
     });
   }
 
-  /* ================= REAL-TIME STREAK ================= */
-
   loadStreakOnly() {
-
     const studentId = Number(localStorage.getItem('studentId'));
     if (!studentId) return;
 
@@ -133,8 +119,6 @@ export class StudentDashboard implements OnInit, OnDestroy {
         this.longestStreak = data.longestStreak;
       });
   }
-
-  /* ================= DAILY ================= */
 
   loadDailyChallenge() {
     this.studentService.getDailyChallenge()
@@ -148,8 +132,6 @@ export class StudentDashboard implements OnInit, OnDestroy {
       });
   }
 
-  /* ================= LEADERBOARD ================= */
-
   loadLeaderboard() {
     this.studentService.getLeaderboard()
       .subscribe(data => {
@@ -157,8 +139,6 @@ export class StudentDashboard implements OnInit, OnDestroy {
         this.visibleLeaderboard = this.allLeaderboard.slice(0, 5);
       });
   }
-
-  /* ================= NAV ================= */
 
   startQuiz(id: number) {
     this.router.navigate(['/student/quiz', id, 'overview']);
@@ -171,8 +151,6 @@ export class StudentDashboard implements OnInit, OnDestroy {
   goToLeaderboard() {
     this.router.navigate(['/leaderboard']);
   }
-
-  /* ================= CLEANUP ================= */
 
   ngOnDestroy(): void {
     if (this.refreshInterval) {

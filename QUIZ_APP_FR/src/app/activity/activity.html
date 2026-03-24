@@ -1,90 +1,116 @@
 <div class="activity-wrapper">
 
+  <!-- HEADER -->
   <div class="page-header">
     <h2>📊 My Learning Activity</h2>
-    <p>Track your performance and progress over time</p>
+    <p>Track your performance and progress</p>
   </div>
 
-  <!-- Loading -->
+  <!-- LOADING -->
   <div *ngIf="loading" class="loading">
-    Loading activity data...
+    ⏳ Loading activity data...
   </div>
 
-  <!-- SUMMARY CARDS -->
+  <!-- SUMMARY -->
   <div class="summary-row" *ngIf="!loading">
 
-    <div class="summary-card attempts">
-      <div class="icon">📘</div>
-      <div>
-        <h4>Total Attempts</h4>
-        <span>{{ totalAttempts }}</span>
+    <div class="summary-card">
+      <h4>Unique Quizzes</h4>
+      <h2>{{ totalAttempts }}</h2>
+    </div>
+
+    <div class="summary-card">
+      <h4>Average Score</h4>
+      <h2>{{ avgScore }}%</h2>
+      <div class="progress">
+        <div class="progress-bar" [style.width.%]="avgScore"></div>
       </div>
     </div>
 
-    <div class="summary-card average">
-      <div class="icon">📈</div>
-      <div>
-        <h4>Average Score</h4>
-        <span>{{ avgScore }}%</span>
-      </div>
+    <div class="summary-card">
+      <h4>Best Score</h4>
+      <h2>{{ highestScore }}%</h2>
     </div>
 
-    <div class="summary-card highest">
-      <div class="icon">🏆</div>
-      <div>
-        <h4>Highest Score</h4>
-        <span>{{ highestScore }}%</span>
-      </div>
+    <div class="summary-card">
+      <h4>Trend</h4>
+      <h2 [ngClass]="trend >= 0 ? 'up' : 'down'">
+        {{ trend >= 0 ? '⬆ Improving' : '⬇ Declining' }}
+      </h2>
     </div>
 
   </div>
 
-  <!-- Performance Graph -->
-  <div class="chart-card" *ngIf="!loading && attempts.length > 0">
-    <app-performance-chart></app-performance-chart>
+  <!-- CHARTS -->
+  <div class="charts-grid" *ngIf="!loading && attempts.length > 0">
+
+    <div class="chart-card">
+      <app-performance-chart [data]="attempts"></app-performance-chart>
+    </div>
+
+    <div class="chart-card">
+      <app-subject-analytics [data]="attempts"></app-subject-analytics>
+    </div>
+
   </div>
 
-
-  <div class="chart-card" *ngIf="!loading && attempts.length > 0">
-  <app-subject-analytics></app-subject-analytics>
-</div>
-
-
-
-  <!-- History Table -->
+  <!-- TABLE -->
   <div class="table-card" *ngIf="!loading">
 
-    <h3>📋 Attempt History</h3>
+    <div class="table-header">
+      <h3>📋 Best Attempts</h3>
 
-    <table *ngIf="attempts.length > 0; else noData">
-      <thead>
-        <tr>
-          <th>Quiz</th>
-          <th>Date</th>
-          <th>Score</th>
-          <th>Percentage</th>
-          <th>Status</th>
-        </tr>
-      </thead>
+      <div class="search-box">
+        <span>🔍</span>
+        <input 
+          type="text"
+          placeholder="Search quiz..."
+          [(ngModel)]="searchText"
+        />
+      </div>
+    </div>
 
-      <tbody>
-        <tr *ngFor="let a of attempts">
-          <td>{{ a.quizTitle }}</td>
-          <td>{{ a.attemptedAt | date:'medium' }}</td>
-          <td>{{ a.score }}/{{ a.totalQuestions }}</td>
-          <td>{{ a.percentage }}%</td>
-          <td>
-            <span 
-              [ngClass]="a.percentage >= 50 ? 'status-pass' : 'status-fail'">
-              {{ a.percentage >= 50 ? 'PASS' : 'FAIL' }}
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-wrapper" *ngIf="filteredAttempts().length > 0; else noData">
+
+      <!-- HEADER -->
+      <div class="table-row header">
+        <div>Quiz</div>
+        <div>Date</div>
+        <div>Score</div>
+        <div>%</div>
+        <div>Status</div>
+      </div>
+
+      <!-- DATA -->
+      <div 
+        class="table-row"
+        *ngFor="let a of filteredAttempts()">
+
+        <div class="quiz-name">{{ a.quizTitle }}</div>
+
+        <div>{{ a.attemptedAt | date:'medium' }}</div>
+
+        <div>{{ a.score }}/{{ a.totalQuestions }}</div>
+
+        <div>
+          <span class="badge" [ngClass]="getScoreClass(a.percentage)">
+            {{ a.percentage }}%
+          </span>
+        </div>
+
+        <div>
+          <span class="status" 
+            [ngClass]="a.percentage >= 50 ? 'pass' : 'fail'">
+            {{ a.percentage >= 50 ? 'PASS' : 'FAIL' }}
+          </span>
+        </div>
+
+      </div>
+
+    </div>
 
     <ng-template #noData>
-      <p class="empty-text">No attempts yet.</p>
+      <p class="empty-text">No attempts yet</p>
     </ng-template>
 
   </div>

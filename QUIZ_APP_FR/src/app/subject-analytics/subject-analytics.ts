@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
-import { StudentService } from '../services/student-service';
-import { AuthService } from '../services/auth';
 import { CommonModule } from '@angular/common';
+import { Attempt } from '../models/attempt';
 
 @Component({
   selector: 'app-subject-analytics',
@@ -13,7 +12,7 @@ import { CommonModule } from '@angular/common';
       <h3>Subject Strength</h3>
 
       <div *ngIf="radarData.labels.length === 0" class="empty-state">
-        No subject data available.
+        No subject data available
       </div>
 
       <canvas *ngIf="radarData.labels.length > 0"
@@ -25,7 +24,9 @@ import { CommonModule } from '@angular/common';
     </div>
   `
 })
-export class SubjectAnalyticsComponent implements OnInit {
+export class SubjectAnalyticsComponent implements OnChanges {
+
+  @Input() data: Attempt[] = [];
 
   radarData: any = {
     labels: [],
@@ -37,49 +38,83 @@ export class SubjectAnalyticsComponent implements OnInit {
     scales: {
       r: {
         min: 0,
-        max: 100
+        max: 100,
+        ticks: {
+          stepSize: 20
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true
       }
     }
   };
 
-  constructor(
-    private studentService: StudentService,
-    private authService: AuthService
-  ) {}
-
-  ngOnInit(): void {
-    const studentId = this.authService.getCurrentUserId();
-
-    if (studentId) {
-      this.loadSubjectData(studentId);
+  ngOnChanges(): void {
+    if (!this.data || this.data.length === 0) {
+      this.radarData = { labels: [], datasets: [] };
+      return;
     }
+
+    const subjectMap: Record<string, number[]> = {};
+
+    this.data.forEach((a: Attempt) => {
+
+      // ✅ FIX: Use subject OR fallback to quizTitle
+      const subject = this.getSubjectName(a);
+
+      if (!subjectMap[subject]) {
+        subjectMap[subject] = [];
+      }
+
+      subjectMap[subject].push(a.percentage);
+    });
+
+    const labels = Object.keys(subjectMap);
+
+    const values = labels.map((subject: string) => {
+      const arr = subjectMap[subject];
+      return Math.round(arr.reduce((x, y) => x + y, 0) / arr.length);
+    });
+
+    this.radarData = {
+      labels: labels,
+      datasets: [
+        {
+          data: values,
+          label: 'Subject Strength %',
+          backgroundColor: 'rgba(14,165,233,0.3)',
+          borderColor: '#0ea5e9',
+          borderWidth: 2,
+          pointBackgroundColor: '#0ea5e9'
+        }
+      ]
+    };
   }
 
-  loadSubjectData(studentId: number) {
-    this.studentService.getSubjectAnalytics(studentId).subscribe({
-      next: (data: any[]) => {
+  // ✅ SMART SUBJECT DETECTION
+  getSubjectName(a: Attempt): string {
 
-        if (!data || data.length === 0) return;
+    // 1. If backend provides subject
+    if (a.subject && a.subject.trim() !== '') {
+      return a.subject;
+    }
 
-        // ✅ Convert average raw score to percentage
-        const percentageScores = data.map(d =>
-          Math.round((d.averageScore / 20) * 100)
-        );
+    // 2. Try extract from quiz title
+    const title = a.quizTitle?.toLowerCase() || '';
 
-        this.radarData = {
-          labels: data.map(d => d.subject),
-          datasets: [
-            {
-              data: percentageScores,
-              label: 'Subject Strength %',
-              backgroundColor: 'rgba(14,165,233,0.3)',
-              borderColor: '#0ea5e9',
-              borderWidth: 2,
-              pointBackgroundColor: '#0ea5e9'
-            }
-          ]
-        };
-      }
-    });
+    if (title.includes('java')) return 'Java';
+    if (title.includes('python')) return 'Python';
+    if (title.includes('dbms')) return 'DBMS';
+    if (title.includes('sql')) return 'SQL';
+    if (title.includes('c++')) return 'C++';
+    if (title.includes('c ')) return 'C';
+    if (title.includes('javascript')) return 'JavaScript';
+    if (title.includes('html')) return 'HTML';
+    if (title.includes('css')) return 'CSS';
+
+    // 3. Fallback → show quiz title
+    return a.quizTitle || 'Other';
   }
 }

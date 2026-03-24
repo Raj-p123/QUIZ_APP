@@ -95,45 +95,41 @@
       <!-- LEADERBOARD -->
       <div class="widget-card leaderboard-card">
 
-  <div class="section-title-bar">
-    <h3>Leaderboard</h3>
+        <div class="section-title-bar">
+          <h3>Leaderboard</h3>
+          <button (click)="goToLeaderboard()">View All →</button>
+        </div>
 
-    <button (click)="goToLeaderboard()">
-      View All →
-    </button>
-  </div>
+        <div class="leader-row"
+             *ngFor="let l of visibleLeaderboard"
+             [class.me]="l.name === studentName">
 
-  <div class="leader-row"
-       *ngFor="let l of visibleLeaderboard"
-       [class.me]="l.name === studentName">
+          <div class="rank-circle"
+               [ngClass]="{
+                 'gold': l.rank===1,
+                 'silver': l.rank===2,
+                 'bronze': l.rank===3
+               }">
+            {{ l.rank }}
+          </div>
 
-    <div class="rank-circle"
-         [ngClass]="{
-           'gold': l.rank===1,
-           'silver': l.rank===2,
-           'bronze': l.rank===3
-         }">
-      {{ l.rank }}
+          <div class="leader-info">
+            <span>{{ l.name }}</span>
+            <small>{{ l.totalAttempts }} attempts</small>
+          </div>
+
+          <div class="leader-score">
+            {{ l.averageScore }}%
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="leader-info">
-      <span>{{ l.name }}</span>
-      <small>{{ l.totalAttempts }} attempts</small>
-    </div>
-
-    <div class="leader-score">
-      {{ l.averageScore }}%
-    </div>
-
-  </div>
-
-</div>
-</div>
     <!-- ===== RIGHT ===== -->
     <div class="right-column">
-
-      <app-performance-chart></app-performance-chart>
-      <app-subject-analytics></app-subject-analytics>
 
       <!-- DAILY CHALLENGE -->
       <div class="widget-card challenge-card">

@@ -1,94 +1,200 @@
+/* MAIN WRAPPER */
 .activity-wrapper {
-  padding: 40px;
-  background: #f4f6fa;
-  min-height: 100vh;
+  padding: 20px;
+  color: #1f2937; /* FIXED (dark text) */
+  background: #f8fafc;
 }
 
+/* HEADER */
 .page-header h2 {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 600;
 }
-
 .page-header p {
-  color: #64748b;
-  margin-bottom: 30px;
+  color: #6b7280;
 }
 
+/* SUMMARY */
 .summary-row {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
 }
 
 .summary-card {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: white;
-  padding: 25px;
-  border-radius: 14px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-  transition: 0.3s ease;
+  padding: 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: 0.3s;
 }
 
 .summary-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
 }
 
-.summary-card span {
-  font-size: 22px;
+/* PROGRESS BAR */
+.progress {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+.progress-bar {
+  height: 100%;
+  background: #3b82f6;
+  border-radius: 10px;
+}
+
+/* TREND */
+.up { color: #22c55e; }
+.down { color: #ef4444; }
+
+/* CHARTS */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.chart-card {
+  padding: 15px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* TABLE CARD */
+.table-card {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* TABLE HEADER */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.table-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* SEARCH BOX */
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #1f2937;
+  font-size: 14px;
+}
+
+/* TABLE */
+.table-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f9fafb;
+  transition: 0.3s;
+  color: #1f2937;
+}
+
+.table-row:hover {
+  background: #eef2ff;
+  transform: translateY(-2px);
+}
+
+.table-row.header {
+  font-weight: bold;
+  background: transparent;
+  color: #6b7280;
+}
+
+/* QUIZ NAME */
+.quiz-name {
+  font-weight: 500;
+}
+
+/* BADGES */
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 13px;
+  color: #fff;
+}
+
+.high {
+  background: #22c55e;
+}
+
+.medium {
+  background: #facc15;
+  color: #000;
+}
+
+.low {
+  background: #ef4444;
+}
+
+/* STATUS */
+.status {
   font-weight: bold;
 }
 
-.icon {
-  font-size: 28px;
+.status.pass {
+  color: #22c55e;
 }
 
-.chart-card, .table-card {
-  background: white;
-  padding: 25px;
-  border-radius: 14px;
-  margin-top: 25px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+.status.fail {
+  color: #ef4444;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
+/* EMPTY STATE */
+.empty-text {
+  text-align: center;
+  color: #9ca3af;
+  padding: 20px;
 }
 
-thead {
-  background: linear-gradient(to right, #6366f1, #4f46e5);
-  color: white;
-}
-
-th, td {
-  padding: 14px;
-}
-
-tbody tr {
-  border-bottom: 1px solid #eee;
-}
-
-.status-pass {
-  background: #dcfce7;
-  color: #16a34a;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
-.status-fail {
-  background: #fee2e2;
-  color: #dc2626;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
+/* LOADING */
 .loading {
-  margin: 30px 0;
-  font-weight: 600;
+  margin-top: 20px;
+  color: #6b7280;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
 }
