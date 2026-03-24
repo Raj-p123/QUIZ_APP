@@ -8,14 +8,17 @@ import java.util.Optional;
 
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
-    // Teacher
+    // Teacher - all quizzes
     List<Quiz> findByTeacherId(Long teacherId);
+
+    // Teacher - latest 3 quizzes (for dashboard)
+    List<Quiz> findTop3ByTeacherIdOrderByLastActivityAtDesc(Long teacherId);
 
     // Student - list
     List<Quiz> findByPublishedTrue();
 
-    // Student - overview (SAFE)
+    // Student - overview
     Optional<Quiz> findByIdAndPublishedTrue(Long id);
-    
+
     List<Quiz> findTop5ByOrderByIdDesc();
 }

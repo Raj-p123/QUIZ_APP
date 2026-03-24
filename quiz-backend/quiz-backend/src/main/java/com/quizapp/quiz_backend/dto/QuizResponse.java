@@ -12,7 +12,10 @@ public class QuizResponse {
     private String categoryName;
     private LocalDateTime createdAt;
 
-    // 🖼️ NEW FIELD (REQUIRED)
+    // ⭐ NEW FIELD (Teacher activity)
+    private LocalDateTime lastActivityAt;
+
+    // 🖼️ COVER IMAGE
     private String coverImageUrl;
 
     // ================= GETTERS & SETTERS =================
@@ -73,7 +76,18 @@ public class QuizResponse {
         this.createdAt = createdAt;
     }
 
-    // 🖼️ NEW
+    // ⭐ LAST ACTIVITY
+
+    public LocalDateTime getLastActivityAt() {
+        return lastActivityAt;
+    }
+
+    public void setLastActivityAt(LocalDateTime lastActivityAt) {
+        this.lastActivityAt = lastActivityAt;
+    }
+
+    // 🖼️ COVER IMAGE
+
     public String getCoverImageUrl() {
         return coverImageUrl;
     }

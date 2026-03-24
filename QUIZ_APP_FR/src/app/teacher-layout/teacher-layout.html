@@ -10,54 +10,57 @@
 
     <nav class="nav-links">
 
-  <a routerLink="/teacher-dashboard" routerLinkActive="active" title="Dashboard">
-    <span class="icon">📊</span>
-    <span class="text">Dashboard</span>
-  </a>
+      <a routerLink="/teacher-dashboard" routerLinkActive="active" title="Dashboard">
+        <span class="icon">📊</span>
+        <span class="text">Dashboard</span>
+      </a>
 
-  <a routerLink="/teacher-quizzes" title="My Quizzes">
-    <span class="icon">📝</span>
-    <span class="text">My Quizzes</span>
-  </a>
+      <a routerLink="/teacher-quizzes" routerLinkActive="active" title="My Quizzes">
+        <span class="icon">📝</span>
+        <span class="text">My Quizzes</span>
+      </a>
 
-<a routerLink="/quiz-type" title="Create Quiz">
-    <span class="icon">➕</span>
-    <span class="text">Create Quiz</span>
-  </a>
+      <a routerLink="/quiz-type" routerLinkActive="active" title="Create Quiz">
+        <span class="icon">➕</span>
+        <span class="text">Create Quiz</span>
+      </a>
 
-  <a title="Question Bank">
-    <span class="icon">📚</span>
-    <span class="text">Question Bank</span>
-  </a>
+      <a title="Question Bank">
+        <span class="icon">📚</span>
+        <span class="text">Question Bank</span>
+      </a>
 
-  <a title="Student Attempts">
-    <span class="icon">🎯</span>
-    <span class="text">Student Attempts</span>
-  </a>
+      <a routerLink="/results" routerLinkActive="active" title="Results">
+        <span class="icon">📈</span>
+        <span class="text">Results</span>
+      </a>
 
-  <a routerLink="/results" title="Results">
-    <span class="icon">📈</span>
-    <span class="text">Results</span>
-  </a>
+      <!-- 🔥 FIXED (absolute path) -->
+      <a routerLink="/leaderboard" routerLinkActive="active" title="Leaderboard">
+        <span class="icon">🏆</span>
+        <span class="text">Leaderboard</span>
+      </a>
 
-  <a title="Leaderboard">
-    <span class="icon">🏆</span>
-    <span class="text">Leaderboard</span>
-  </a>
+      <!-- 🔥 ADD PROFILE IN SIDEBAR -->
+      <a routerLink="/teacher-profile" routerLinkActive="active" title="Profile">
+        <span class="icon">👤</span>
+        <span class="text">Profile</span>
+      </a>
 
-  <a title="Settings">
-    <span class="icon">⚙</span>
-    <span class="text">Settings</span>
-  </a>
+      <a title="Settings">
+        <span class="icon">⚙</span>
+        <span class="text">Settings</span>
+      </a>
 
-  <a title="Support">
-    <span class="icon">❓</span>
-    <span class="text">Support</span>
-  </a>
+      <a title="Support">
+        <span class="icon">❓</span>
+        <span class="text">Support</span>
+      </a>
 
-</nav>
+    </nav>
 
-    <button class="logout-btn">
+    <!-- 🔥 FIXED LOGOUT -->
+    <button class="logout-btn" (click)="logout()">
       <span class="icon">🚪</span>
       <span class="text">Logout</span>
     </button>
@@ -70,7 +73,8 @@
     <header class="topbar">
       <input type="text" placeholder="Search..." class="search-box">
 
-      <div class="profile-mini">
+      <!-- 🔥 CLEAN PROFILE MINI -->
+      <div class="profile-mini" (click)="goToProfile()">
         <img src="https://i.pravatar.cc/150?u=smruti" width="35">
         <span>Teacher</span>
       </div>

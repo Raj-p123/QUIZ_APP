@@ -13,6 +13,9 @@ public class TeacherQuizDetailedResult {
     private List<TopStudentDTO> topStudents;
     private List<QuestionAnalysisDTO> questionAnalysis;
 
+    // 🔥 NEW FIELD (ADDED SAFELY)
+    private List<StudentAnswerMatrixDTO> students;
+
     public TeacherQuizDetailedResult() {
     }
 
@@ -24,7 +27,8 @@ public class TeacherQuizDetailedResult {
             int totalMarks,
             double averagePercentage,
             List<TopStudentDTO> topStudents,
-            List<QuestionAnalysisDTO> questionAnalysis
+            List<QuestionAnalysisDTO> questionAnalysis,
+            List<StudentAnswerMatrixDTO> students // 🔥 NEW PARAM
     ) {
         this.totalAttempts = (int) totalAttempts;
         this.averageScore = averageScore;
@@ -34,6 +38,7 @@ public class TeacherQuizDetailedResult {
         this.averagePercentage = averagePercentage;
         this.topStudents = topStudents;
         this.questionAnalysis = questionAnalysis;
+        this.students = students; // 🔥 SET
     }
 
     public int getTotalAttempts() {
@@ -98,5 +103,15 @@ public class TeacherQuizDetailedResult {
 
     public void setQuestionAnalysis(List<QuestionAnalysisDTO> questionAnalysis) {
         this.questionAnalysis = questionAnalysis;
+    }
+
+    // 🔥 NEW GETTER & SETTER
+
+    public List<StudentAnswerMatrixDTO> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<StudentAnswerMatrixDTO> students) {
+        this.students = students;
     }
 }

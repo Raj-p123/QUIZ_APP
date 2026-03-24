@@ -15,4 +15,7 @@ public interface AttemptAnswerRepository extends JpaRepository<AttemptAnswer, Lo
 
     // ✅ Count total answers of a question
     long countByQuestionId(Long questionId);
+
+    // 🔥 NEW: Get all answers for a specific attempt (FIX YOUR ERROR)
+    List<AttemptAnswer> findByAttemptId(Long attemptId);
 }

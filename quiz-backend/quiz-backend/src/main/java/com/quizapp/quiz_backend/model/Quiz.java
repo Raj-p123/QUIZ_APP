@@ -20,8 +20,7 @@ public class Quiz {
     @Column(length = 500)
     private String description;
 
-    // 🖼️ QUIZ COVER IMAGE (NEW)
-    // This will store image URL / file path
+    // 🖼️ QUIZ COVER IMAGE
     @Column(name = "cover_image_url")
     private String coverImageUrl;
 
@@ -42,6 +41,10 @@ public class Quiz {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    // ⭐ NEW FIELD (Teacher activity tracking)
+    @Column(name = "last_activity_at")
+    private LocalDateTime lastActivityAt = LocalDateTime.now();
+
     // ================= RELATIONS =================
 
     @OneToMany(
@@ -50,31 +53,29 @@ public class Quiz {
         orphanRemoval = true
     )
     private List<Question> questions;
-    
-    
+
     @ManyToOne
     private ClassRoom classRoom;
-
 
     // ================= GETTERS & SETTERS =================
 
     public ClassRoom getClassRoom() {
-		return classRoom;
-	}
+        return classRoom;
+    }
 
-	public void setClassRoom(ClassRoom classRoom) {
-		this.classRoom = classRoom;
-	}
+    public void setClassRoom(ClassRoom classRoom) {
+        this.classRoom = classRoom;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -94,7 +95,6 @@ public class Quiz {
         this.description = description;
     }
 
-    // 🖼️ Cover Image
     public String getCoverImageUrl() {
         return coverImageUrl;
     }
@@ -137,6 +137,15 @@ public class Quiz {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    // ⭐ NEW
+    public LocalDateTime getLastActivityAt() {
+        return lastActivityAt;
+    }
+
+    public void setLastActivityAt(LocalDateTime lastActivityAt) {
+        this.lastActivityAt = lastActivityAt;
     }
 
     public List<Question> getQuestions() {

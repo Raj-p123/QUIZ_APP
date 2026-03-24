@@ -1,0 +1,88 @@
+<div class="leaderboard-container">
+
+  <h1 class="title">🏆 Leaderboard</h1>
+
+  <!-- ================= GLOBAL LEADERBOARD ================= -->
+  <section class="card">
+
+    <h2>🌍 Global Leaderboard</h2>
+
+    <div *ngIf="loadingGlobal" class="loading">
+      Loading global leaderboard...
+    </div>
+
+    <table *ngIf="!loadingGlobal && globalLeaderboard.length" class="table">
+
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Student</th>
+          <th>Total Score</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let s of globalLeaderboard">
+          <td>#{{ s.rank }}</td>
+          <td>{{ s.studentName }}</td>
+          <td>{{ s.totalScore }}</td>
+        </tr>
+      </tbody>
+
+    </table>
+
+  </section>
+
+
+  <!-- ================= QUIZ SELECT ================= -->
+  <section class="card">
+
+    <h2>🔍 Quiz Leaderboard</h2>
+
+    <select (change)="onQuizSelect($event)" class="dropdown">
+      <option value="">Select Quiz</option>
+
+      <option *ngFor="let q of quizzes" [value]="q.quizId">
+        {{ q.quizTitle || ('Quiz ' + q.quizId) }}
+      </option>
+    </select>
+
+  </section>
+
+
+  <!-- ================= QUIZ LEADERBOARD ================= -->
+  <section class="card" *ngIf="selectedQuizId">
+
+    <h3>📊 Quiz Leaderboard</h3>
+
+    <div *ngIf="loadingQuiz" class="loading">
+      Loading quiz leaderboard...
+    </div>
+
+    <table *ngIf="!loadingQuiz && quizLeaderboard.length" class="table">
+
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Student</th>
+          <th>Score</th>
+          <th>%</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let s of quizLeaderboard">
+          <td>#{{ s.rank }}</td>
+          <td>{{ s.studentName }}</td>
+          <td>{{ s.score }}</td>
+          <td>{{ s.percentage | number:'1.0-2' }}%</td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </section>
+
+</div>

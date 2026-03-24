@@ -36,6 +36,7 @@ import { TeacherLayout } from './teacher-layout/teacher-layout';
 
 /* NEW COMPONENT */
 import { QuizTypeComponent } from './quiz-type/quiz-type';
+import { TeacherLeaderboardComponent } from './teacher-leaderboard/teacher-leaderboard';
 import { LeaderboardComponent } from './leaderboard/leaderboard';
 
 export const routes: Routes = [
@@ -104,7 +105,9 @@ export const routes: Routes = [
       { path: 'teacher/quizzes/:quizId/edit', component: TeacherEditQuiz },
       { path: 'teacher/quizzes/:quizId/view', component: TeacherEditQuiz },
 
-      { path: 'results', component: ResultsComponent }
+      { path: 'results', component: ResultsComponent },
+      { path: 'leaderboard', component: TeacherLeaderboardComponent },
+      { path: 'teacher-profile', component: Profile },
 
     ]
   },
