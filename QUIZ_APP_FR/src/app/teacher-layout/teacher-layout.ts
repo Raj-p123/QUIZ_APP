@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -7,7 +7,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './teacher-layout.html',
-  styleUrls: ['./teacher-layout.css']
+  styleUrls: ['./teacher-layout.css'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class TeacherLayout {
 
@@ -19,8 +20,16 @@ export class TeacherLayout {
     this.collapsed = !this.collapsed;
   }
 
+  // 🔥 FIXED LOGOUT
   logout() {
-    this.router.navigate(['/'], { replaceUrl: true });
+    // later: clear token/session
+    localStorage.clear(); // optional
+    this.router.navigate(['/']);
+  }
+
+  // 🔥 PROFILE NAVIGATION
+  goToProfile() {
+    this.router.navigate(['/teacher-profile']);
   }
 
 }

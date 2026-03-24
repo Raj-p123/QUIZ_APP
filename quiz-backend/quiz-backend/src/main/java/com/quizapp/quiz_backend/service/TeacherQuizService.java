@@ -5,6 +5,7 @@ import com.quizapp.quiz_backend.model.*;
 import com.quizapp.quiz_backend.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,9 @@ public class TeacherQuizService {
         quiz.setCoverImageUrl(request.getCoverImageUrl());
         quiz.setPublished(false);
 
+        // ⭐ update activity
+        quiz.setLastActivityAt(LocalDateTime.now());
+
         return quizRepository.save(quiz);
     }
 
@@ -76,6 +80,7 @@ public class TeacherQuizService {
                     dto.setTimePerQuestionSeconds(quiz.getTimePerQuestionSeconds());
                     dto.setPublished(quiz.isPublished());
                     dto.setCreatedAt(quiz.getCreatedAt());
+                    dto.setLastActivityAt(quiz.getLastActivityAt());
                     dto.setCategoryName(quiz.getCategory().getName());
                     dto.setCoverImageUrl(quiz.getCoverImageUrl());
                     return dto;
@@ -98,11 +103,14 @@ public class TeacherQuizService {
         question.setTimeLimitSeconds(request.getTimeLimitSeconds());
         question.setQuiz(quiz);
 
-        // 🔥 NEW
         question.setType(request.getType());
         question.setCorrectAnswer(request.getCorrectAnswer());
 
         Question saved = questionRepository.save(question);
+
+        // ⭐ update activity
+        quiz.setLastActivityAt(LocalDateTime.now());
+        quizRepository.save(quiz);
 
         QuestionResponse response = new QuestionResponse();
         response.setId(saved.getId());
@@ -137,6 +145,11 @@ public class TeacherQuizService {
 
         Option saved = optionRepository.save(option);
 
+        // ⭐ update activity
+        Quiz quiz = question.getQuiz();
+        quiz.setLastActivityAt(LocalDateTime.now());
+        quizRepository.save(quiz);
+
         OptionResponse response = new OptionResponse();
         response.setId(saved.getId());
         response.setOptionText(saved.getOptionText());
@@ -159,7 +172,6 @@ public class TeacherQuizService {
                     qDto.setId(question.getId());
                     qDto.setQuestionText(question.getQuestionText());
 
-                    // 🔥 NEW
                     qDto.setType(question.getType());
                     qDto.setCorrectAnswer(question.getCorrectAnswer());
 
@@ -203,7 +215,6 @@ public class TeacherQuizService {
                 throw new RuntimeException("Each question must have a valid time limit");
             }
 
-            // 🔥 MCQ & TRUE_FALSE validation
             if (question.getType() == QuestionType.MCQ || question.getType() == QuestionType.TRUE_FALSE) {
 
                 List<Option> options = optionRepository.findByQuestionId(question.getId());
@@ -223,7 +234,6 @@ public class TeacherQuizService {
                 }
             }
 
-            // 🔥 FILL BLANK validation
             if (question.getType() == QuestionType.FILL_BLANK || question.getType() == QuestionType.SHORT_ANSWER) {
 
                 if (question.getCorrectAnswer() == null || question.getCorrectAnswer().isBlank()) {
@@ -233,6 +243,10 @@ public class TeacherQuizService {
         }
 
         quiz.setPublished(true);
+
+        // ⭐ update activity
+        quiz.setLastActivityAt(LocalDateTime.now());
+
         quizRepository.save(quiz);
     }
 
@@ -258,7 +272,7 @@ public class TeacherQuizService {
         quizRepository.delete(quiz);
     }
 
-    // ================= DELETE QUESTION =================
+ // ================= DELETE QUESTION =================
     public void deleteQuestion(Long questionId) {
 
         Question question = questionRepository.findById(questionId)
@@ -268,11 +282,17 @@ public class TeacherQuizService {
             throw new RuntimeException("Cannot delete question from published quiz");
         }
 
+        Quiz quiz = question.getQuiz();   // get quiz reference
+
         optionRepository.deleteAll(
                 optionRepository.findByQuestionId(questionId)
         );
 
         questionRepository.delete(question);
+
+        // ⭐ update teacher activity
+        quiz.setLastActivityAt(java.time.LocalDateTime.now());
+        quizRepository.save(quiz);
     }
 
     // ================= GET QUIZ BY ID =================
@@ -288,9 +308,39 @@ public class TeacherQuizService {
         dto.setTimePerQuestionSeconds(quiz.getTimePerQuestionSeconds());
         dto.setPublished(quiz.isPublished());
         dto.setCreatedAt(quiz.getCreatedAt());
+        dto.setLastActivityAt(quiz.getLastActivityAt());
         dto.setCategoryName(quiz.getCategory().getName());
         dto.setCoverImageUrl(quiz.getCoverImageUrl());
 
         return dto;
+    }
+
+    // ================= DASHBOARD =================
+    public List<QuizResponse> getLatestQuizzesByTeacher(Long teacherId) {
+
+        User teacher = userRepository.findById(teacherId)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+        if (teacher.getRole() != Role.TEACHER) {
+            throw new RuntimeException("User is not a teacher");
+        }
+
+        return quizRepository
+                .findTop3ByTeacherIdOrderByLastActivityAtDesc(teacherId)
+                .stream()
+                .map(quiz -> {
+                    QuizResponse dto = new QuizResponse();
+                    dto.setId(quiz.getId());
+                    dto.setTitle(quiz.getTitle());
+                    dto.setDescription(quiz.getDescription());
+                    dto.setTimePerQuestionSeconds(quiz.getTimePerQuestionSeconds());
+                    dto.setPublished(quiz.isPublished());
+                    dto.setCreatedAt(quiz.getCreatedAt());
+                    dto.setLastActivityAt(quiz.getLastActivityAt());
+                    dto.setCategoryName(quiz.getCategory().getName());
+                    dto.setCoverImageUrl(quiz.getCoverImageUrl());
+                    return dto;
+                })
+                .toList();
     }
 }

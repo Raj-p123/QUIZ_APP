@@ -1,0 +1,30 @@
+<div class="profile-container">
+
+  <div class="profile-card">
+
+    <!-- PROFILE IMAGE -->
+    <div class="image-section">
+      <img [src]="user?.photo" alt="Profile">
+    </div>
+
+    <!-- USER INFO -->
+    <div class="info-section">
+
+      <h2>{{ user?.name }}</h2>
+      <p class="role">{{ user?.role }}</p>
+
+      <div class="detail">
+        <span>Email:</span>
+        <span>{{ user?.email }}</span>
+      </div>
+
+    </div>
+
+    <!-- LOGOUT -->
+    <button class="logout-btn" (click)="logout()">
+      Logout
+    </button>
+
+  </div>
+
+</div>

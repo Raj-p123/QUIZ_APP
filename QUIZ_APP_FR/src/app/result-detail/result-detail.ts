@@ -92,10 +92,19 @@ export class ResultDetailComponent implements OnInit {
     }
   }
 
-  // ✅ Difficulty classifier for questions
-  getDifficultyClass(percent: number): string {
-    if (percent >= 75) return 'easy';
-    if (percent >= 50) return 'medium';
+  // ✅ OLD METHOD (KEPT — DO NOT REMOVE)
+  getDifficultyClass(correct: number): string {
+    const wrong = 100 - correct;
+
+    if (correct > wrong) return 'easy';
+    if (correct === wrong) return 'medium';
+    return 'hard';
+  }
+
+  // 🔥 NEW METHOD (CORRECT ONE — USED BY HTML)
+  getDifficultyClassFromCount(correct: number, wrong: number): string {
+    if (correct > wrong) return 'easy';
+    if (correct === wrong) return 'medium';
     return 'hard';
   }
 

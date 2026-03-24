@@ -8,8 +8,8 @@ public class TeacherQuizResultSummary {
     private double averageScore;
     private int highestScore;
     private int lowestScore;
-    private int totalMarks;           // ✅ NEW
-    private double averagePercentage; // ✅ NEW
+    private int totalMarks;
+    private double averagePercentage;
     private boolean published;
 
     public TeacherQuizResultSummary() {
@@ -29,6 +29,11 @@ public class TeacherQuizResultSummary {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    // 🔥 ADD THIS (IMPORTANT FIX)
+    public String getQuizTitle() {
+        return title;
     }
 
     public int getTotalAttempts() {

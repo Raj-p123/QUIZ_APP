@@ -118,4 +118,30 @@ export class ApiService {
       `${this.baseUrl}/api/teacher/results/quiz/${quizId}`
     );
   }
+
+  getLatestTeacherQuizzes(teacherId: number): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/api/teacher/quizzes/teacher/${teacherId}/latest`
+  );
+
+  
+}
+
+getTeacherDashboardStats(teacherId: number) {
+  return this.http.get<any>(
+    `${this.baseUrl}/api/teacher/quizzes/dashboard/${teacherId}`
+  );
+}
+
+getTeacherLeaderboard(quizId: number) {
+  return this.http.get<any[]>(
+    `http://localhost:8080/api/teacher/results/leaderboard/${quizId}`
+  );
+}
+
+getGlobalLeaderboard() {
+  return this.http.get<any[]>(
+    'http://localhost:8080/api/teacher/results/leaderboard/global'
+  );
+}
 }

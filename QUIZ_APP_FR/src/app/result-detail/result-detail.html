@@ -17,7 +17,6 @@
       <h1>Quiz Detailed Analytics</h1>
       <p class="subtitle">Comprehensive performance breakdown</p>
 
-      <!-- ✅ Performance Banner -->
       <div class="performance-banner" [ngClass]="performanceClass">
         {{ performanceLabel }}
       </div>
@@ -53,38 +52,73 @@
         </div>
       </section>
 
-      <!-- STUDENTS -->
+      <!-- STUDENT PERFORMANCE -->
       <section class="card students-card">
         <div class="card-header">
-          <h3>Top Performing Students</h3>
+          <h3>Student Performance</h3>
         </div>
 
         <div class="card-body">
 
-          <div *ngIf="!result?.topStudents?.length" class="empty-msg">
-            No student data available.
-          </div>
+          <table class="student-table" *ngIf="result?.topStudents?.length">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Student Name</th>
+                <th>Score</th>
+              </tr>
+            </thead>
 
-          <div class="student-list">
-            <div *ngFor="let s of result?.topStudents; let i = index"
-                 class="student-item">
+            <tbody>
+              <tr *ngFor="let s of result.topStudents; let i = index">
+                <td>#{{ i + 1 }}</td>
+                <td>{{ s.studentName }}</td>
+                <td><span class="score-badge">{{ s.score }}</span></td>
+              </tr>
+            </tbody>
+          </table>
 
-              <div class="rank" [ngClass]="{
-                'gold': i === 0,
-                'silver': i === 1,
-                'bronze': i === 2
-              }">
-                #{{ i + 1 }}
-              </div>
+        </div>
+      </section>
 
-              <span class="name">{{ s.studentName }}</span>
+      <!-- MATRIX TABLE -->
+      <section class="card full-width">
+        <div class="card-header">
+          <h3>Quiz Breakdown</h3>
+        </div>
 
-              <span class="score-badge">
-                {{ s.score }}
-              </span>
+        <div class="card-body">
 
-            </div>
-          </div>
+          <table class="matrix-table" *ngIf="result?.students?.length">
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+
+                <th *ngFor="let q of result.questionAnalysis; let i = index">
+                  Q{{ i + 1 }}
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr *ngFor="let s of result.students; let i = index">
+
+                <td>{{ i + 1 }}</td>
+                <td>{{ s.name }}</td>
+
+                <td *ngFor="let ans of s.answers"
+                    [ngClass]="ans ? 'correct-cell' : 'wrong-cell'">
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
         </div>
       </section>
 
@@ -96,30 +130,28 @@
 
         <div class="card-body">
 
-          <div *ngIf="!result?.questionAnalysis?.length" class="empty-msg">
-            No question analysis available.
-          </div>
-
           <div *ngFor="let q of result?.questionAnalysis" class="question-group">
 
             <div class="question-info">
               <p class="text">{{ q.questionText }}</p>
 
+              <!-- ✅ FIXED: USE COUNT BASED LOGIC -->
               <span class="difficulty-badge"
-                    [ngClass]="getDifficultyClass(q.correctPercentage)">
+                    [ngClass]="getDifficultyClassFromCount(q.correctCount, q.wrongCount)">
                 {{
-                  q.correctPercentage >= 75 ? 'Easy' :
-                  q.correctPercentage >= 50 ? 'Moderate' :
-                  'Difficult'
+                  (q.correctCount || 0) > (q.wrongCount || 0) ? 'Easy' :
+                  (q.correctCount || 0) === (q.wrongCount || 0) ? 'Medium' :
+                  'Hard'
                 }}
               </span>
             </div>
 
+            <!-- ✅ FIXED COUNTS -->
             <div class="progress-stack">
 
               <div class="progress-label">
                 <span>Correct</span>
-                <span>{{ round(q.correctPercentage) }}%</span>
+                <span>{{ q?.correctCount ?? 0 }} students</span>
               </div>
 
               <div class="progress-bar-container">
@@ -129,8 +161,8 @@
               </div>
 
               <div class="progress-label">
-                <span>Incorrect</span>
-                <span>{{ round(q.wrongPercentage) }}%</span>
+                <span>Wrong</span>
+                <span>{{ q?.wrongCount ?? 0 }} students</span>
               </div>
 
               <div class="progress-bar-container">
@@ -140,16 +172,13 @@
               </div>
 
             </div>
+
           </div>
 
         </div>
       </section>
-    </div>
-  </div>
 
-  <div *ngIf="!loading && !result" class="state-container error">
-    <p>Failed to load analytics data.</p>
-    <button class="btn-retry" (click)="fetchData()">Retry</button>
+    </div>
   </div>
 
 </div>
